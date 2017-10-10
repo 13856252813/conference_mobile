@@ -21,7 +21,7 @@ class WelcomeActivity : BaseActivity() {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 JUMP -> {
-                    var i = Intent(this@WelcomeActivity, MainActivity::class.java)
+                    var i = Intent(this@WelcomeActivity, LoginActivity::class.java)
                     this@WelcomeActivity.startActivity(i)
                     this@WelcomeActivity.finish()
                 }

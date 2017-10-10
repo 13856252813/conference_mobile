@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Conference</string>
+    <string name="hint_password">请输入密码</string>
+    <string name="hint_user">请输入手机号/邮箱</string>
+    <string name="login_error">账号或密码输入有误</string>
+    <string name="login">登录</string>
+    <string name="forget_the_password">忘记密码</string>
+    <string name="create_room">创建会议</string>
+    <string name="enter_room">进入会议</string>
+    <string name="not_start">未开始</string>
+    <string name="add_attendee">添加参会人</string>
+    <string name="add_attendee_number">添加参会人(%s)</string>
+    <string name="add_attendee_number2">添加参会人 %s/%s</string>
+    <string name="begin_time">开始时间</string>
+    <string name="continue_time">持续时长</string>
+    <string name="created">确认创建</string>
+    <string name="choose">请选择</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="room_number">房间号：%s</string>
+    <string name="attendee_number">参会人 %s/%s</string>
 </resources>
