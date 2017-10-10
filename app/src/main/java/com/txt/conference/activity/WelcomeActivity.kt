@@ -6,6 +6,8 @@ import android.os.Handler
 import android.os.Message
 import android.util.DisplayMetrics
 import android.util.Log
+import cn.hugeterry.updatefun.UpdateFunGO
+import cn.hugeterry.updatefun.config.UpdateKey
 import com.txt.conference.R
 
 /**
@@ -31,17 +33,27 @@ class WelcomeActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome)
 
+        initFirUpdate()
         printDisplayMetrics()
+    }
+
+    private fun initFirUpdate() {
+        UpdateKey.API_TOKEN = "ee20eb2948374c12e9f993cec1507955"
+        UpdateKey.APP_ID = "59dc7030548b7a481b00036c"
+        UpdateKey.DialogOrNotification=UpdateKey.WITH_DIALOG
+        UpdateFunGO.init(this)
     }
 
     override fun onResume() {
         super.onResume()
         mHandle.sendEmptyMessageDelayed(JUMP, JUMP_TIME)
+        UpdateFunGO.onResume(this)
     }
 
     override fun onPause() {
         super.onPause()
         mHandle.removeMessages(JUMP)
+        UpdateFunGO.onStop(this)
     }
 
     override fun onDestroy() {
