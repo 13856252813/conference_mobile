@@ -4,21 +4,78 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+ext {
+    mVersionName = ""
+}
+
+def computeVersionCode(){
+    String date = new Date().format("yyyyMMdd")
+    String indexStr = "01"
+
+    File file = new File("version");
+    if (file.exists()){
+        String verStr = GFileUtils.readFile(file)
+        String[] verInfo = verStr.split(",")//0 date 1 verIndex
+        if (verInfo.size() == 2){
+            if (date.equals(verInfo[0])){// current day
+                int index = 1;
+                try{
+                    index = Integer.parseInt(verInfo[1])
+                    index += 1;
+                }catch(Exception ex){
+                    index = 1;
+                }
+                indexStr = String.format("%02d", index)
+            }
+        }
+    }
+
+    GFileUtils.writeFile(date + "," + indexStr, file)
+    mVersionName = date + indexStr
+    return Integer.parseInt(mVersionName)
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
     defaultConfig {
         applicationId "com.txt.conference"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode computeVersionCode()
+        versionName mVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        resValue "string", "updatefun_provider_file_authorities", "com.txt.conference.fileprovider"
+    }
+    signingConfigs {
+        config_pivos_debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('debug.keystore')
+            storePassword 'android'
+        }
     }
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.config_pivos_debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    //modify app name
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if(variant.buildType.name.equals('release')){
+                // APK输出文件名规则：aiyou-版本名-市场-release.apk
+                //def releaseApkName = 'Conference_v' + versionCode + '_' + variant.productFlavors[0].name + '_release.apk'
+                def releaseApkName = 'Conference_v' + versionCode + '_release.apk'
+                // appReleaseDir对应local.properties里面定义的路径，再加上日期（格式：201503011230）文件夹
+                outputFileName = new File(releaseApkName)
+            }
+
+            if(variant.buildType.name.equals('beta')){}
+
+            if(variant.buildType.name.equals('debug')){}
         }
     }
 }
@@ -27,6 +84,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'cn.hugeterry.updatefun:updatefun:2.0.6'
     testImplementation 'junit:junit:4.12'
     testImplementation "org.mockito:mockito-core:2.+"
     androidTestImplementation ('com.android.support.test.espresso:espresso-core:3.0.1', {
