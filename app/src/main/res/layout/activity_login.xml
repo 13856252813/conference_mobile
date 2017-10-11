@@ -12,7 +12,7 @@
         android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/login_et_phone"
+        android:id="@+id/login_et_account"
         android:layout_centerHorizontal="true"
         android:drawableLeft="@mipmap/account"
         android:drawablePadding="10dp"
@@ -31,7 +31,7 @@
         android:textSize="14sp"
         android:textColorHint="@color/hint"
         android:hint="@string/hint_password"
-        android:layout_below="@id/login_et_phone"
+        android:layout_below="@id/login_et_account"
         android:layout_marginTop="22dp"
         android:layout_width="310dp"
         android:layout_height="43dp" />

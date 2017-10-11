@@ -4,8 +4,8 @@ package com.txt.conference.bean
  * Created by jane on 2017/9/29.
  */
 open class UserBean{
-    var mFirstname: String = ""
-    var mLastName: String = ""
+    var account: String = ""
+    var password: String = ""
 
     init {
         println("hello init")
@@ -15,10 +15,9 @@ open class UserBean{
 
     }
 
-    constructor (firstname: String, lastName: String){
-        println("constructor $firstname $lastName")
-        this.mFirstname = firstname
-        this.mLastName = lastName
+    constructor (account: String, password: String){
+        this.account = account
+        this.password = password
     }
 
 

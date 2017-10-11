@@ -21,9 +21,9 @@ class ExampleUnitTest {
 
     @Test
     fun newUser() {
-        val userMocked = mock(UserBean::class.java)
-        `when`(userMocked.mFirstname).thenReturn("hi")
-        val helloWorld = userMocked.mFirstname
-        assertEquals("hi", helloWorld)
+//        val userMocked = mock(UserBean::class.java)
+//        `when`(userMocked.mFirstname).thenReturn("hi")
+//        val helloWorld = userMocked.mFirstname
+//        assertEquals("hi", helloWorld)
     }
 }
