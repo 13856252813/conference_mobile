@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Conference</string>
+    <string name="app_name">云智慧</string>
     <string name="hint_password">请输入密码</string>
     <string name="hint_user">请输入手机号/邮箱</string>
     <string name="login_error">账号或密码输入有误</string>
