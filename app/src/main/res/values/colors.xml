@@ -7,4 +7,8 @@
     <color name="orange">#f89200</color>
     <color name="hint">#33333333</color>
     <color name="gray">#fefefe</color>
+    <color name="blue80">#cc3c4061</color>
+    <color name="grey200">#eeeeee</color>
+    <color name="grey_room">#333333</color>
+    <color name="grey_time">#999999</color>
 </resources>
