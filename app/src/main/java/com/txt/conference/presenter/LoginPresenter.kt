@@ -23,7 +23,12 @@ class LoginPresenter {
     fun doLogin(account: String, password: String) {
         mLoginModel?.login(account, password, object : ILoginModel.ILoginCallBack{
             override fun onStatues() {
-                mLoginView?.jumpActivity()
+                if (mLoginModel?.statu == ILoginModel.SUCCESS) {
+                    mLoginView?.hideError()
+                    mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean)
+                } else {
+                    mLoginView?.showError("")
+                }
             }
 
         })

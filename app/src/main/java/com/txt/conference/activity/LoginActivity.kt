@@ -1,9 +1,11 @@
 package com.txt.conference.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.txt.conference.R
+import com.txt.conference.bean.LoginBean
 import com.txt.conference.presenter.LoginPresenter
 import com.txt.conference.view.ILoginView
 import kotlinx.android.synthetic.main.activity_login.*
@@ -14,8 +16,14 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
 
     override fun jumpActivity() {
+
+    }
+
+    override fun jumpActivity(loginBean: LoginBean) {
         var i = Intent(this, MainActivity::class.java)
+        i.putExtra(MainActivity.KEY_USER, loginBean)
         startActivity(i)
+        this.finish()
     }
 
     override fun back() {
@@ -49,11 +57,11 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
     }
 
     override fun showError(error: String) {
-
+        login_tv_error.visibility = View.VISIBLE
     }
 
     override fun hideError() {
-
+        login_tv_error.visibility = View.INVISIBLE
     }
 
 }

@@ -11,7 +11,12 @@ import com.txt.conference.view.IConferenceView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), IConferenceView {
+
     var mConferenceAdapter: ConferenceAdapter? = null
+
+    companion object {
+        val KEY_USER = "key_user"
+    }
 
     override fun addConferences(conference: List<String>) {
 

@@ -9,6 +9,8 @@ import android.util.Log
 import cn.hugeterry.updatefun.UpdateFunGO
 import cn.hugeterry.updatefun.config.UpdateKey
 import com.txt.conference.R
+import com.txt.conference.application.TxApplication
+import com.txt.conference.data.TxSharedPreferencesFactory
 
 /**
  * Created by jane on 2017/10/9.
@@ -21,7 +23,11 @@ class WelcomeActivity : BaseActivity() {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 JUMP -> {
-                    var i = Intent(this@WelcomeActivity, LoginActivity::class.java)
+                    var token = TxSharedPreferencesFactory(TxApplication.mInstance).getToken()
+                    var i = Intent(this@WelcomeActivity, MainActivity::class.java)
+                    if (token == null || token.equals("")){
+                        i = Intent(this@WelcomeActivity, LoginActivity::class.java)
+                    }
                     this@WelcomeActivity.startActivity(i)
                     this@WelcomeActivity.finish()
                 }

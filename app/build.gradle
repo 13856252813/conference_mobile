@@ -78,6 +78,8 @@ android {
             if(variant.buildType.name.equals('debug')){}
         }
     }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -86,6 +88,7 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'cn.hugeterry.updatefun:updatefun:2.0.6'
+    implementation 'com.google.code.gson:gson:2.8.2'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.+'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
