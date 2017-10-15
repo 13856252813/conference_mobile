@@ -2,23 +2,23 @@ package com.txt.conference.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.support.v7.widget.LinearLayoutManager
-import com.common.utlis.DateUtils
+import android.view.View
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
-import com.txt.conference.presenter.ConferencePresenter
-import com.txt.conference.view.IConferenceView
+import com.txt.conference.presenter.GetRoomsPresenter
+import com.txt.conference.view.IGetRoomsView
 import kotlinx.android.synthetic.main.activity_main.*
-import java.time.ZoneId
-import java.util.*
 
-class MainActivity : BaseActivity(), IConferenceView {
+class MainActivity : BaseActivity(), IGetRoomsView {
     val TAG = MainActivity::class.java.simpleName
+    var getRoomsPresenter: GetRoomsPresenter? = null
+    var mConferenceAdapter: ConferenceAdapter? = null
 
     override fun jumpToLogin() {
         startActivity(Intent(this, LoginActivity::class.java))
@@ -29,8 +29,6 @@ class MainActivity : BaseActivity(), IConferenceView {
         return TxSharedPreferencesFactory(applicationContext).getToken()
     }
 
-    var mConferencePresenter: ConferencePresenter? = null
-
     override fun addConferences(conference: List<RoomBean>?) {
         ULog.d(TAG, "addConferences")
         if (mConferenceAdapter == null) {
@@ -39,9 +37,12 @@ class MainActivity : BaseActivity(), IConferenceView {
         } else {
             mConferenceAdapter?.notifyDataSetChanged()
         }
+        mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
+            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                ULog.d(TAG, "onItemChildClick $position")
+            }
+        }
     }
-
-    var mConferenceAdapter: ConferenceAdapter? = null
 
     companion object {
         val KEY_USER = "key_user"
@@ -61,8 +62,8 @@ class MainActivity : BaseActivity(), IConferenceView {
         setContentView(R.layout.activity_main)
 
         initRecyclerView()
-        mConferencePresenter = ConferencePresenter(this)
-        mConferencePresenter?.getRooms(getToken())
+        getRoomsPresenter = GetRoomsPresenter(this)
+        getRoomsPresenter?.getRooms(getToken())
 
 //        ULog.d(TAG, "onTick time is " + Date().time)
 //        var countDown = object : CountDownTimer((10 * 1000), 1000) {
