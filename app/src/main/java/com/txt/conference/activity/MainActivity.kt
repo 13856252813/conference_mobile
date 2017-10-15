@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.common.utlis.ULog
 import com.txt.conference.R
@@ -12,13 +13,27 @@ import com.txt.conference.adapter.RecyclerViewDivider
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.GetRoomsPresenter
+import com.txt.conference.presenter.JoinRoomPresenter
 import com.txt.conference.view.IGetRoomsView
+import com.txt.conference.view.IJoinRoomView
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity(), IGetRoomsView {
+class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
     val TAG = MainActivity::class.java.simpleName
     var getRoomsPresenter: GetRoomsPresenter? = null
     var mConferenceAdapter: ConferenceAdapter? = null
+    var joinRoomPresenter: JoinRoomPresenter? = null
+
+    override fun jumpToRoom(room: RoomBean, connect_token: String) {
+        var i = Intent(this, RoomActivity::class.java)
+        i.putExtra(RoomActivity.KEY_ROOM, room)
+        i.putExtra(RoomActivity.KEY_CONNECT_TOKEN, connect_token)
+        startActivity(i)
+    }
+
+    override fun showError(errorRes: Int) {
+        Toast.makeText(this, errorRes, Toast.LENGTH_SHORT).show()
+    }
 
     override fun jumpToLogin() {
         startActivity(Intent(this, LoginActivity::class.java))
@@ -33,14 +48,17 @@ class MainActivity : BaseActivity(), IGetRoomsView {
         ULog.d(TAG, "addConferences")
         if (mConferenceAdapter == null) {
             mConferenceAdapter = ConferenceAdapter(R.layout.item_conference, conference)
+            mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
+                override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                    var room = adapter?.data?.get(position) as RoomBean
+                    ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
+                    joinRoomPresenter?.joinRoom(room, getToken())
+                }
+            }
             home_rv.adapter = mConferenceAdapter
         } else {
+            mConferenceAdapter?.setNewData(conference)
             mConferenceAdapter?.notifyDataSetChanged()
-        }
-        mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
-            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                ULog.d(TAG, "onItemChildClick $position")
-            }
         }
     }
 
@@ -63,6 +81,7 @@ class MainActivity : BaseActivity(), IGetRoomsView {
 
         initRecyclerView()
         getRoomsPresenter = GetRoomsPresenter(this)
+        joinRoomPresenter = JoinRoomPresenter(this)
         getRoomsPresenter?.getRooms(getToken())
 
 //        ULog.d(TAG, "onTick time is " + Date().time)
