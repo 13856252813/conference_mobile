@@ -8,7 +8,7 @@ import com.txt.conference.http.GetRoomsHttpFactory
 /**
  * Created by jane on 2017/10/13.
  */
-class ConferenceModel : IConferenceModel {
+class GetRoomsModel : IGetRoomsModel {
     override var status: Int = Status.FAILED
     override var rooms: List<RoomBean>? = null
 
@@ -16,7 +16,7 @@ class ConferenceModel : IConferenceModel {
 
 
 
-    override fun loadRooms(token: String, callBack: IConferenceModel.IGetRoomCallBack) {
+    override fun loadRooms(token: String, callBack: IBaseModel.IModelCallBack) {
         if (getRoomsHttp == null) {
             getRoomsHttp = GetRoomsHttpFactory()
             getRoomsHttp?.setHttpEventHandler(object : HttpEventHandler<GetRoomBean>() {
