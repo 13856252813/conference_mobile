@@ -16,7 +16,7 @@ class GetRoomsModel : IGetRoomsModel {
 
 
 
-    override fun loadRooms(token: String, callBack: IGetRoomsModel.IGetRoomCallBack) {
+    override fun loadRooms(token: String, callBack: IBaseModel.IModelCallBack) {
         if (getRoomsHttp == null) {
             getRoomsHttp = GetRoomsHttpFactory()
             getRoomsHttp?.setHttpEventHandler(object : HttpEventHandler<GetRoomBean>() {

@@ -9,9 +9,5 @@ import com.txt.conference.bean.RoomBean
 interface IGetRoomsModel : IBaseModel {
     var rooms: List<RoomBean>?
 
-    fun loadRooms(token: String, callBack: IGetRoomCallBack)
-
-    interface IGetRoomCallBack {
-        fun onStatus()
-    }
+    fun loadRooms(token: String, callBack: IBaseModel.IModelCallBack)
 }

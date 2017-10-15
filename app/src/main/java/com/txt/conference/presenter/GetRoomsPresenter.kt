@@ -1,6 +1,7 @@
 package com.txt.conference.presenter
 
 import com.txt.conference.model.GetRoomsModel
+import com.txt.conference.model.IBaseModel
 import com.txt.conference.model.IGetRoomsModel
 import com.txt.conference.model.Status
 import com.txt.conference.view.IGetRoomsView
@@ -21,7 +22,7 @@ class GetRoomsPresenter {
         if (token == null || token.equals("")){
             getRoomsView?.jumpToLogin()
         } else {
-            getRoomsModel?.loadRooms(token, object : IGetRoomsModel.IGetRoomCallBack {
+            getRoomsModel?.loadRooms(token, object : IBaseModel.IModelCallBack {
                 override fun onStatus() {
                     if (getRoomsModel!!.status == Status.SUCCESS) {
                         getRoomsView?.addConferences(getRoomsModel?.rooms)

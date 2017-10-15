@@ -1,5 +1,6 @@
 package com.txt.conference.presenter
 
+import com.txt.conference.model.IBaseModel
 import com.txt.conference.model.ILoginModel
 import com.txt.conference.model.LoginModel
 import com.txt.conference.model.Status
@@ -22,9 +23,9 @@ class LoginPresenter {
     }
 
     fun doLogin(account: String, password: String) {
-        mLoginModel?.login(account, password, object : ILoginModel.ILoginCallBack{
-            override fun onStatues() {
-                if (mLoginModel?.statu == Status.SUCCESS) {
+        mLoginModel?.login(account, password, object : IBaseModel.IModelCallBack {
+            override fun onStatus() {
+                if (mLoginModel?.status == Status.SUCCESS) {
                     mLoginView?.hideError()
                     mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean)
                 } else {
