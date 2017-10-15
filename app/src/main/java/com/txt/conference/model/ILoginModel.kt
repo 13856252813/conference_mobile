@@ -10,11 +10,6 @@ interface ILoginModel : IBaseModel {
     var statu: Int
     var mLoginBean: LoginBean
 
-    companion object {
-        val SUCCESS = 1
-        val FAILED = -1
-    }
-
     fun login(account: String, password: String, loginCallBack: ILoginCallBack)
 
     interface ILoginCallBack {

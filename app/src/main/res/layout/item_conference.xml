@@ -45,6 +45,8 @@
         android:layout_width="70dp"
         android:layout_height="30.5dp"
         android:layout_marginRight="10.5dp"
-        android:background="@drawable/enter_corners" />
+        android:textSize="12sp"
+        android:textColor="@color/grey_time"
+        android:background="@drawable/enter_normal" />
 
 </LinearLayout>

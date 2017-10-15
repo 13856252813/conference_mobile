@@ -1,15 +1,27 @@
 package com.txt.conference.http
 
 import com.common.http.HttpStringFactoryBase
+import com.common.utlis.ULog
 import com.google.gson.Gson
-import com.txt.conference.bean.LoginBean
+import com.google.gson.reflect.TypeToken
+import com.txt.conference.bean.GetRoomBean
+import com.txt.conference.bean.RoomBean
 
 /**
  * Created by jane on 2017/10/12.
  */
-class GetRoomsHttpFactory : HttpStringFactoryBase<LoginBean.RoomEntity>() {
-    override fun AnalysisData(content: String?): LoginBean.RoomEntity {
-        return Gson().fromJson(content, LoginBean.RoomEntity::class.java)
+class GetRoomsHttpFactory : HttpStringFactoryBase<GetRoomBean>() {
+    val TAG = GetRoomsHttpFactory::class.java.simpleName
+
+    override fun AnalysisData(content: String?): GetRoomBean {
+        ULog.d(TAG, "content $content")
+        var roomType = object : TypeToken<ArrayList<RoomBean>>() {}.type
+        var rooms: ArrayList<RoomBean> = Gson().fromJson(content, roomType)
+        var nRooms = GetRoomBean()
+        nRooms.rooms = rooms
+
+        return nRooms
+//        return Gson().fromJson(content, GetRoomBean::class.java)
     }
 
     /**

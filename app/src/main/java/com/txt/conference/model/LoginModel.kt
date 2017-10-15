@@ -11,7 +11,7 @@ import com.txt.conference.http.LoginHttpFactory
  * Created by jane on 2017/10/9.
  */
 class LoginModel : ILoginModel {
-    override var statu: Int = ILoginModel.FAILED
+    override var statu: Int = Status.FAILED
     override lateinit var mLoginBean: LoginBean
 
     var mPreference: TxSharedPreferencesFactory? = null
@@ -41,13 +41,13 @@ class LoginModel : ILoginModel {
                         mLoginBean = result
                         saveUser(account, password)
                         saveToken(result?.token)
-                        statu = ILoginModel.SUCCESS
+                        statu = Status.SUCCESS
                     }
                     loginCallBack.onStatues()
                 }
 
                 override fun HttpFailHandler() {
-                    statu = ILoginModel.FAILED
+                    statu = Status.FAILED
                     saveUser(null, null)
                     saveToken(null)
                     loginCallBack.onStatues()
