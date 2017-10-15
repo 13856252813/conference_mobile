@@ -27,7 +27,7 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
     override fun convert(helper: RoomViewHolder?, item: RoomBean?) {
         helper?.setText(R.id.item_tv_room_number, item?.roomNo)
         helper?.setText(R.id.item_tv_begin_time, String.format(TxApplication.mInstance!!.getString(R.string.begin_time_value), DateUtils().format(item?.start, DateUtils.MM_dd_HH_mm), item?.duration, item?.creator?.display))
-
+        helper?.addOnClickListener(R.id.item_bt_enter)
 //        var bgColor = 0
 //        when (item?.status) {
 //            RoomBean.STATUS_NORMAL -> bgColor = R.color.grey_time
@@ -53,6 +53,7 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
 //        holder?.beginCountDown = holder?.beginEnterTime!! + 5 * 60 * 1000
 //        holder?.beginCountDown = room?.start!! + 5 * 60 * 1000
 //        ULog.d(TAG, "onBindViewHolder $holder countDown:$countDown beginEnterTime:" + holder?.beginEnterTime + " beginCountDown:" + holder?.beginCountDown)
+        ULog.d(TAG, "onBindViewHolder $holder")
         holder?.countDownTimer = object : CountDownTimer(countDown, 1000) {
             override fun onFinish() {
                 mData.removeAt(holder!!.layoutPosition)

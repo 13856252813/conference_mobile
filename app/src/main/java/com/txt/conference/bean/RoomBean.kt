@@ -1,9 +1,11 @@
 package com.txt.conference.bean
 
+import java.io.Serializable
+
 /**
  * Created by jane on 2017/10/12.
  */
-class RoomBean {
+class RoomBean : Serializable {
     /**
      * roomId : rooms\陈哲俊\1506676560000\1506676609608
      * roomNo : 453944
