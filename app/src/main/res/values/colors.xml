@@ -13,4 +13,5 @@
     <color name="grey_room">#333333</color>
     <color name="grey_time">#999999</color>
     <color name="enter">#3c4061</color>
+    <color name="attendee_bg">#f01f2028</color>
 </resources>
