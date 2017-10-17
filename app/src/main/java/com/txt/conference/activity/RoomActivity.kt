@@ -1,6 +1,8 @@
 package com.txt.conference.activity
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -18,6 +20,19 @@ class RoomActivity : BaseActivity() {
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
 
+    val MSG_HIDE_ALL = 1
+    var handler = object : Handler(){
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                MSG_HIDE_ALL -> {
+                    if (room_layout_control.visibility == View.VISIBLE) {
+                        room_layout_control.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
@@ -29,6 +44,16 @@ class RoomActivity : BaseActivity() {
 
         initGestureDetector()
         initViewEvent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startHideAllViewDelayed()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeMessages(MSG_HIDE_ALL)
     }
 
     private fun initViewEvent() {
@@ -67,6 +92,7 @@ class RoomActivity : BaseActivity() {
             override fun onSingleTapUp(p0: MotionEvent?): Boolean {
                 if (room_layout_control.visibility != View.VISIBLE) {
                     room_layout_control.visibility = View.VISIBLE
+                    startHideAllViewDelayed()
                 } else {
                     room_layout_control.visibility = View.INVISIBLE
                 }
@@ -90,6 +116,11 @@ class RoomActivity : BaseActivity() {
             }
 
         })
+    }
+
+    fun startHideAllViewDelayed() {
+        handler.removeMessages(MSG_HIDE_ALL)
+        handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 5)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
