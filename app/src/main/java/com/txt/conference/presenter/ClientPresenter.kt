@@ -13,7 +13,7 @@ import com.intel.webrtc.conference.ConferenceClient
 import com.intel.webrtc.conference.ConferenceClientConfiguration
 import com.intel.webrtc.conference.ConnectionOptions
 import com.intel.webrtc.conference.User
-import com.txt.conference.view.IRoomView
+import com.txt.conference.view.IClientView
 import com.txt.conference_common.WoogeenSurfaceRenderer
 import org.webrtc.EglBase
 import org.webrtc.PeerConnection
@@ -22,8 +22,8 @@ import java.util.ArrayList
 /**
  * Created by jane on 2017/10/16.
  */
-class RoomPresenter : ConferenceClient.ConferenceClientObserver {
-    lateinit var roomView: IRoomView
+class ClientPresenter : ConferenceClient.ConferenceClientObserver {
+    lateinit var clientView: IClientView
     lateinit var client: ConferenceClient
 
     var rootEglBase: EglBase? = null
@@ -74,7 +74,7 @@ class RoomPresenter : ConferenceClient.ConferenceClientObserver {
 
 //        localViewContainer.addView(localStreamRenderer)
 //        remoteViewContainer.addView(remoteStreamRenderer)
-        roomView.addRemoteView(remoteStreamRenderer)
+        clientView.addRemoteView(remoteStreamRenderer)
 //        localStreamRenderer.init(rootEglBase.getEglBaseContext(), null)
         remoteStreamRenderer.init(rootEglBase?.getEglBaseContext(), null)
     }
