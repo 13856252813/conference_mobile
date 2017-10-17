@@ -5,7 +5,7 @@ import com.txt.conference_common.WoogeenSurfaceRenderer
 /**
  * Created by jane on 2017/10/16.
  */
-interface IRoomView {
+interface IClientView {
     fun getConnectToken()
 
     fun connect(token: String)
