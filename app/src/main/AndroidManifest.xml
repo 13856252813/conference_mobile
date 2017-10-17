@@ -34,7 +34,7 @@
         </activity>
 
         <activity android:name=".activity.RoomActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
 
         </activity>
