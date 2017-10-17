@@ -10,13 +10,17 @@ import android.view.View
 import com.common.utlis.ULog
 import com.txt.conference.R
 import kotlinx.android.synthetic.main.activity_room.*
+import kotlinx.android.synthetic.main.layout_add_attendee.*
+import kotlinx.android.synthetic.main.layout_attendee.*
 import kotlinx.android.synthetic.main.layout_control.*
 import org.webrtc.RendererCommon
+import java.lang.Exception
 
 /**
  * Created by jane on 2017/10/15.
  */
-class RoomActivity : BaseActivity() {
+class RoomActivity : BaseActivity(), View.OnClickListener {
+
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
 
@@ -25,8 +29,12 @@ class RoomActivity : BaseActivity() {
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_HIDE_ALL -> {
+                    if (room_layout_attendee_container.visibility == View.VISIBLE) {
+                        room_layout_attendee_container.visibility = View.INVISIBLE
+                    }
+
                     if (room_layout_control.visibility == View.VISIBLE) {
-                        room_layout_control.visibility = View.GONE
+                        room_layout_control.visibility = View.INVISIBLE
                     }
                 }
             }
@@ -62,24 +70,46 @@ class RoomActivity : BaseActivity() {
             this.finish()
         }
 
-        room_iv_attendee.setOnClickListener {
+        room_iv_attendee.setOnClickListener(this)
+        room_add_attendee_tv_cancel.setOnClickListener(this)
+        room_add_attendee_tv_confirm.setOnClickListener(this)
+        room_attendee_iv_add.setOnClickListener(this)
 
-        }
+        room_iv_camera.setOnClickListener(this)
+        room_iv_mute.setOnClickListener(this)
+        room_iv_share.setOnClickListener(this)
+        room_iv_turn.setOnClickListener(this)
+    }
 
-        room_iv_camera.setOnClickListener {
+    override fun onClick(p0: View?) {
+        startHideAllViewDelayed()
+        when(p0?.id) {
+            room_iv_attendee.id -> {
+                if (room_layout_attendee_container.visibility != View.VISIBLE) {
+                    room_layout_attendee_container.visibility = View.VISIBLE
+                }
+            }
+            room_attendee_iv_add.id -> {
 
-        }
+            }
+            room_add_attendee_tv_cancel.id -> {
 
-        room_iv_mute.setOnClickListener {
+            }
+            room_add_attendee_tv_confirm.id -> {
 
-        }
+            }
+            room_iv_camera.id -> {
 
-        room_iv_share.setOnClickListener {
+            }
+            room_iv_mute.id -> {
 
-        }
+            }
+            room_iv_share.id -> {
 
-        room_iv_turn.setOnClickListener {
+            }
+            room_iv_turn.id -> {
 
+            }
         }
     }
 
@@ -90,6 +120,11 @@ class RoomActivity : BaseActivity() {
             }
 
             override fun onSingleTapUp(p0: MotionEvent?): Boolean {
+                if (room_layout_attendee_container.visibility == View.VISIBLE) {
+                    room_layout_attendee_container.visibility = View.INVISIBLE
+                    startHideAllViewDelayed()
+                    return false
+                }
                 if (room_layout_control.visibility != View.VISIBLE) {
                     room_layout_control.visibility = View.VISIBLE
                     startHideAllViewDelayed()
