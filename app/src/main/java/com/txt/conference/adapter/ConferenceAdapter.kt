@@ -82,16 +82,19 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
                     bgColor = R.drawable.enter_normal
                     btTextColor = R.color.grey_time
                     btText = mContext.getString(R.string.not_start)
+                    if (room.status != RoomBean.STATUS_NORMAL) room.status = RoomBean.STATUS_NORMAL
                 } else if (offsetTime > 0  && offsetTime < countDownOffset) {
                     //update countDown
                     bgColor = R.drawable.enter_countdown
                     btTextColor = android.R.color.white
                     btText = DateUtils().format(offsetTime - TimeZone.getDefault().rawOffset, DateUtils.HH_mm_ss)
+                    if (room.status != RoomBean.STATUS_COUNT_DOWN) room.status = RoomBean.STATUS_COUNT_DOWN
                 } else {
                     //can enter room
                     bgColor = R.drawable.enter_beging
                     btTextColor = android.R.color.white
                     btText = mContext.getString(R.string.enter_room)
+                    if (room.status != RoomBean.STATUS_BEGING) room.status = RoomBean.STATUS_BEGING
                 }
 
                 holder?.setBackgroundRes(R.id.item_bt_enter, bgColor)

@@ -20,6 +20,12 @@ class LoginPresenter {
     constructor(view: ILoginView) {
         this.mLoginView = view
         mLoginModel = LoginModel()
+        initInfomation()
+    }
+
+    private fun initInfomation() {
+        mLoginView?.setAccount(mLoginModel?.getAccount()!!)
+        mLoginView?.setPassword(mLoginModel?.getPassword()!!)
     }
 
     fun doLogin(account: String, password: String) {

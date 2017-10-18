@@ -2,20 +2,19 @@ package com.txt.conference.model
 
 import com.common.http.HttpEventHandler
 import com.txt.conference.application.TxApplication
-import com.txt.conference.bean.LoginBean
-import com.txt.conference.bean.UserBean
+import com.txt.conference.bean.LogoffBean
 import com.txt.conference.data.TxSharedPreferencesFactory
-import com.txt.conference.http.LoginHttpFactory
+import com.txt.conference.http.LogoffHttpFactory
 
 /**
  * Created by jane on 2017/10/9.
  */
-class LoginModel : ILoginModel {
+class LogoffModel : ILogoffModel {
+    override lateinit var loginoffBean: LogoffBean
     override var status: Int = Status.FAILED
-    override lateinit var mLoginBean: LoginBean
 
     var mPreference: TxSharedPreferencesFactory? = null
-    var mLoginHttp: LoginHttpFactory? = null
+    var mLogoffHttp: LogoffHttpFactory? = null
 
     fun saveUser(account: String?, password: String?) {
         if (mPreference == null) {
@@ -39,20 +38,6 @@ class LoginModel : ILoginModel {
         mPreference?.setUserName(userName)
     }
 
-    override fun getAccount(): String {
-        if (mPreference == null) {
-            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
-        }
-        return mPreference?.getAccount()!!
-    }
-
-    override fun getPassword():String {
-        if (mPreference == null) {
-            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
-        }
-        return mPreference?.getPassword()!!
-    }
-
     fun savePhoneNumber(phoneNumber: String?) {
         if (mPreference == null) {
             mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
@@ -60,17 +45,16 @@ class LoginModel : ILoginModel {
         mPreference?.setUserName(phoneNumber)
     }
 
-    override fun login(account: String, password: String, loginCallBack: IBaseModel.IModelCallBack) {
-        if (mLoginHttp == null) {
-            mLoginHttp = LoginHttpFactory()
-            mLoginHttp?.setHttpEventHandler(object : HttpEventHandler<LoginBean>() {
-                override fun HttpSucessHandler(result: LoginBean?) {
+    override fun logoff(token: String, loginCallBack: IBaseModel.IModelCallBack) {
+        if (mLogoffHttp == null) {
+            mLogoffHttp = LogoffHttpFactory()
+            mLogoffHttp?.setHttpEventHandler(object : HttpEventHandler<LogoffBean>() {
+                override fun HttpSucessHandler(result: LogoffBean?) {
                     if (result?.code == 0){
-                        mLoginBean = result
-                        saveUser(account, password)
-                        saveToken(result?.token)
-                        saveUserName(result?.username)
-//                        savePhoneNumber(result?.pho)
+//                        saveUser(null, null)
+                        saveToken(null)
+                        saveUserName(null)
+                        savePhoneNumber(null)
                         status = Status.SUCCESS
                     }
                     loginCallBack.onStatus()
@@ -78,13 +62,15 @@ class LoginModel : ILoginModel {
 
                 override fun HttpFailHandler() {
                     status = Status.FAILED
-                    saveUser(null, null)
+//                    saveUser(null, null)
                     saveToken(null)
+                    saveUserName(null)
+                    savePhoneNumber(null)
                     loginCallBack.onStatus()
                 }
             })
         }
-        mLoginHttp?.mUser = UserBean(account, password)
-        mLoginHttp?.DownloaDatas()
+        mLogoffHttp?.token = token
+        mLogoffHttp?.DownloaDatas()
     }
 }

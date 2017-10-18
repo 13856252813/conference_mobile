@@ -24,7 +24,7 @@ class LogoffHttpFactory : HttpStringFactoryBase<LogoffBean>() {
     }
 
     override fun CreateUri(vararg args: Any?): String {
-        return Urls.LOGOFF
+        return String.format(Urls.LOGOFF, token)
     }
 
     override fun getPostArgs(): ArrayList<org.apache.http.NameValuePair> {

@@ -9,5 +9,7 @@ import com.txt.conference.bean.LoginBean
 interface ILoginModel : IBaseModel {
     var mLoginBean: LoginBean
 
+    fun getAccount(): String
+    fun getPassword(): String
     fun login(account: String, password: String, loginCallBack: IBaseModel.IModelCallBack)
 }

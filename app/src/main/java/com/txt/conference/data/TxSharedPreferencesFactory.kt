@@ -38,7 +38,7 @@ class TxSharedPreferencesFactory(context: Context?) : SharedPreferencesFactory(c
     }
 
     fun getAccount(): String? {
-        return getString(KEY_ACCOUNT)
+        return getString(KEY_ACCOUNT, "")
     }
 
     fun setPassword(password: String?): Boolean {
@@ -46,7 +46,7 @@ class TxSharedPreferencesFactory(context: Context?) : SharedPreferencesFactory(c
     }
 
     fun getPassword(): String? {
-        return getString(KEY_PASSWORD)
+        return getString(KEY_PASSWORD, "")
     }
 
     fun setToken(token: String?): Boolean {
