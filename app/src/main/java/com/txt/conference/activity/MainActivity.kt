@@ -82,7 +82,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
         initRecyclerView()
         getRoomsPresenter = GetRoomsPresenter(this)
         joinRoomPresenter = JoinRoomPresenter(this)
-        getRoomsPresenter?.getRooms(getToken())
 
 //        ULog.d(TAG, "onTick time is " + Date().time)
 //        var countDown = object : CountDownTimer((10 * 1000), 1000) {
@@ -96,6 +95,11 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
 //        }
 //        countDown.start()
 //        ULog.d(TAG, "Hi :" + DateUtils().format(50 * 60 * 1000L - TimeZone.getDefault().rawOffset, DateUtils.HH_mm_ss))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getRoomsPresenter?.getRooms(getToken())
     }
 
     fun initRecyclerView() {
