@@ -1,8 +1,8 @@
 package com.txt.conference.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -15,17 +15,19 @@ import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.GetRoomsPresenter
 import com.txt.conference.presenter.JoinRoomPresenter
+import com.txt.conference.presenter.LogoffPresenter
 import com.txt.conference.view.IGetRoomsView
 import com.txt.conference.view.IJoinRoomView
+import com.txt.conference.view.ILogoffView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.layout_menu.*
 
-class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
+class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
     val TAG = MainActivity::class.java.simpleName
     var getRoomsPresenter: GetRoomsPresenter? = null
     var mConferenceAdapter: ConferenceAdapter? = null
     var joinRoomPresenter: JoinRoomPresenter? = null
+    var logoffPresenter: LogoffPresenter? = null
 
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
@@ -55,7 +57,9 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
                 override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                     var room = adapter?.data?.get(position) as RoomBean
                     ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
-                    joinRoomPresenter?.joinRoom(room, getToken())
+                    if (room.status == RoomBean.STATUS_BEGING) {
+                        joinRoomPresenter?.joinRoom(room, getToken())
+                    }
                 }
             }
             home_rv.adapter = mConferenceAdapter
@@ -86,12 +90,15 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
         initRecyclerView()
         getRoomsPresenter = GetRoomsPresenter(this)
         joinRoomPresenter = JoinRoomPresenter(this)
+        logoffPresenter = LogoffPresenter(this)
+
+        home_ib_logoff.setOnClickListener { logoffPresenter?.logoff(getToken()) }
     }
 
     private fun initInfomation() {
         home_tv_name.setText(TxSharedPreferencesFactory(applicationContext).getUserName())
         home_tv_phone.setText(TxSharedPreferencesFactory(applicationContext).getPhoneNumber())
-        home_tv_version.setText(packageManager.getPackageInfo(packageName, 0).versionName)
+        home_tv_version.setText("版本：" + packageManager.getPackageInfo(packageName, 0).versionName)
     }
 
     override fun onResume() {

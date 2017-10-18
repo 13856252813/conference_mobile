@@ -14,6 +14,13 @@ import kotlinx.android.synthetic.main.activity_login.*
  * Created by jane on 2017/10/9.
  */
 class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
+    override fun setAccount(account: String) {
+        login_et_account.setText(account)
+    }
+
+    override fun setPassword(password: String) {
+        login_et_password.setText(password)
+    }
 
     override fun jumpActivity() {
 

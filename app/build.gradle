@@ -31,8 +31,8 @@ def computeVersionCode(){
     }
 
     GFileUtils.writeFile(date + "," + indexStr, file)
-    mVersionName = "v" + date + indexStr
-    return Integer.parseInt(date + indexStr)
+    mVersionName = date + indexStr
+    return Integer.parseInt(mVersionName)
 }
 
 android {
