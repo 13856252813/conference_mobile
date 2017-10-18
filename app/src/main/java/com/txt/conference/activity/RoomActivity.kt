@@ -1,5 +1,6 @@
 package com.txt.conference.activity
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -8,25 +9,30 @@ import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
+import com.txt.conference.presenter.ClientPresenter
 import com.txt.conference.presenter.RoomPresenter
+import com.txt.conference.view.IClientView
 import com.txt.conference.view.IGetUsersView
 import com.txt.conference.view.IRoomView
+import com.txt.conference_common.WoogeenSurfaceRenderer
 import kotlinx.android.synthetic.main.activity_room.*
 import kotlinx.android.synthetic.main.layout_add_attendee.*
 import kotlinx.android.synthetic.main.layout_attendee.*
 import kotlinx.android.synthetic.main.layout_control.*
 import org.webrtc.RendererCommon
+import pub.devrel.easypermissions.EasyPermissions
 import java.lang.Exception
 
 /**
  * Created by jane on 2017/10/15.
  */
-class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersView {
+class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView {
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
 
@@ -48,6 +54,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersV
     }
 
     lateinit var roomPresenter: RoomPresenter
+    lateinit var clientPresenter: ClientPresenter
 
     companion object {
         var KEY_ROOM = "room"
@@ -59,7 +66,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersV
         setContentView(R.layout.activity_room)
 
         var room: RoomBean = intent.getSerializableExtra(KEY_ROOM) as RoomBean
-        if (room == null) {
+        if (room == null || intent.getStringExtra(KEY_CONNECT_TOKEN) == null) {
             this.finish()
             return
         }
@@ -68,14 +75,19 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersV
         initViewEvent()
         roomPresenter = RoomPresenter(this)
         roomPresenter.initRoomInfo(room)
+        clientPresenter = ClientPresenter(this, this)
+
+        methodRequiresTwoPermission()
     }
 
     override fun onResume() {
         super.onResume()
         startHideAllViewDelayed()
+        clientPresenter.onResume()
     }
 
     override fun onPause() {
+        clientPresenter?.onPause()
         super.onPause()
         handler.removeMessages(MSG_HIDE_ALL)
     }
@@ -83,7 +95,46 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersV
     override fun onDestroy() {
         super.onDestroy()
         roomPresenter?.cancelCountDown()
+        clientPresenter.dettach()
+        ULog.d(TAG, "onDestroy")
     }
+
+    private fun methodRequiresTwoPermission() {
+        var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (EasyPermissions.hasPermissions(this, *args)) {
+            clientPresenter.joinRoom(getConnectToken())
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.permission_camera), 100, *args)
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) {
+        clientPresenter.joinRoom(getConnectToken())
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
+        finish()
+    }
+
+    private fun toast(str: String) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
+    }
+
+    //for clientPresenter begin
+    override fun getConnectToken(): String {
+        return intent.getStringExtra(KEY_CONNECT_TOKEN)
+    }
+
+    override fun addRemoteView(remoteView: WoogeenSurfaceRenderer) {
+        room_remote_container.addView(remoteView)
+    }
+
+    override fun switchCamera(isFrontCamera: Boolean) {
+        runOnUiThread {
+            toast(if (isFrontCamera) "已转换到前置摄像头" else "已转换到后置摄像头")
+        }
+    }
+    //for clientPresenter end
 
     //for roomPresenter begin
     override fun setRoomNumber(number: String) {
@@ -165,7 +216,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersV
 
             }
             room_iv_turn.id -> {
-
+                clientPresenter?.switchCamera()
             }
         }
     }
@@ -218,9 +269,5 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersV
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
         return gesture.onTouchEvent(event)
-    }
-
-    fun initVideoStreamsViews() {
-
     }
 }

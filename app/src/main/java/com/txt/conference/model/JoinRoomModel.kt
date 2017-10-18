@@ -19,8 +19,9 @@ class JoinRoomModel : IJoinRoomModel {
             joinRoomHttp = JoinRoomHttpFactory()
             joinRoomHttp?.setHttpEventHandler(object : HttpEventHandler<JoinRoomBean>() {
                 override fun HttpSucessHandler(result: JoinRoomBean?) {
-                    if (result?.code == 0 && result?.data != null) {
+                    if (result?.code == 0 && result?.data != null && result?.data?.token != null) {
                         status = Status.SUCCESS
+                        this@JoinRoomModel.token = result.data
                     } else {
                         status = Status.FAILED
                     }
