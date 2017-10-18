@@ -31,4 +31,8 @@ class RoomPresenter {
             }
         }.start()
     }
+
+    fun cancelCountDown() {
+        countDownTimer?.cancel()
+    }
 }
