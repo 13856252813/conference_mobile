@@ -28,7 +28,7 @@ class JoinRoomPresenter {
         joinModel?.joinRoom(room.roomId!!, token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
                 if (joinModel?.status == Status.SUCCESS) {
-                    joinView?.jumpToRoom(room, token)
+                    joinView?.jumpToRoom(room, joinModel?.token?.token!!)
                 } else {
                     joinView?.showError(R.string.enter_room_failed)
                 }

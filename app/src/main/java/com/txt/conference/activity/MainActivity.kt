@@ -102,6 +102,11 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
         getRoomsPresenter?.getRooms(getToken())
     }
 
+    override fun onPause() {
+        super.onPause()
+        mConferenceAdapter?.cancelAllTimers()
+    }
+
     fun initRecyclerView() {
         var layoutManager = LinearLayoutManager(this)
         home_rv.layoutManager = layoutManager
@@ -111,7 +116,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
     override fun onDestroy() {
         super.onDestroy()
         ULog.d(TAG, "onDestroy")
-        mConferenceAdapter?.cancelAllTimers()
     }
 
 

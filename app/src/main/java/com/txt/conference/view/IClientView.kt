@@ -9,4 +9,6 @@ interface IClientView {
     fun getConnectToken(): String
 
     fun addRemoteView(remoteView: WoogeenSurfaceRenderer)
+
+    fun switchCamera(isFrontCamera: Boolean)
 }

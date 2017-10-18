@@ -37,8 +37,8 @@ import javax.net.ssl.X509TrustManager
 
 class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         View.OnClickListener, RemoteMixedStream.RemoteMixedStreamObserver {
-    private lateinit var mContext: Activity
-    private lateinit var clientView: IClientView
+    private var mContext: Activity?
+    private var clientView: IClientView?
 
     private var remoteStreamRenderer: WoogeenSurfaceRenderer? = null
     private var localStreamRenderer: WoogeenSurfaceRenderer? = null
@@ -67,7 +67,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
     fun init() {
-        var audioManager = mContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        var audioManager = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioManager.isSpeakerphoneOn = true
         originAudioMode = audioManager.mode
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
@@ -75,7 +75,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 audioManager.getStreamMaxVolume(
                         AudioManager.STREAM_VOICE_CALL) / 4,
                 AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE)
-        mContext.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        mContext?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setUpINSECURESSLContext()
         initRoom()
         initVideoStreamsViews()
@@ -123,10 +123,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         val connectionOptions = ConnectionOptions()
         connectionOptions.sslContext = sslContext
         connectionOptions.hostnameVerifier = hostnameVerifier
+        ULog.d(TAG, "use $token to join room" )
         mRoom!!.join(token, connectionOptions, object : ActionCallback<User> {
 
             override fun onSuccess(p0: User?) {
-                mContext.runOnUiThread {
+                mContext?.runOnUiThread {
                     Toast.makeText(mContext, "Room Connected",
                             Toast.LENGTH_SHORT).show()
                     val msg = roomHandler?.obtainMessage()
@@ -145,9 +146,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             }
 
             override fun onFailure(p0: WoogeenException?) {
-                mContext.runOnUiThread {
+                mContext?.runOnUiThread {
                     Toast.makeText(mContext,
-                            p0!!.message, Toast.LENGTH_SHORT).show()
+                            "onFailure " + p0!!.message, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -313,6 +314,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     roomHandler!!.sendMessage(message)
                     message!!.what = MSG_PUBLISH
                 }
+
                 MSG_SUBSCRIBE -> {
                     var option = SubscribeOptions()
                     option.videoCodec = MediaCodec.VideoCodec.H264
@@ -325,7 +327,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                         override fun onSuccess(remoteStream: RemoteStream) {
                             ULog.d(TAG, "onStreamSubscribed")
                             try {
-                                mContext.runOnUiThread {
+                                mContext?.runOnUiThread {
                                     remoteStreamRenderer!!.setScalingType(
                                             RendererCommon.ScalingType.SCALE_ASPECT_FIT)
                                     val vto = remoteStreamRenderer!!.viewTreeObserver
@@ -424,7 +426,34 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
                 }
 
+                MSG_ROOM_DISCONNECTED -> {
+                    mRoom?.leave(object : ActionCallback<Void> {
+                        override fun onSuccess(p0: Void?) {
+                            ULog.d(TAG, "leave success")
+                        }
 
+                        override fun onFailure(p0: WoogeenException?) {
+                            ULog.e(TAG, "leave failure ", p0)
+                        }
+                    })
+                }
+
+                MSG_SWITCHCAMERA -> {
+                    if (localStream == null) {
+                        return
+                    }
+                    localStream?.switchCamera(object : ActionCallback<Boolean> {
+                        override fun onSuccess(isFrontCamera: Boolean?) {
+                            ULog.d(TAG, "switchCamera onSuccess isFrontCamera $isFrontCamera")
+                            clientView?.switchCamera(isFrontCamera!!)
+                            localStreamRenderer?.setMirror(isFrontCamera!!)
+                        }
+
+                        override fun onFailure(p0: WoogeenException?) {
+                            ULog.e(TAG, "switchCamera onFailure isFrontCamera", p0)
+                        }
+                    })
+                }
             }
         }
 
@@ -453,17 +482,50 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             }
 
         }
-        (mContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager).mode = AudioManager.MODE_IN_COMMUNICATION
+        (mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager).mode = AudioManager.MODE_IN_COMMUNICATION
+    }
+
+    fun onPause() {
+        if (localStream != null) {
+            localStream?.disableVideo()
+            localStream?.disableAudio()
+            localStream?.detach()
+            mContext?.runOnUiThread {
+                Toast.makeText(mContext, "Woogeen is running in the background.",
+                        Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (currentRemoteStream != null) {
+            currentRemoteStream?.disableAudio();
+            currentRemoteStream?.disableVideo();
+            currentRemoteStream?.detach();
+        }
+        (mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager).setMode(originAudioMode)
+    }
+
+    private fun leave() {
+        roomHandler?.sendEmptyMessage(MSG_ROOM_DISCONNECTED)
+    }
+
+    fun switchCamera() {
+        roomHandler?.sendEmptyMessage(MSG_SWITCHCAMERA)
+    }
+
+    fun onStop() {
+
     }
 
     fun dettach() {
-        mContext = null!!
-        clientView = null!!
+        leave()
+        mContext = null
+        clientView = null
     }
 
 
 
     companion object {
+        val MSG_ROOM_DISCONNECTED = 98
+        val MSG_SWITCHCAMERA = 108
         val STATUS_REMOTE = 114
         val PUBLISH_STREAM = 112
         val MSG_PUBLISH = 113
