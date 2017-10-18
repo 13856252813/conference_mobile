@@ -14,6 +14,24 @@ class TxSharedPreferencesFactory(context: Context?) : SharedPreferencesFactory(c
     private val KEY_ACCOUNT = "account"
     private val KEY_PASSWORD = "password"
     private val KEY_TOKEN = "token"
+    private val KEY_USER_NAME = "username"//usr to display
+    private val KEY_PHONE = "phone"
+
+    fun setPhoneNumber(phone: String?): Boolean {
+        return setValue(KEY_PHONE, phone)
+    }
+
+    fun getPhoneNumber(): String? {
+        return getString(KEY_PHONE, "")
+    }
+
+    fun setUserName(username: String?): Boolean {
+        return setValue(KEY_USER_NAME, username)
+    }
+
+    fun getUserName(): String? {
+        return getString(KEY_USER_NAME, "")
+    }
 
     fun setAccount(account: String?): Boolean {
         return setValue(KEY_ACCOUNT, account)

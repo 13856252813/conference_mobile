@@ -32,6 +32,20 @@ class LoginModel : ILoginModel {
         mPreference?.setToken(token)
     }
 
+    fun saveUserName(userName: String?) {
+        if (mPreference == null) {
+            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
+        }
+        mPreference?.setUserName(userName)
+    }
+
+    fun savePhoneNumber(phoneNumber: String?) {
+        if (mPreference == null) {
+            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
+        }
+        mPreference?.setUserName(phoneNumber)
+    }
+
     override fun login(account: String, password: String, loginCallBack: IBaseModel.IModelCallBack) {
         if (mLoginHttp == null) {
             mLoginHttp = LoginHttpFactory()
@@ -41,6 +55,8 @@ class LoginModel : ILoginModel {
                         mLoginBean = result
                         saveUser(account, password)
                         saveToken(result?.token)
+                        saveUserName(result?.username)
+//                        savePhoneNumber(result?.pho)
                         status = Status.SUCCESS
                     }
                     loginCallBack.onStatus()

@@ -2,6 +2,7 @@ package com.txt.conference.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
@@ -17,6 +18,8 @@ import com.txt.conference.presenter.JoinRoomPresenter
 import com.txt.conference.view.IGetRoomsView
 import com.txt.conference.view.IJoinRoomView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main2.*
+import kotlinx.android.synthetic.main.layout_menu.*
 
 class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
     val TAG = MainActivity::class.java.simpleName
@@ -77,24 +80,18 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main2)
 
+        initInfomation()
         initRecyclerView()
         getRoomsPresenter = GetRoomsPresenter(this)
         joinRoomPresenter = JoinRoomPresenter(this)
+    }
 
-//        ULog.d(TAG, "onTick time is " + Date().time)
-//        var countDown = object : CountDownTimer((10 * 1000), 1000) {
-//            override fun onFinish() {
-//                ULog.d(TAG,"onFinish")
-//            }
-//
-//            override fun onTick(p0: Long) {
-//                ULog.d(TAG,"onTick $p0")
-//            }
-//        }
-//        countDown.start()
-//        ULog.d(TAG, "Hi :" + DateUtils().format(50 * 60 * 1000L - TimeZone.getDefault().rawOffset, DateUtils.HH_mm_ss))
+    private fun initInfomation() {
+        home_tv_name.setText(TxSharedPreferencesFactory(applicationContext).getUserName())
+        home_tv_phone.setText(TxSharedPreferencesFactory(applicationContext).getPhoneNumber())
+        home_tv_version.setText(packageManager.getPackageInfo(packageName, 0).versionName)
     }
 
     override fun onResume() {
