@@ -1,5 +1,6 @@
 package com.txt.conference.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -9,6 +10,12 @@ import android.view.MotionEvent
 import android.view.View
 import com.common.utlis.ULog
 import com.txt.conference.R
+import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.RoomBean
+import com.txt.conference.data.TxSharedPreferencesFactory
+import com.txt.conference.presenter.RoomPresenter
+import com.txt.conference.view.IGetUsersView
+import com.txt.conference.view.IRoomView
 import kotlinx.android.synthetic.main.activity_room.*
 import kotlinx.android.synthetic.main.layout_add_attendee.*
 import kotlinx.android.synthetic.main.layout_attendee.*
@@ -19,8 +26,7 @@ import java.lang.Exception
 /**
  * Created by jane on 2017/10/15.
  */
-class RoomActivity : BaseActivity(), View.OnClickListener {
-
+class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IGetUsersView {
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
 
@@ -41,6 +47,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
+    lateinit var roomPresenter: RoomPresenter
+
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
@@ -50,8 +58,16 @@ class RoomActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room)
 
+        var room: RoomBean = intent.getSerializableExtra(KEY_ROOM) as RoomBean
+        if (room == null) {
+            this.finish()
+            return
+        }
+
         initGestureDetector()
         initViewEvent()
+        roomPresenter = RoomPresenter(this)
+        roomPresenter.initRoomInfo(room)
     }
 
     override fun onResume() {
@@ -64,6 +80,47 @@ class RoomActivity : BaseActivity(), View.OnClickListener {
         handler.removeMessages(MSG_HIDE_ALL)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        roomPresenter?.cancelCountDown()
+    }
+
+    //for roomPresenter begin
+    override fun setRoomNumber(number: String) {
+        room_tv_number.setText(String.format(getString(R.string.room_number), number))
+    }
+
+    override fun setDurationTime(time: String) {
+        room_tv_time.setText(time)
+    }
+
+    override fun end() {
+
+    }
+    //for roomPresenter end
+
+    //for getUsersView begin
+    override fun getToken(): String? {
+        return TxSharedPreferencesFactory(applicationContext).getToken()
+    }
+
+    override fun jumpActivity() {
+
+    }
+
+    override fun addAttendees(conference: List<AttendeeBean>?) {
+
+    }
+
+    override fun back() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun jumpToLogin() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        this.finish()
+    }
+    //for getUsersView end
     private fun initViewEvent() {
         room_iv_quit.setOnClickListener {
             ULog.d(TAG, "image click")
