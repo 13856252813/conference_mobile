@@ -17,10 +17,10 @@ import com.txt.conference.bean.CreateRoomListAdapterBean
  */
 
 
-class ConferenceUserAdapter(val list: ArrayList<AttendeeBean>, val listcheck: ArrayList<Boolean>, val context: Context) : BaseAdapter() {
+class ConferenceUserAdapter(val list: List<AttendeeBean>?, val bool_array: Array<Boolean?>, val context: Context) : BaseAdapter() {
 
     override fun getCount(): Int {
-        return list.size
+        return list!!.size
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
@@ -34,23 +34,43 @@ class ConferenceUserAdapter(val list: ArrayList<AttendeeBean>, val listcheck: Ar
             v = convertView
             holder = v.tag as CreateUserListViewHolder
         }
-        holder.usertextinfo.text = list[position].display
-        if (!listcheck[position]){
-            holder.item_bt_choose.setBackgroundResource(R.drawable.item_corners_checked)
+        holder.usertextinfo.text = list!![position].display
+        if (bool_array != null && (bool_array.size > position)) {
+            if (bool_array[position] == true) {
+                holder.item_bt_choose.setBackgroundResource(R.drawable.item_corners_checked)
+            } else {
+                holder.item_bt_choose.setBackgroundResource(R.drawable.item_corners)
+            }
         }
         return v
     }
 
     override fun getItem(position: Int): Any? {
-        return list.get(position)
+        return list!!.get(position)
     }
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    fun updateItemCheck(position: Int, check: Boolean) {
-        listcheck[position] = check
+    fun getItemCheck(position: Int): Boolean?{
+        return bool_array[position]
+    }
+
+    fun setItemCheck(position: Int, check: Boolean?){
+        bool_array[position] = check
+    }
+
+    fun getCheckedNum(): Int{
+        var num = 0
+        var i = 0
+        while (i < bool_array.size){
+            if (bool_array[i] == true){
+                num++
+            }
+            i++
+        }
+        return num
     }
 
 }

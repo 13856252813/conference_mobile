@@ -76,6 +76,11 @@ class CreateConferenceRoomActivity : /*IGetUsersView,*/ DateTimePickDialogUtil.I
         datetimepick.dateTimePicKDialog()
     }
 
+    fun startChooseAttand(){
+        var i = Intent(this, ChooseManActivity::class.java)
+        startActivity(i)
+    }
+
     fun startCostTime(){
         var costtimepick: CostTimePickDialogUtil = CostTimePickDialogUtil(this)
         costtimepick.setCostTimePickeristener(this)
@@ -92,7 +97,7 @@ class CreateConferenceRoomActivity : /*IGetUsersView,*/ DateTimePickDialogUtil.I
         listview?.setOnItemClickListener { adapterView, view, i, l ->
 
             when(i){
-                0 -> this.startDateTimer()
+                0 -> this.startChooseAttand()
 
                 1 -> this.startDateTimer()
                 2 -> this.startCostTime()

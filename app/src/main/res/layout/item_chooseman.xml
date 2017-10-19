@@ -4,6 +4,7 @@
     android:layout_height="50.0dp"
     android:background="@color/white"
     android:gravity="center_vertical"
+    android:descendantFocusability= "blocksDescendants"
     android:orientation="horizontal" >
 
     <TextView
@@ -26,6 +27,7 @@
         android:layout_height="14dp"
         android:layout_marginRight="18dp"
         android:textColor="@color/gray"
+        android:focusable="false"
         android:text=""
         android:background="@drawable/item_corners"/>
 </LinearLayout>
