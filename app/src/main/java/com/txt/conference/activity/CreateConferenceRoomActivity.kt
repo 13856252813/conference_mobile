@@ -4,20 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.TextView
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import com.txt.conference.R
 
 import com.txt.conference.adapter.CreateRoomListAdapter
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.CreateRoomListAdapterBean
+import com.txt.conference.bean.LoginBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.CreateConferencePresenter
+import com.txt.conference.presenter.CreateConferenceRoomPresenter
 import com.txt.conference.presenter.GetUsersPresenter
 import com.txt.conference.utils.CostTimePickDialogUtil
 import com.txt.conference.utils.DateTimePickDialogUtil
+import com.txt.conference.view.ICreateConferenceRoomView
 import com.txt.conference.view.ICreateConferenceView
 import com.txt.conference.view.IGetUsersView
 
@@ -26,7 +26,26 @@ import com.txt.conference.view.IGetUsersView
  */
 
 
-class CreateConferenceRoomActivity : /*IGetUsersView,*/ DateTimePickDialogUtil.ITimePickDialogClick, CostTimePickDialogUtil.ICostTimePickDialogClick, ICreateConferenceView, BaseActivity() {
+class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,*/ DateTimePickDialogUtil.ITimePickDialogClick, CostTimePickDialogUtil.ICostTimePickDialogClick, ICreateConferenceView, BaseActivity() {
+    override fun jumpActivity(loginBean: LoginBean) {
+
+    }
+
+    override fun jumpActivity() {
+
+    }
+
+    override fun back() {
+
+    }
+
+    override fun showError(error: String) {
+
+    }
+
+    override fun hideError() {
+
+    }
 
 
     /*override fun jumpActivity() {
@@ -51,6 +70,7 @@ class CreateConferenceRoomActivity : /*IGetUsersView,*/ DateTimePickDialogUtil.I
 
     //var mPresenter: CreateConferencePresenter()
     var mPresenter: CreateConferencePresenter? = null
+    var mCreateRoomPresenter: CreateConferenceRoomPresenter? = null
     var listview: ListView? = null
     var listadapter: CreateRoomListAdapter? = null
     //var getuserPresenter: GetUsersPresenter? = null
@@ -90,9 +110,15 @@ class CreateConferenceRoomActivity : /*IGetUsersView,*/ DateTimePickDialogUtil.I
     fun initView() {
         var titlebar_back: TextView = this.findViewById<TextView>(R.id.left_text)
         var titlebar_title: TextView = this.findViewById<TextView>(R.id.title)
+        var btn_create: Button = this.findViewById<Button>(R.id.bt_createroom)
         titlebar_back.setClickable(true)
-
+        btn_create.setOnClickListener {
+            Log.i("mytest", "create")
+            mCreateRoomPresenter?.doCreate()
+        }
         titlebar_back.setOnClickListener({ this.onBackPressed()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
+
+
         listview= this.findViewById<ListView>(R.id.listView)
         listview?.setOnItemClickListener { adapterView, view, i, l ->
 
@@ -105,6 +131,7 @@ class CreateConferenceRoomActivity : /*IGetUsersView,*/ DateTimePickDialogUtil.I
             }
         }
         mPresenter = CreateConferencePresenter(this)
+        mCreateRoomPresenter = CreateConferenceRoomPresenter(this)
         mPresenter?.initListData()
 
         //getuserPresenter = GetUsersPresenter(this)
