@@ -27,7 +27,7 @@ class RoomBean : Serializable {
     var delaytime: Int = 0
     var createAt: Long = 0
     var creator: CreatorBean? = null
-    var participants: List<String>? = null
+    var participants: List<ParticipantBean>? = null
     var status: Int = STATUS_NORMAL
 
     fun getDurationMillis(): Long {
