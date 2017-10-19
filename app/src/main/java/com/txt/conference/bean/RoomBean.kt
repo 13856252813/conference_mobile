@@ -24,6 +24,8 @@ class RoomBean : Serializable {
     var roomNo: String? = null
     var start: Long = 0
     var duration: String? = null
+    var delaytime: Int = 0
+    var createAt: Long = 0
     var creator: CreatorBean? = null
     var participants: List<String>? = null
     var status: Int = STATUS_NORMAL

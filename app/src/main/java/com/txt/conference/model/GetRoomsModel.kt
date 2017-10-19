@@ -23,7 +23,7 @@ class GetRoomsModel : IGetRoomsModel {
                 override fun HttpSucessHandler(result: GetRoomBean?) {
                     if (result?.code == 0) {
                         status = Status.SUCCESS
-                        rooms = result?.rooms
+                        rooms = result?.data
                     } else {
                         rooms = null
                         status = Status.FAILED

@@ -15,13 +15,7 @@ class GetRoomsHttpFactory : HttpStringFactoryBase<GetRoomBean>() {
 
     override fun AnalysisData(content: String?): GetRoomBean {
         ULog.d(TAG, "content $content")
-        var roomType = object : TypeToken<ArrayList<RoomBean>>() {}.type
-        var rooms: ArrayList<RoomBean> = Gson().fromJson(content, roomType)
-        var nRooms = GetRoomBean()
-        nRooms.rooms = rooms
-
-        return nRooms
-//        return Gson().fromJson(content, GetRoomBean::class.java)
+        return Gson().fromJson(content, GetRoomBean::class.java)
     }
 
     /**
