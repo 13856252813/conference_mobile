@@ -5,7 +5,7 @@ package com.txt.conference.model
  */
 object Status {
     val FAILED = -1
-    val FAILED_TOKEN_AUTH = -2
+    val FAILED_TOKEN_AUTH = -100
 
     val SUCCESS = 1
 }
