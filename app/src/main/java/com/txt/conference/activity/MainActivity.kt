@@ -85,12 +85,19 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
 
     }
 
+    private fun initView() {
+        home_ll_create.setOnClickListener {
+            var i = Intent(this, CreateConferenceRoomActivity::class.java)
+            startActivity(i)
+        }
+        initRecyclerView()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        initInfomation()
-        initRecyclerView()
+        initView()
         getRoomsPresenter = GetRoomsPresenter(this)
         joinRoomPresenter = JoinRoomPresenter(this)
         logoffPresenter = LogoffPresenter(this)
