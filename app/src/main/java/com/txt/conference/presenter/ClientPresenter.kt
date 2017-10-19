@@ -311,8 +311,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     }
                     cameraID = 0
                     var message = roomHandler?.obtainMessage()
-                    roomHandler!!.sendMessage(message)
                     message!!.what = MSG_PUBLISH
+                    roomHandler!!.sendMessage(message)
                 }
 
                 MSG_SUBSCRIBE -> {
@@ -426,10 +426,29 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
                 }
 
+                MSG_UNPUBLISH -> {
+                    if (localStream != null) {
+                        mRoom?.unpublish(localStream, object : ActionCallback<Void> {
+                            override fun onSuccess(p0: Void?) {
+                                localStream?.close()
+                                localStream = null
+                                localStreamRenderer?.cleanFrame()
+                            }
+
+                            override fun onFailure(p0: WoogeenException?) {
+
+                            }
+                        })
+                    }
+                }
+
                 MSG_ROOM_DISCONNECTED -> {
                     mRoom?.leave(object : ActionCallback<Void> {
                         override fun onSuccess(p0: Void?) {
                             ULog.d(TAG, "leave success")
+                            localStream?.close()
+                            localStream = null
+                            statsTimer?.cancel()
                         }
 
                         override fun onFailure(p0: WoogeenException?) {
@@ -496,11 +515,19 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             }
         }
         if (currentRemoteStream != null) {
-            currentRemoteStream?.disableAudio();
-            currentRemoteStream?.disableVideo();
-            currentRemoteStream?.detach();
+            currentRemoteStream?.disableAudio()
+            currentRemoteStream?.disableVideo()
+            currentRemoteStream?.detach()
         }
         (mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager).setMode(originAudioMode)
+    }
+
+    private fun unPublish() {
+        roomHandler?.sendEmptyMessage(MSG_UNPUBLISH)
+    }
+
+    private fun publish() {
+        roomHandler?.sendEmptyMessage(MSG_PUBLISH)
     }
 
     private fun leave() {
@@ -525,6 +552,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     companion object {
         val MSG_ROOM_DISCONNECTED = 98
+        val MSG_UNPUBLISH = 103
         val MSG_SWITCHCAMERA = 108
         val STATUS_REMOTE = 114
         val PUBLISH_STREAM = 112
