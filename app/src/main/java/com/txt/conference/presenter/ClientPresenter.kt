@@ -151,6 +151,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 for (i in 0..users!!.size-1) {
                     ULog.d(TAG, "userName: " + users?.get(i).name + " role:" + users?.get(i).role)
                 }
+                clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
                 clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
             }
 
