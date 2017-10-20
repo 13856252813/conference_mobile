@@ -1,9 +1,9 @@
 package com.txt.conference.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -20,6 +20,7 @@ import com.txt.conference.view.IGetRoomsView
 import com.txt.conference.view.IJoinRoomView
 import com.txt.conference.view.ILogoffView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.layout_menu.*
 
 class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
@@ -93,6 +94,13 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
         logoffPresenter = LogoffPresenter(this)
 
         home_ib_logoff.setOnClickListener { logoffPresenter?.logoff(getToken()) }
+        home_iv_menu.setOnClickListener {
+            if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
+                drawer_layout.closeDrawer(Gravity.LEFT)
+            } else {
+                drawer_layout.openDrawer(Gravity.LEFT)
+            }
+        }
     }
 
     private fun initInfomation() {
