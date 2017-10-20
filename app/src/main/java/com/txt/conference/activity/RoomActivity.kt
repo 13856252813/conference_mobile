@@ -142,7 +142,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     override fun setAlreadyAttendees(number: String) {
-        room_attendee_tv_already_number.setText(number)
+        runOnUiThread { room_attendee_tv_already_number.setText(number) }
     }
 
     override fun getConnectToken(): String {
