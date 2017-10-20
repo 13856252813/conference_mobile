@@ -3,10 +3,7 @@ package com.txt.conference.model
 import com.common.http.HttpEventHandler
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.GetAttendeeBean
-import com.txt.conference.bean.GetRoomBean
-import com.txt.conference.bean.RoomBean
 import com.txt.conference.http.GetAttendeeHttpFactory
-import com.txt.conference.http.GetRoomsHttpFactory
 
 /**
  * Created by jane on 2017/10/13.

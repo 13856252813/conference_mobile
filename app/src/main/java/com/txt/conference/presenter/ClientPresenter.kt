@@ -15,6 +15,8 @@ import com.common.utlis.ULog
 import com.intel.webrtc.base.*
 import com.intel.webrtc.conference.*
 import com.intel.webrtc.conference.PublishOptions
+import com.txt.conference.model.ClientModel
+import com.txt.conference.model.IClientModel
 import com.txt.conference.view.IClientView
 import com.txt.conference_common.WoogeenSurfaceRenderer
 import org.webrtc.EglBase
@@ -39,6 +41,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         View.OnClickListener, RemoteMixedStream.RemoteMixedStreamObserver {
     private var mContext: Activity?
     private var clientView: IClientView?
+    private var clientModel: IClientModel? = null
 
     private var remoteStreamRenderer: WoogeenSurfaceRenderer? = null
     private var localStreamRenderer: WoogeenSurfaceRenderer? = null
@@ -64,6 +67,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     constructor(context: Activity, view: IClientView) {
         mContext = context
         clientView = view
+        clientModel = ClientModel()
     }
 
     fun init() {
@@ -142,7 +146,12 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                         roomHandler?.sendMessage(msg)
                     }
                 }, 1000, 3000)
-
+                var users = mRoom?.users
+                ULog.d(TAG, "user size: " + users?.size)
+                for (i in 0..users!!.size-1) {
+                    ULog.d(TAG, "userName: " + users?.get(i).name + " role:" + users?.get(i).role)
+                }
+                clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
             }
 
             override fun onFailure(p0: WoogeenException?) {
