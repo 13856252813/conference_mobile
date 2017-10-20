@@ -5,13 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.support.v7.widget.LinearLayoutManager
 import android.view.GestureDetector
-import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import com.common.utlis.ULog
 import com.txt.conference.R
+import com.txt.conference.adapter.AttendeeAdapter
+import com.txt.conference.adapter.RecyclerViewDivider
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
@@ -21,13 +23,12 @@ import com.txt.conference.view.IClientView
 import com.txt.conference.view.IGetUsersView
 import com.txt.conference.view.IRoomView
 import com.txt.conference_common.WoogeenSurfaceRenderer
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_room.*
 import kotlinx.android.synthetic.main.layout_add_attendee.*
 import kotlinx.android.synthetic.main.layout_attendee.*
 import kotlinx.android.synthetic.main.layout_control.*
-import org.webrtc.RendererCommon
 import pub.devrel.easypermissions.EasyPermissions
-import java.lang.Exception
 
 /**
  * Created by jane on 2017/10/15.
@@ -55,6 +56,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     lateinit var roomPresenter: RoomPresenter
     lateinit var clientPresenter: ClientPresenter
+    var attendeeAdapter: AttendeeAdapter? = null
 
     companion object {
         var KEY_ROOM = "room"
@@ -116,11 +118,33 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         finish()
     }
 
+    fun initRecyclerView() {
+        var layoutManager = LinearLayoutManager(this)
+        room_attendee_recyclerView.layoutManager = layoutManager
+        room_attendee_recyclerView.addItemDecoration(RecyclerViewDivider(this))
+    }
+
     private fun toast(str: String) {
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
     }
 
     //for clientPresenter begin
+    override fun updateUsers(users: List<AttendeeBean>) {
+        runOnUiThread {
+            if (attendeeAdapter == null) {
+                attendeeAdapter = AttendeeAdapter(R.layout.item_attendee, users)
+                initRecyclerView()
+                room_attendee_recyclerView.adapter = attendeeAdapter
+            } else {
+                attendeeAdapter?.setNewData(users)
+            }
+        }
+    }
+
+    override fun setAlreadyAttendees(number: String) {
+        room_attendee_tv_already_number.setText(number)
+    }
+
     override fun getConnectToken(): String {
         return intent.getStringExtra(KEY_CONNECT_TOKEN)
     }
@@ -137,6 +161,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     //for clientPresenter end
 
     //for roomPresenter begin
+    override fun setAllAttendees(number: String) {
+        room_attendee_tv_all_number.setText(number)
+    }
+
     override fun setRoomNumber(number: String) {
         room_tv_number.setText(String.format(getString(R.string.room_number), number))
     }

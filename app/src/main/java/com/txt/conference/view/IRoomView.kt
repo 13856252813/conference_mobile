@@ -6,5 +6,6 @@ package com.txt.conference.view
 interface IRoomView {
     fun setRoomNumber(number: String)
     fun setDurationTime(time: String)
+    fun setAllAttendees(number: String)
     fun end()
 }

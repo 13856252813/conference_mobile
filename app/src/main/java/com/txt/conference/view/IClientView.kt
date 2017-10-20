@@ -1,5 +1,6 @@
 package com.txt.conference.view
 
+import com.txt.conference.bean.AttendeeBean
 import com.txt.conference_common.WoogeenSurfaceRenderer
 
 /**
@@ -11,4 +12,8 @@ interface IClientView {
     fun addRemoteView(remoteView: WoogeenSurfaceRenderer)
 
     fun switchCamera(isFrontCamera: Boolean)
+
+    fun setAlreadyAttendees(number: String)
+
+    fun updateUsers(users: List<AttendeeBean>)
 }
