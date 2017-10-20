@@ -1,6 +1,7 @@
 package com.txt.conference.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -61,7 +62,7 @@ class ConferenceUserAdapter(val list: List<AttendeeBean>?, val bool_array: Array
         bool_array[position] = check
     }
 
-    fun getCheckedNum(): Int{
+    fun getCheckedNum(): Int?{
         var num = 0
         var i = 0
         while (i < bool_array.size){
@@ -71,6 +72,24 @@ class ConferenceUserAdapter(val list: List<AttendeeBean>?, val bool_array: Array
             i++
         }
         return num
+    }
+
+    fun getCheckedList(): ArrayList<AttendeeBean>? {
+        var attendlist: ArrayList<AttendeeBean>
+        attendlist = ArrayList<AttendeeBean>()
+        var i = 0
+        while (i < bool_array.size){
+            //Log.i("mytest", "i :" + i.toString())
+
+            if (bool_array[i] == true){
+                //Log.i("mytest", "i : true" )
+                val attendone: AttendeeBean
+                attendone = list!!.get(i)
+                attendlist.add(attendone)
+            }
+            i++
+        }
+        return attendlist
     }
 
 }

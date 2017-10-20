@@ -76,6 +76,10 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     //var getuserPresenter: GetUsersPresenter? = null
     var userNum: String? = null
 
+    //var mAttandList: Array<AttendeeBean>? = null
+    var namelist: ArrayList<String>? = null
+    var displaylist: ArrayList<String>? = null
+
     override fun initListViewData(listdata: ArrayList<CreateRoomListAdapterBean>) {
         listadapter = CreateRoomListAdapter(listdata, this)
         listview?.setAdapter(listadapter)
@@ -87,9 +91,9 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         initView()
     }
 
-    /*override fun getToken(): String? {
+    fun getToken(): String? {
         return TxSharedPreferencesFactory(applicationContext).getToken()
-    }*/
+    }
     fun startDateTimer(){
         var datetimepick: DateTimePickDialogUtil = DateTimePickDialogUtil(this, "")
         datetimepick.setTimePickeristener(this)
@@ -98,7 +102,8 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     fun startChooseAttand(){
         var i = Intent(this, ChooseManActivity::class.java)
-        startActivity(i)
+        var requestCode: Int = 10
+        startActivityForResult(i, requestCode)
     }
 
     fun startCostTime(){
@@ -107,6 +112,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         costtimepick.costTimePicKDialog()
     }
 
+
     fun initView() {
         var titlebar_back: TextView = this.findViewById<TextView>(R.id.left_text)
         var titlebar_title: TextView = this.findViewById<TextView>(R.id.title)
@@ -114,7 +120,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         titlebar_back.setClickable(true)
         btn_create.setOnClickListener {
             Log.i("mytest", "create")
-            mCreateRoomPresenter?.doCreate()
+            mCreateRoomPresenter?.doCreate(getToken())
         }
         titlebar_back.setOnClickListener({ this.onBackPressed()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
 
@@ -130,6 +136,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
             }
         }
+
         mPresenter = CreateConferencePresenter(this)
         mCreateRoomPresenter = CreateConferenceRoomPresenter(this)
         mPresenter?.initListData()
@@ -164,6 +171,29 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     override fun onCostTimeCancel() {
+
+    }
+
+    fun onAttandManUpdate(str: String?) {
+        if (listadapter != null) {
+            listadapter!!.updateItemStr(0, str)
+            listadapter!!.notifyDataSetChanged()
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        Log.i("mytest3", requestCode.toString() + ":" + resultCode.toString())
+
+        if (resultCode != 0) {
+            return
+        }
+        if (data != null) {
+            namelist  = data?.getStringArrayListExtra("nameattandList")
+            displaylist = data?.getStringArrayListExtra("displayattandList")
+            Log.i("mytest2", namelist?.size.toString())
+            onAttandManUpdate(namelist?.size.toString())
+        }
+
 
     }
 }

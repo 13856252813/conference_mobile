@@ -25,9 +25,9 @@ class CreateConferenceRoomPresenter {
 
     }
 
-    fun doCreate() {
+    fun doCreate(token: String?) {
 
-        mCreateRoomModel?.createroom(object : IBaseModel.IModelCallBack {
+        mCreateRoomModel?.createroom(token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
                 if (mCreateRoomModel?.status == Status.SUCCESS) {
 

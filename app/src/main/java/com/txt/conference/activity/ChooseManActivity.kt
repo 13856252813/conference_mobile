@@ -70,13 +70,42 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
 
     }
 
+    fun onFinished() {
+        var resultCode: Int  = 0
+
+        var mIntent: Intent  = Intent()
+
+        var nameattandlist: ArrayList<String>? = ArrayList<String>()
+        var displayattandlist: ArrayList<String>? = ArrayList<String>()
+        if (listadapter?.getCheckedList() == null){
+
+            resultCode = 1
+            this.setResult(resultCode, mIntent)
+        }
+
+
+        var checkedlist: ArrayList<AttendeeBean> = listadapter?.getCheckedList()!!
+
+        var i : Int = 0
+        while ( i < checkedlist.size){
+            nameattandlist?.add(checkedlist[i].uid!!)
+            displayattandlist?.add(checkedlist[i].display!!)
+            i++
+        }
+
+        mIntent.putStringArrayListExtra("nameattandList", nameattandlist);
+        mIntent.putStringArrayListExtra("displayattandList",displayattandlist);
+        this.setResult(resultCode, mIntent)
+
+        this.finish()
+    }
     override fun onClick(p0: View?) {
         when (p0!!.id){
             R.id.left_attandback_text -> {
                 onBackPressed()
             }
             R.id.right_attandfinish_text -> {
-
+                onFinished()
             }
         }
     }
