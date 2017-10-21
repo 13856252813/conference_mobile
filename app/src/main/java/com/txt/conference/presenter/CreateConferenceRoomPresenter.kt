@@ -28,8 +28,10 @@ class CreateConferenceRoomPresenter {
 
     fun doCreate(strJson: String?, token: String?) {
         Log.i("mytest", "strJson:" + strJson)
+        mCreateRoomView?.showLoading(1)
         mCreateRoomModel?.createroom(strJson, token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
+                mCreateRoomView?.hideLoading()
                 if (mCreateRoomModel?.status == Status.SUCCESS) {
                     mCreateRoomView?.jumpActivity()
 

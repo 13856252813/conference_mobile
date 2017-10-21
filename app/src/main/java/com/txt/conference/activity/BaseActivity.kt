@@ -22,7 +22,7 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
     }
 
     override fun showLoading(msgRes: Int) {
-        var msg = if (msgRes == 0) getString(R.string.loading) else getString(msgRes)
+        var msg = if (msgRes == 0) getString(R.string.loading) else if (msgRes == 1) getString(R.string.loading) else getString(msgRes)
         if (mLoadingView == null) {
             mLoadingView = LoadingView(this, msg)
         } else {
