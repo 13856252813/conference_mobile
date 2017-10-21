@@ -3,7 +3,6 @@ package com.txt.conference.model
 import com.common.http.HttpEventHandler
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.GetLoginBean
-import com.txt.conference.bean.LoginBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.http.LoginHttpFactory
 
