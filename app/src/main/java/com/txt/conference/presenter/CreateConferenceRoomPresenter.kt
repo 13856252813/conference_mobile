@@ -1,6 +1,7 @@
 package com.txt.conference.presenter
 
 import android.util.Log
+import com.txt.conference.R
 import com.txt.conference.model.*
 import com.txt.conference.view.ICreateConferenceRoomView
 import com.txt.conference.view.ILoginView
@@ -28,7 +29,7 @@ class CreateConferenceRoomPresenter {
 
     fun doCreate(strJson: String?, token: String?) {
         Log.i("mytest", "strJson:" + strJson)
-        mCreateRoomView?.showLoading(1)
+        mCreateRoomView?.showLoading(R.string.createing_room)
         mCreateRoomModel?.createroom(strJson, token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
                 mCreateRoomView?.hideLoading()
