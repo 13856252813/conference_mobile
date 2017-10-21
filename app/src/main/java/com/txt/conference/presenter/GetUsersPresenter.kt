@@ -20,8 +20,10 @@ class GetUsersPresenter {
         if (token == null || token.equals("")){
             getUsersView?.jumpToLogin()
         } else {
+            getUsersView?.showLoading(0)
             getUsersModel?.loadUsers(token, object : IBaseModel.IModelCallBack {
                 override fun onStatus() {
+                    getUsersView?.hideLoading()
                     when (getUsersModel!!.status) {
                         Status.SUCCESS -> getUsersView?.addAttendees(getUsersModel?.users)
                         Status.FAILED -> getUsersView?.showToast(getUsersModel?.msg!!)

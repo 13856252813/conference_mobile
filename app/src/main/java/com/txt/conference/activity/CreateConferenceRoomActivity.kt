@@ -136,7 +136,6 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         var btn_create: Button = this.findViewById<Button>(R.id.bt_createroom)
         titlebar_back.setClickable(true)
         btn_create.setOnClickListener {
-            Log.i("mytest", "create")
 
             mCreateRoomPresenter?.doCreate(createRoomJsonString(), getToken())
         }

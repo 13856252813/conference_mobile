@@ -10,6 +10,7 @@
     <string name="error_re_login">帐号异常，请重新登录!</string>
     <string name="forget_the_password">忘记密码</string>
     <string name="create_room">创建会议</string>
+    <string name="createing_room">正在创建会议...</string>
     <string name="enter_room">进入会议</string>
     <string name="entering_room">正在进入会议...</string>
     <string name="enter_room_failed">获取房间token失败，请重试~</string>
