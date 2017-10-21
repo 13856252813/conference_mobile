@@ -19,8 +19,7 @@ class CreateConferenceRoomMode : ICreateConferenceRoomMode {
     var mCreateRoomHttp: CreateConferenceRoomHttpFactory? = null
     var mCreateRoomBean: CreateConferenceRoomBean? = null
 
-
-    override fun createroom(token: String?, loginCallBack: IBaseModel.IModelCallBack) {
+    override fun createroom(strJson: String?, token: String?, loginCallBack: IBaseModel.IModelCallBack) {
         if (mCreateRoomHttp == null) {
             mCreateRoomHttp = CreateConferenceRoomHttpFactory()
             mCreateRoomHttp?.setHttpEventHandler(object : HttpEventHandler<CreateConferenceRoomBean>() {
@@ -39,6 +38,7 @@ class CreateConferenceRoomMode : ICreateConferenceRoomMode {
             })
         }
         //mCreateRoomHttp?.mUser = UserBean(account, password)
+        mCreateRoomHttp?.mPostCreaetJsonStr = strJson
         mCreateRoomHttp?.DownloaDatas(token)
     }
 

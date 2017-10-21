@@ -19,7 +19,7 @@
         android:layout_marginLeft="16.5dp"
 		android:text="TextView1"
         android:singleLine="true"
-        android:textColor="@color/hint"
+        android:textColor="@color/grey_room"
         android:textSize="14sp" />
     <View
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
         android:layout_marginRight="13.5dp"
 		android:text="TextView2"
         android:singleLine="true"
-        android:textColor="@color/hint"
+        android:textColor="@color/grey_room"
         android:textSize="14sp" />
 
     <ImageView

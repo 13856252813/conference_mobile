@@ -44,8 +44,8 @@ public class CostTimePickDialogUtil  implements NumberPicker.OnValueChangeListen
         costTimePicker = (NumberPicker) costTimeLayout.findViewById(R.id.numberPicker1);
         init();
 
-        costTimePicker.setMaxValue(120);
-        costTimePicker.setMinValue(10);
+        costTimePicker.setMaxValue(5);
+        costTimePicker.setMinValue(1);
 
         ad = new AlertDialog.Builder(activity)
                 .setTitle("预计会议时长")

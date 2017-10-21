@@ -7,5 +7,5 @@ import com.txt.conference.bean.CreateConferenceRoomBean
  */
 interface ICreateConferenceRoomMode : IBaseModel {
 
-    fun createroom(token: String?, loginCallBack: IBaseModel.IModelCallBack)
+    fun createroom(strJson: String?, token: String?, loginCallBack: IBaseModel.IModelCallBack)
 }
