@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey200">
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        layout="@layout/title_bar" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@android:color/white"
+        android:divider="@drawable/divider_recycler"
+        android:listSelector="#00ffffff"></ListView>
+
+    <Button
+        android:id="@+id/bt_createroom"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/listView"
+        android:layout_marginTop="75dp"
+        android:layout_width="250dp"
+        android:layout_height="43.5dp"
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        android:text="@string/created"
+        android:background="@drawable/login_corners"/>
+</RelativeLayout>

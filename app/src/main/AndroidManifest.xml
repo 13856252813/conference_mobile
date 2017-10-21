@@ -59,6 +59,14 @@
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
 
         </activity>
+        <activity android:name=".activity.CreateConferenceRoomActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        </activity>
+        <activity android:name=".activity.ChooseManActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        </activity>
     </application>
 
 </manifest>
