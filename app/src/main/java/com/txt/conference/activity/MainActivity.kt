@@ -30,7 +30,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
     var mConferenceAdapter: ConferenceAdapter? = null
     var joinRoomPresenter: JoinRoomPresenter? = null
     var logoffPresenter: LogoffPresenter? = null
-    var mLoadingView: LoadingView? = null
 
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
@@ -98,6 +97,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
         setContentView(R.layout.activity_main2)
 
         initView()
+        initInfomation()
         getRoomsPresenter = GetRoomsPresenter(this)
         joinRoomPresenter = JoinRoomPresenter(this)
         logoffPresenter = LogoffPresenter(this)
