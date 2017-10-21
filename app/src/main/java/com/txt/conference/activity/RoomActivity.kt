@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import com.common.utlis.ULog
+import com.common.widget.LoadingView
 import com.txt.conference.R
 import com.txt.conference.adapter.AttendeeAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
@@ -129,6 +130,18 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     //for clientPresenter begin
+    override fun onOffCamera(isOpenCamera: Boolean) {
+        if (isOpenCamera) {
+            runOnUiThread { room_iv_camera.setImageResource(R.mipmap.camera_open) }
+        } else {
+            runOnUiThread { room_iv_camera.setImageResource(R.mipmap.camera_closed) }
+        }
+    }
+
+    override fun isMicrophoneMute(isMicrophoneMute: Boolean) {
+        if (isMicrophoneMute) room_iv_mute.setImageResource(R.mipmap.muted) else room_iv_mute.setImageResource(R.mipmap.mute)
+    }
+
     override fun updateUsers(users: List<AttendeeBean>) {
         runOnUiThread {
             if (attendeeAdapter == null) {
@@ -142,7 +155,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     override fun setAlreadyAttendees(number: String) {
-        room_attendee_tv_already_number.setText(number)
+        runOnUiThread { room_attendee_tv_already_number.setText(number) }
     }
 
     override fun getConnectToken(): String {
@@ -235,10 +248,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
             }
             room_iv_camera.id -> {
-
+                clientPresenter?.onOffcamera()
             }
             room_iv_mute.id -> {
-
+                clientPresenter?.onOffMicrophone()
             }
             room_iv_share.id -> {
 

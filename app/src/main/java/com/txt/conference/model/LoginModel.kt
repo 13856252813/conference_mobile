@@ -2,8 +2,7 @@ package com.txt.conference.model
 
 import com.common.http.HttpEventHandler
 import com.txt.conference.application.TxApplication
-import com.txt.conference.bean.LoginBean
-import com.txt.conference.bean.UserBean
+import com.txt.conference.bean.GetLoginBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.http.LoginHttpFactory
 
@@ -12,7 +11,7 @@ import com.txt.conference.http.LoginHttpFactory
  */
 class LoginModel : ILoginModel {
     override var status: Int = Status.FAILED
-    override lateinit var mLoginBean: LoginBean
+    override lateinit var mLoginBean: GetLoginBean
 
     var mPreference: TxSharedPreferencesFactory? = null
     var mLoginHttp: LoginHttpFactory? = null
@@ -63,13 +62,13 @@ class LoginModel : ILoginModel {
     override fun login(account: String, password: String, loginCallBack: IBaseModel.IModelCallBack) {
         if (mLoginHttp == null) {
             mLoginHttp = LoginHttpFactory()
-            mLoginHttp?.setHttpEventHandler(object : HttpEventHandler<LoginBean>() {
-                override fun HttpSucessHandler(result: LoginBean?) {
+            mLoginHttp?.setHttpEventHandler(object : HttpEventHandler<GetLoginBean>() {
+                override fun HttpSucessHandler(result: GetLoginBean?) {
+                    mLoginBean = result!!
                     if (result?.code == 0){
-                        mLoginBean = result
                         saveUser(account, password)
-                        saveToken(result?.token)
-                        saveUserName(result?.username)
+                        saveToken(mLoginBean.data?.token)
+                        saveUserName(mLoginBean.data?.username)
 //                        savePhoneNumber(result?.pho)
                         status = Status.SUCCESS
                     }
@@ -77,6 +76,8 @@ class LoginModel : ILoginModel {
                 }
 
                 override fun HttpFailHandler() {
+                    mLoginBean = GetLoginBean()
+                    mLoginBean.msg = "请检测您的网络"
                     status = Status.FAILED
                     saveUser(null, null)
                     saveToken(null)
@@ -84,7 +85,8 @@ class LoginModel : ILoginModel {
                 }
             })
         }
-        mLoginHttp?.mUser = UserBean(account, password)
+        mLoginHttp?.account = account
+        mLoginHttp?.password = password
         mLoginHttp?.DownloaDatas()
     }
 }

@@ -19,6 +19,7 @@ class RoomPresenter {
 
     fun initRoomInfo(room: RoomBean) {
         roomView.setRoomNumber(room.roomNo!!)
+        roomView.setAllAttendees((room.participants?.size!! + 1).toString())
         var coutDownTime = room.start + room.getDurationMillis() - Date().time
         countDownTimer = object : CountDownTimer(coutDownTime, 1000){
             override fun onFinish() {

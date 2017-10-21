@@ -13,6 +13,10 @@ interface IClientView {
 
     fun switchCamera(isFrontCamera: Boolean)
 
+    fun onOffCamera(isOpenCamera: Boolean)
+
+    fun isMicrophoneMute(isMicrophoneMute: Boolean)
+
     fun setAlreadyAttendees(number: String)
 
     fun updateUsers(users: List<AttendeeBean>)

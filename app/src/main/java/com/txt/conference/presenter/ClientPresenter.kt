@@ -62,7 +62,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     private var originAudioMode: Int = 0
     private var statsTimer: Timer? = null
-    private var cameraID = 0
+    private var cameraID = 1
 
     constructor(context: Activity, view: IClientView) {
         mContext = context
@@ -151,6 +151,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 for (i in 0..users!!.size-1) {
                     ULog.d(TAG, "userName: " + users?.get(i).name + " role:" + users?.get(i).role)
                 }
+                clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
                 clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
             }
 
@@ -227,6 +228,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     override fun onUserJoined(p0: User?) {
         ULog.d(TAG, "onUserJoined")
+        clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
     }
 
     override fun onServerDisconnected() {
@@ -276,12 +278,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     override fun onUserLeft(p0: User?) {
         ULog.d(TAG, "onUserLeft")
-
+        clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
     }
 
     override fun onStreamError(p0: Stream?, p1: WoogeenException?) {
         ULog.d(TAG, "onStreamError")
-
     }
 
     override fun onClick(v: View?) {
@@ -318,10 +319,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             cameraLists[i] = "Unknown"
                         }
                     }
-                    cameraID = 0
-                    var message = roomHandler?.obtainMessage()
-                    message!!.what = MSG_PUBLISH
-                    roomHandler!!.sendMessage(message)
+                    publish()
                 }
 
                 MSG_SUBSCRIBE -> {
@@ -410,6 +408,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             mRoom?.publish(localStream, option, object : ActionCallback<Void> {
 
                                 override fun onSuccess(result: Void?) {
+                                    clientModel?.cameraIsOpen = true
+                                    clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
                                 }
 
                                 override fun onFailure(e: WoogeenException) {
@@ -442,6 +442,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                 localStream?.close()
                                 localStream = null
                                 localStreamRenderer?.cleanFrame()
+                                clientModel?.cameraIsOpen = false
+                                clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
                             }
 
                             override fun onFailure(p0: WoogeenException?) {
@@ -541,6 +543,16 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     private fun leave() {
         roomHandler?.sendEmptyMessage(MSG_ROOM_DISCONNECTED)
+    }
+
+    fun onOffcamera() {
+        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
+    }
+
+    fun onOffMicrophone() {
+        var audio = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audio.isMicrophoneMute = !audio.isMicrophoneMute
+        clientView?.isMicrophoneMute(audio.isMicrophoneMute)
     }
 
     fun switchCamera() {

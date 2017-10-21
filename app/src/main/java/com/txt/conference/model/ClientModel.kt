@@ -7,6 +7,8 @@ import com.txt.conference.bean.AttendeeBean
  * Created by jane on 2017/10/20.
  */
 class ClientModel : IClientModel {
+    override var microphoneIsOpen: Boolean = false
+    override var cameraIsOpen: Boolean = false
     override var status: Int = Status.FAILED
 
     override fun getUsers(users: List<User>): List<AttendeeBean> {

@@ -29,12 +29,15 @@ class LoginPresenter {
     }
 
     fun doLogin(account: String, password: String) {
+        mLoginView?.showLoading(0)
         mLoginModel?.login(account, password, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
+                mLoginView?.hideLoading()
                 if (mLoginModel?.status == Status.SUCCESS) {
                     mLoginView?.hideError()
-                    mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean)
+                    mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean.data!!)
                 } else {
+                    mLoginView?.showToast(mLoginModel?.mLoginBean?.msg!!)
                     mLoginView?.showError("")
                 }
             }
