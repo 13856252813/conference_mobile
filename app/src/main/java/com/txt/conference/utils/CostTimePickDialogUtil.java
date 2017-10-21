@@ -140,7 +140,6 @@ public class CostTimePickDialogUtil  implements NumberPicker.OnValueChangeListen
     @Override
     public void onValueChange(NumberPicker numberPicker, int i, int i1) {
         costtime = i1 + "";
-        Log.i("test:", i1 +"");
     }
 
     public interface ICostTimePickDialogClick {

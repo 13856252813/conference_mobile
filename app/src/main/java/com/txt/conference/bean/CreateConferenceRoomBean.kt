@@ -6,4 +6,5 @@ package com.txt.conference.bean
 class CreateConferenceRoomBean {
     var code: Int = 0
     var data: RoomBean? = null
+    var msg: String? = null
 }

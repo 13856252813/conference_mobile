@@ -143,7 +143,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         titlebar_back.setOnClickListener({ this.onBackPressed()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
 
 
-        listview= this.findViewById<ListView>(R.id.listView)
+        listview= this.findViewById<ListView>(R.id.listCreateRoomView)
         listview?.setOnItemClickListener { adapterView, view, i, l ->
 
             when(i){

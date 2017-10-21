@@ -9,6 +9,8 @@ import com.txt.conference.http.CreateConferenceRoomHttpFactory
  * Created by jane on 2017/10/9.
  */
 class CreateConferenceRoomMode : ICreateConferenceRoomMode {
+    override var msg: String? = null
+
 
     override var status: Int = Status.FAILED
 
@@ -22,15 +24,18 @@ class CreateConferenceRoomMode : ICreateConferenceRoomMode {
             mCreateRoomHttp = CreateConferenceRoomHttpFactory()
             mCreateRoomHttp?.setHttpEventHandler(object : HttpEventHandler<CreateConferenceRoomBean>() {
                 override fun HttpSucessHandler(result: CreateConferenceRoomBean?) {
-                    if (result?.code == 0){
+                    status = result?.code!!
+                    if (status == Status.SUCCESS) {
                         mCreateRoomBean = result
-                        status = Status.SUCCESS
+                    } else {
+                        mCreateRoomBean = null
+                        msg = result?.msg
                     }
                     createCallBack.onStatus()
                 }
 
                 override fun HttpFailHandler() {
-                    status = Status.FAILED
+                    status = Status.FAILED_UNKNOW
                     createCallBack.onStatus()
                 }
             })
