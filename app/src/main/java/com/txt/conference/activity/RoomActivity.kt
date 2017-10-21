@@ -130,6 +130,14 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     //for clientPresenter begin
+    override fun onOffCamera(isOpenCamera: Boolean) {
+        if (isOpenCamera) {
+            runOnUiThread { room_iv_camera.setImageResource(R.mipmap.camera_open) }
+        } else {
+            runOnUiThread { room_iv_camera.setImageResource(R.mipmap.camera_closed) }
+        }
+    }
+
     override fun updateUsers(users: List<AttendeeBean>) {
         runOnUiThread {
             if (attendeeAdapter == null) {
@@ -236,7 +244,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
             }
             room_iv_camera.id -> {
-
+                clientPresenter?.onOffcamera()
             }
             room_iv_mute.id -> {
 

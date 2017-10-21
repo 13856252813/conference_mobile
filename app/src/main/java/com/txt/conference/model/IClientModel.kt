@@ -7,5 +7,6 @@ import com.txt.conference.bean.AttendeeBean
  * Created by jane on 2017/10/20.
  */
 interface IClientModel : IBaseModel {
+    var cameraIsOpen: Boolean
     fun getUsers(users: List<User>): List<AttendeeBean>
 }
