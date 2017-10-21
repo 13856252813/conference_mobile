@@ -10,6 +10,7 @@ import com.txt.conference.http.GetAttendeeHttpFactory
  */
 class GetUsersModel : IGetUsersModel {
     override var status: Int = Status.FAILED
+    override var msg: String? = null
     override var users: List<AttendeeBean>? = null
 
     private var getUsersHttp: GetAttendeeHttpFactory? = null
@@ -21,18 +22,18 @@ class GetUsersModel : IGetUsersModel {
             getUsersHttp = GetAttendeeHttpFactory()
             getUsersHttp?.setHttpEventHandler(object : HttpEventHandler<GetAttendeeBean>() {
                 override fun HttpSucessHandler(result: GetAttendeeBean?) {
-                    if (result?.code == 0) {
-                        status = Status.SUCCESS
+                    status = result?.code!!
+                    if (status == Status.SUCCESS) {
                         users = result?.data
                     } else {
                         users = null
-                        status = Status.FAILED
+                        msg = result?.msg
                     }
                     callBack.onStatus()
                 }
 
                 override fun HttpFailHandler() {
-                    status = Status.FAILED
+                    status = Status.FAILED_UNKNOW
                     callBack.onStatus()
                 }
             })

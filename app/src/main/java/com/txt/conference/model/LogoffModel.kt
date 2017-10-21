@@ -12,6 +12,7 @@ import com.txt.conference.http.LogoffHttpFactory
 class LogoffModel : ILogoffModel {
     override lateinit var loginoffBean: LogoffBean
     override var status: Int = Status.FAILED
+    override var msg: String? = null
 
     var mPreference: TxSharedPreferencesFactory? = null
     var mLogoffHttp: LogoffHttpFactory? = null
@@ -50,18 +51,20 @@ class LogoffModel : ILogoffModel {
             mLogoffHttp = LogoffHttpFactory()
             mLogoffHttp?.setHttpEventHandler(object : HttpEventHandler<LogoffBean>() {
                 override fun HttpSucessHandler(result: LogoffBean?) {
-                    if (result?.code == 0){
+                    status = result?.code!!
+                    if (status == Status.SUCCESS) {
 //                        saveUser(null, null)
                         saveToken(null)
                         saveUserName(null)
                         savePhoneNumber(null)
-                        status = Status.SUCCESS
+                    } else {
+                        msg = result?.msg
                     }
                     loginCallBack.onStatus()
                 }
 
                 override fun HttpFailHandler() {
-                    status = Status.FAILED
+                    status = Status.FAILED_UNKNOW
 //                    saveUser(null, null)
                     saveToken(null)
                     saveUserName(null)

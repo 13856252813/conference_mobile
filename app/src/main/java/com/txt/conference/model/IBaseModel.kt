@@ -5,6 +5,7 @@ package com.txt.conference.model
  */
 interface IBaseModel {
     var status: Int
+    var msg: String?
 
     interface IModelCallBack {
         fun onStatus()

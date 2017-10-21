@@ -1,5 +1,6 @@
 package com.txt.conference.presenter
 
+import com.txt.conference.R
 import com.txt.conference.model.GetRoomsModel
 import com.txt.conference.model.IBaseModel
 import com.txt.conference.model.IGetRoomsModel
@@ -24,8 +25,14 @@ class GetRoomsPresenter {
         } else {
             getRoomsModel?.loadRooms(token, object : IBaseModel.IModelCallBack {
                 override fun onStatus() {
-                    if (getRoomsModel!!.status == Status.SUCCESS) {
-                        getRoomsView?.addConferences(getRoomsModel?.rooms)
+                    when (getRoomsModel!!.status) {
+                        Status.SUCCESS -> getRoomsView?.addConferences(getRoomsModel?.rooms)
+                        Status.FAILED -> getRoomsView?.showToast(getRoomsModel?.msg!!)
+                        Status.FAILED_TOKEN_AUTH -> {
+                            getRoomsView?.showToast(R.string.error_re_login)
+                            getRoomsView?.jumpToLogin()
+                        }
+                        Status.FAILED_UNKNOW -> getRoomsView?.showToast(R.string.error_unknow)
                     }
                 }
             })

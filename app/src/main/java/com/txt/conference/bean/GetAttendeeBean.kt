@@ -6,4 +6,5 @@ package com.txt.conference.bean
 class GetAttendeeBean {
     var code: Int = 0
     var data: List<AttendeeBean>? = null
+    var msg: String? = null
 }

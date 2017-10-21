@@ -33,6 +33,19 @@ class LogoffPresenter {
                     logoffView?.showError(R.string.error_re_login)
                     logoffView?.jumpToLogin()
                 }
+
+                when (logoffModel!!.status) {
+                    Status.SUCCESS -> logoffView?.jumpToLogin()
+                    Status.FAILED -> {
+                        logoffView?.showToast(logoffModel?.msg!!)
+                        logoffView?.jumpToLogin()
+                    }
+                    Status.FAILED_TOKEN_AUTH -> {
+                        logoffView?.showToast(R.string.error_re_login)
+                        logoffView?.jumpToLogin()
+                    }
+                    Status.FAILED_UNKNOW -> logoffView?.showToast(R.string.error_unknow)
+                }
             }
 
         })

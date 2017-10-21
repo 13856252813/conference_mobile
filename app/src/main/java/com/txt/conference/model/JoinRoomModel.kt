@@ -11,6 +11,7 @@ import com.txt.conference.http.JoinRoomHttpFactory
 class JoinRoomModel : IJoinRoomModel {
     override var token: TokenBean? = null
     override var status: Int = Status.FAILED
+    override var msg: String? = null
 
     var joinRoomHttp: JoinRoomHttpFactory? = null
 
@@ -19,17 +20,17 @@ class JoinRoomModel : IJoinRoomModel {
             joinRoomHttp = JoinRoomHttpFactory()
             joinRoomHttp?.setHttpEventHandler(object : HttpEventHandler<JoinRoomBean>() {
                 override fun HttpSucessHandler(result: JoinRoomBean?) {
-                    if (result?.code == 0 && result?.data != null && result?.data?.token != null) {
-                        status = Status.SUCCESS
+                    status = result?.code!!
+                    if (status == Status.SUCCESS) {
                         this@JoinRoomModel.token = result.data
                     } else {
-                        status = Status.FAILED
+                        msg = result?.msg
                     }
                     callBack.onStatus()
                 }
 
                 override fun HttpFailHandler() {
-                    status = Status.FAILED
+                    status = Status.FAILED_UNKNOW
                     callBack.onStatus()
                 }
 
