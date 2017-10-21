@@ -228,6 +228,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     override fun onUserJoined(p0: User?) {
         ULog.d(TAG, "onUserJoined")
+        clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
     }
 
     override fun onServerDisconnected() {
@@ -277,12 +278,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     override fun onUserLeft(p0: User?) {
         ULog.d(TAG, "onUserLeft")
-
+        clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
     }
 
     override fun onStreamError(p0: Stream?, p1: WoogeenException?) {
         ULog.d(TAG, "onStreamError")
-
     }
 
     override fun onClick(v: View?) {
