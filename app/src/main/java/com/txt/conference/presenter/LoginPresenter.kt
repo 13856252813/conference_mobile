@@ -35,8 +35,9 @@ class LoginPresenter {
                 mLoginView?.hideLoading()
                 if (mLoginModel?.status == Status.SUCCESS) {
                     mLoginView?.hideError()
-                    mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean)
+                    mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean.data!!)
                 } else {
+                    mLoginView?.showToast(mLoginModel?.mLoginBean?.msg!!)
                     mLoginView?.showError("")
                 }
             }

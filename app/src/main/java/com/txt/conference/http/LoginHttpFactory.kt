@@ -3,8 +3,7 @@ package com.txt.conference.http
 import com.common.http.HttpStringFactoryBase
 import com.common.utlis.ULog
 import com.google.gson.Gson
-import com.txt.conference.bean.LoginBean
-import com.txt.conference.bean.UserBean
+import com.txt.conference.bean.GetLoginBean
 import org.apache.http.NameValuePair
 import org.apache.http.message.BasicNameValuePair
 import java.util.ArrayList
@@ -12,13 +11,14 @@ import java.util.ArrayList
 /**
  * Created by jane on 2017/10/12.
  */
-class LoginHttpFactory : HttpStringFactoryBase<LoginBean>() {
+class LoginHttpFactory : HttpStringFactoryBase<GetLoginBean>() {
     val TAG = LoginHttpFactory::class.java.simpleName
-    var mUser: UserBean? = null
+    var account: String? = null
+    var password: String? = null
 
-    override fun AnalysisData(content: String?): LoginBean {
+    override fun AnalysisData(content: String?): GetLoginBean {
         ULog.d(TAG, "content $content")
-        var bean = Gson().fromJson(content, LoginBean::class.java)
+        var bean = Gson().fromJson(content, GetLoginBean::class.java)
         return bean
     }
 
@@ -29,8 +29,8 @@ class LoginHttpFactory : HttpStringFactoryBase<LoginBean>() {
     override fun getPostArgs(): ArrayList<org.apache.http.NameValuePair> {
 
         var body = ArrayList<NameValuePair>()
-        body.add(BasicNameValuePair("username", mUser?.account))
-        body.add(BasicNameValuePair("password", mUser?.password))
+        body.add(BasicNameValuePair("username", account))
+        body.add(BasicNameValuePair("password", password))
         body.add(BasicNameValuePair("device", "android"))
         return body
     }

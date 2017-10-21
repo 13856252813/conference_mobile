@@ -3,9 +3,7 @@ package com.txt.conference.http
 import com.common.http.HttpStringFactoryBase
 import com.common.utlis.ULog
 import com.google.gson.Gson
-import com.txt.conference.bean.LoginBean
 import com.txt.conference.bean.LogoffBean
-import com.txt.conference.bean.UserBean
 import org.apache.http.NameValuePair
 import org.apache.http.message.BasicNameValuePair
 import java.util.ArrayList
