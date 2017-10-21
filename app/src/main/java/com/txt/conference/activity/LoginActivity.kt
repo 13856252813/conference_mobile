@@ -1,9 +1,9 @@
 package com.txt.conference.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.common.widget.LoadingView
 import com.txt.conference.R
 import com.txt.conference.bean.LoginBean
 import com.txt.conference.presenter.LoginPresenter

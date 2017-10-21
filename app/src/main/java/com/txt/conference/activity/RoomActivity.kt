@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import com.common.utlis.ULog
+import com.common.widget.LoadingView
 import com.txt.conference.R
 import com.txt.conference.adapter.AttendeeAdapter
 import com.txt.conference.adapter.RecyclerViewDivider

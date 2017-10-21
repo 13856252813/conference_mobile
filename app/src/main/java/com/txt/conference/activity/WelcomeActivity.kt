@@ -23,16 +23,24 @@ class WelcomeActivity : BaseActivity() {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 JUMP -> {
-                    var token = TxSharedPreferencesFactory(TxApplication.mInstance).getToken()
-                    var i = Intent(this@WelcomeActivity, MainActivity::class.java)
-                    if (token == null || token.equals("")){
-                        i = Intent(this@WelcomeActivity, LoginActivity::class.java)
-                    }
-                    this@WelcomeActivity.startActivity(i)
-                    this@WelcomeActivity.finish()
+                    jumpActivity()
                 }
             }
         }
+    }
+
+    override fun jumpActivity() {
+        var token = TxSharedPreferencesFactory(TxApplication.mInstance).getToken()
+        var i = Intent(this@WelcomeActivity, MainActivity::class.java)
+        if (token == null || token.equals("")){
+            i = Intent(this@WelcomeActivity, LoginActivity::class.java)
+        }
+        this@WelcomeActivity.startActivity(i)
+        this@WelcomeActivity.finish()
+    }
+
+    override fun back() {
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

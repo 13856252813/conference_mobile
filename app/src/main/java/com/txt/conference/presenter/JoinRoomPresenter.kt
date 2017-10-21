@@ -25,8 +25,10 @@ class JoinRoomPresenter {
             joinView?.jumpToLogin()
             return
         }
+        joinView?.showLoading(R.string.entering_room)
         joinModel?.joinRoom(room.roomId!!, token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
+                joinView?.hideLoading()
                 if (joinModel?.status == Status.SUCCESS) {
                     joinView?.jumpToRoom(room, joinModel?.token?.token!!)
                 } else {

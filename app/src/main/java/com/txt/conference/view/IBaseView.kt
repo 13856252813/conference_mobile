@@ -9,4 +9,6 @@ import com.txt.conference.bean.LoginBean
 interface IBaseView {
     fun jumpActivity()
     fun back()
+    fun showLoading(msgRes: Int)
+    fun hideLoading()
 }

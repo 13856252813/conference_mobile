@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.common.utlis.ULog
+import com.common.widget.LoadingView
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
@@ -29,6 +30,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
     var mConferenceAdapter: ConferenceAdapter? = null
     var joinRoomPresenter: JoinRoomPresenter? = null
     var logoffPresenter: LogoffPresenter? = null
+    var mLoadingView: LoadingView? = null
 
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
