@@ -138,6 +138,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         }
     }
 
+    override fun isMicrophoneMute(isMicrophoneMute: Boolean) {
+        if (isMicrophoneMute) room_iv_mute.setImageResource(R.mipmap.muted) else room_iv_mute.setImageResource(R.mipmap.mute)
+    }
+
     override fun updateUsers(users: List<AttendeeBean>) {
         runOnUiThread {
             if (attendeeAdapter == null) {
@@ -247,7 +251,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 clientPresenter?.onOffcamera()
             }
             room_iv_mute.id -> {
-
+                clientPresenter?.onOffMicrophone()
             }
             room_iv_share.id -> {
 

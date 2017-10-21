@@ -549,6 +549,12 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         if (clientModel?.cameraIsOpen!!) unPublish() else publish()
     }
 
+    fun onOffMicrophone() {
+        var audio = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audio.isMicrophoneMute = !audio.isMicrophoneMute
+        clientView?.isMicrophoneMute(audio.isMicrophoneMute)
+    }
+
     fun switchCamera() {
         roomHandler?.sendEmptyMessage(MSG_SWITCHCAMERA)
     }
