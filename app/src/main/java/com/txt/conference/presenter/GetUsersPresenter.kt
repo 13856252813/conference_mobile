@@ -1,5 +1,6 @@
 package com.txt.conference.presenter
 
+import com.txt.conference.R
 import com.txt.conference.model.*
 import com.txt.conference.view.IGetUsersView
 
@@ -21,8 +22,14 @@ class GetUsersPresenter {
         } else {
             getUsersModel?.loadUsers(token, object : IBaseModel.IModelCallBack {
                 override fun onStatus() {
-                    if (getUsersModel!!.status == Status.SUCCESS) {
-                        getUsersView?.addAttendees(getUsersModel?.users)
+                    when (getUsersModel!!.status) {
+                        Status.SUCCESS -> getUsersView?.addAttendees(getUsersModel?.users)
+                        Status.FAILED -> getUsersView?.showToast(getUsersModel?.msg!!)
+                        Status.FAILED_TOKEN_AUTH -> {
+                            getUsersView?.showToast(R.string.error_re_login)
+                            getUsersView?.jumpToLogin()
+                        }
+                        Status.FAILED_UNKNOW -> getUsersView?.showToast(R.string.error_unknow)
                     }
                 }
             })

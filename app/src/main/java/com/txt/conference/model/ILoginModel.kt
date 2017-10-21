@@ -1,13 +1,13 @@
 package com.txt.conference.model
 
-import com.txt.conference.bean.GetLoginBean
+import com.txt.conference.bean.LoginBean
 
 
 /**
  * Created by jane on 2017/10/7.
  */
 interface ILoginModel : IBaseModel {
-    var mLoginBean: GetLoginBean
+    var mLoginBean: LoginBean
 
     fun getAccount(): String
     fun getPassword(): String

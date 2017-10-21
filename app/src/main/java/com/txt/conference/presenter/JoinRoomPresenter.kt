@@ -29,10 +29,14 @@ class JoinRoomPresenter {
         joinModel?.joinRoom(room.roomId!!, token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
                 joinView?.hideLoading()
-                if (joinModel?.status == Status.SUCCESS) {
-                    joinView?.jumpToRoom(room, joinModel?.token?.token!!)
-                } else {
-                    joinView?.showError(R.string.enter_room_failed)
+                when (joinModel!!.status) {
+                    Status.SUCCESS -> joinView?.jumpToRoom(room, joinModel?.token?.token!!)
+                    Status.FAILED -> joinView?.showToast(joinModel?.msg!!)
+                    Status.FAILED_TOKEN_AUTH -> {
+                        joinView?.showToast(R.string.error_re_login)
+                        joinView?.jumpToLogin()
+                    }
+                    Status.FAILED_UNKNOW -> joinView?.showToast(R.string.error_unknow)
                 }
             }
         })

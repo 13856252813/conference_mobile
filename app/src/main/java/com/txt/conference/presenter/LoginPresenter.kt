@@ -1,5 +1,6 @@
 package com.txt.conference.presenter
 
+import com.txt.conference.R
 import com.txt.conference.model.IBaseModel
 import com.txt.conference.model.ILoginModel
 import com.txt.conference.model.LoginModel
@@ -33,12 +34,14 @@ class LoginPresenter {
         mLoginModel?.login(account, password, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
                 mLoginView?.hideLoading()
-                if (mLoginModel?.status == Status.SUCCESS) {
-                    mLoginView?.hideError()
-                    mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean.data!!)
-                } else {
-                    mLoginView?.showToast(mLoginModel?.mLoginBean?.msg!!)
-                    mLoginView?.showError("")
+                when (mLoginModel!!.status) {
+                    Status.SUCCESS -> {
+                        mLoginView?.hideError()
+                        mLoginView?.jumpActivity((mLoginModel as ILoginModel).mLoginBean)
+                    }
+                    Status.FAILED -> mLoginView?.showToast(mLoginModel?.msg!!)
+                    Status.FAILED_TOKEN_AUTH -> mLoginView?.showToast(mLoginModel?.msg!!)
+                    Status.FAILED_UNKNOW -> mLoginView?.showToast(R.string.error_unknow)
                 }
             }
 

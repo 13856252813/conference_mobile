@@ -10,6 +10,7 @@ import com.txt.conference.http.GetRoomsHttpFactory
  */
 class GetRoomsModel : IGetRoomsModel {
     override var status: Int = Status.FAILED
+    override var msg: String? = null
     override var rooms: List<RoomBean>? = null
 
     private var getRoomsHttp: GetRoomsHttpFactory? = null
@@ -21,18 +22,18 @@ class GetRoomsModel : IGetRoomsModel {
             getRoomsHttp = GetRoomsHttpFactory()
             getRoomsHttp?.setHttpEventHandler(object : HttpEventHandler<GetRoomBean>() {
                 override fun HttpSucessHandler(result: GetRoomBean?) {
-                    if (result?.code == 0) {
-                        status = Status.SUCCESS
+                    status = result?.code!!
+                    if (status == Status.SUCCESS) {
                         rooms = result?.data
                     } else {
                         rooms = null
-                        status = Status.FAILED
+                        msg = result?.msg
                     }
                     callBack.onStatus()
                 }
 
                 override fun HttpFailHandler() {
-                    status = Status.FAILED
+                    status = Status.FAILED_UNKNOW
                     callBack.onStatus()
                 }
             })

@@ -5,4 +5,5 @@ package com.txt.conference.bean
  */
 class LogoffBean {
     var code = 0
+    var msg: String? = null
 }

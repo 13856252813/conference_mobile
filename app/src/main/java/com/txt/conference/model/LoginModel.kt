@@ -3,15 +3,18 @@ package com.txt.conference.model
 import com.common.http.HttpEventHandler
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.GetLoginBean
+import com.txt.conference.bean.LoginBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.http.LoginHttpFactory
+
 
 /**
  * Created by jane on 2017/10/9.
  */
 class LoginModel : ILoginModel {
     override var status: Int = Status.FAILED
-    override lateinit var mLoginBean: GetLoginBean
+    override var msg: String? = null
+    override lateinit var mLoginBean: LoginBean
 
     var mPreference: TxSharedPreferencesFactory? = null
     var mLoginHttp: LoginHttpFactory? = null
@@ -64,21 +67,23 @@ class LoginModel : ILoginModel {
             mLoginHttp = LoginHttpFactory()
             mLoginHttp?.setHttpEventHandler(object : HttpEventHandler<GetLoginBean>() {
                 override fun HttpSucessHandler(result: GetLoginBean?) {
-                    mLoginBean = result!!
-                    if (result?.code == 0){
+                    status = result?.code!!
+                    if (status == Status.SUCCESS) {
+                        mLoginBean = result?.data!!
                         saveUser(account, password)
-                        saveToken(mLoginBean.data?.token)
-                        saveUserName(mLoginBean.data?.username)
+                        saveToken(mLoginBean.token)
+                        saveUserName(mLoginBean.username)
 //                        savePhoneNumber(result?.pho)
-                        status = Status.SUCCESS
+                    } else {
+                        mLoginBean = LoginBean()
+                        msg = result?.msg
                     }
                     loginCallBack.onStatus()
                 }
 
                 override fun HttpFailHandler() {
-                    mLoginBean = GetLoginBean()
-                    mLoginBean.msg = "请检测您的网络"
-                    status = Status.FAILED
+                    mLoginBean = LoginBean()
+                    status = Status.FAILED_UNKNOW
                     saveUser(null, null)
                     saveToken(null)
                     loginCallBack.onStatus()
