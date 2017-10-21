@@ -39,7 +39,7 @@ class CreateConferenceModel : ICreateConferenceModel {
         bean2.icon2 = R.mipmap.right_arrow
         bean3.icon = R.mipmap.costtime
         bean3.strinfo = "结束时间"
-        bean3.strinfo2 = "12"
+        bean3.strinfo2 = "1"
         bean3.icon2 = R.mipmap.right_arrow
         list.add(bean1)
         list.add(bean2)

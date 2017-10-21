@@ -37,7 +37,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     override fun jumpActivity() {
-
+        onBackPressed()
     }
 
     override fun back() {
@@ -45,33 +45,13 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     override fun showError(error: String) {
-
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun hideError() {
 
     }
 
-
-    /*override fun jumpActivity() {
-
-    }
-
-    override fun addAttendees(conference: List<AttendeeBean>?) {
-        userNum = conference?.size.toString()
-        if (listadapter != null) {
-            listadapter!!.updateItemStr(0, userNum)
-            listadapter!!.notifyDataSetChanged()
-        }
-    }
-
-    override fun back() {
-
-    }
-
-    override fun jumpToLogin() {
-
-    }*/
 
     //var mPresenter: CreateConferencePresenter()
     var mPresenter: CreateConferencePresenter? = null
@@ -180,18 +160,9 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         mPresenter?.initListData()
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
         val curDate = Date(System.currentTimeMillis())//获取当前时间
-        var calendar: Calendar = Calendar.getInstance()
-        Log.i("mytest", "year:" + curDate.year + "mounth:" + curDate.month + "day:" + curDate.day)
-        /*if (curDate.minutes< 58){
-            calendar.set(curDate.year, curDate.month, curDate.day, curDate.hours, curDate.minutes + 2)
-        } else {
-            calendar.set(curDate.year, curDate.month, curDate.day, curDate.hours + 1, 0)
-        }
-        mStartTime = formatter.format(calendar.time)*/
+
         mStartTime = formatter.format(curDate)
 
-        //getuserPresenter = GetUsersPresenter(this)
-        //getuserPresenter?.getUsers(getToken())
 
 
     }
@@ -205,7 +176,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         }
 
 
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
 
     }
 
@@ -233,7 +204,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        Log.i("mytest3", requestCode.toString() + ":" + resultCode.toString())
+        //Log.i("mytest3", requestCode.toString() + ":" + resultCode.toString())
 
         if (resultCode != 0) {
             return
@@ -241,7 +212,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         if (data != null) {
             namelist  = data?.getStringArrayListExtra("nameattandList")
             displaylist = data?.getStringArrayListExtra("displayattandList")
-            Log.i("mytest2", namelist?.size.toString())
+            //Log.i("mytest2", namelist?.size.toString())
             onAttandManUpdate(namelist?.size.toString())
         }
 

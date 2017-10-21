@@ -26,7 +26,14 @@ class CreateConferenceRoomHttpFactory : HttpStringFactoryBase<CreateConferenceRo
     }
 
     override fun CreateUri(vararg args: Any?): String {
+        Log.i("CreateUri:", Urls.CREATE_ROOM)
         return String.format(Urls.CREATE_ROOM, args[0])
+    }
+
+    override fun getPostArgs(): ArrayList<NameValuePair> {
+        var body = ArrayList<NameValuePair>()
+        body.add(BasicNameValuePair("poststr", mPostCreaetJsonStr))
+        return body
     }
 
     override fun getPostArgsJsonStr(): String {
@@ -48,10 +55,11 @@ class CreateConferenceRoomHttpFactory : HttpStringFactoryBase<CreateConferenceRo
         jsonObj.put("topic", "dfdddd")
         jsonObj.put("names", namearray)
         jsonObj.put("participants", pararray)
-        jsonObj.put("start", jsonTime)*/
+        jsonObj.put("start", jsonTime)
+        return jsonObj.toString()*/
+        Log.i("mPostCreaetJsonStr:", mPostCreaetJsonStr)
+        return mPostCreaetJsonStr!!
 
-        return mPostCreaetJsonStr.toString()
 
-        //return jsonObj.toString()
     }
 }
