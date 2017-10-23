@@ -137,7 +137,16 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         titlebar_back.setClickable(true)
         btn_create.setOnClickListener {
 
-            mCreateRoomPresenter?.doCreate(createRoomJsonString(), getToken())
+            val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
+            val curNowDate = Date(System.currentTimeMillis())//获取当前时间
+            val strNow :String = formatter.format(curNowDate)
+            if ((mStartTime?.compareTo(strNow)!! < 0)){
+                Toast.makeText(this, this.getString(R.string.starttime_before_nowtime), Toast.LENGTH_SHORT).show()
+            } else {
+                mCreateRoomPresenter?.doCreate(createRoomJsonString(), getToken())
+            }
+
+
         }
         titlebar_back.setOnClickListener({ this.onBackPressed()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
 
