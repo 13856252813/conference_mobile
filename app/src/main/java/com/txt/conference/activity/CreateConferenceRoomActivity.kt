@@ -118,8 +118,8 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
             val num = namelist?.size!!
             var i = 0
             while (i < num){
-                namearray.put(namelist?.get(i))
-                pararray.put(displaylist?.get(i))
+                namearray.put(displaylist?.get(i))
+                pararray.put(namelist?.get(i))
                 i++
             }
             jsonObj.put("names", namearray)
