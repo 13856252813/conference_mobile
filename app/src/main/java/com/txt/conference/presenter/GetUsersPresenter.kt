@@ -1,6 +1,8 @@
 package com.txt.conference.presenter
 
 import com.txt.conference.R
+import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.ParticipantBean
 import com.txt.conference.model.*
 import com.txt.conference.view.IGetUsersView
 
@@ -26,6 +28,31 @@ class GetUsersPresenter {
                     getUsersView?.hideLoading()
                     when (getUsersModel!!.status) {
                         Status.SUCCESS -> getUsersView?.addAttendees(getUsersModel?.users)
+                        Status.FAILED -> getUsersView?.showToast(getUsersModel?.msg!!)
+                        Status.FAILED_TOKEN_AUTH -> {
+                            getUsersView?.showToast(R.string.error_re_login)
+                            getUsersView?.jumpToLogin()
+                        }
+                        Status.FAILED_UNKNOW -> getUsersView?.showToast(R.string.error_unknow)
+                    }
+                }
+            })
+        }
+    }
+
+    fun getUsers(token: String?, alreadyInvite: List<ParticipantBean>) {
+        if (token == null || token.equals("")){
+            getUsersView?.jumpToLogin()
+        } else {
+            getUsersView?.showLoading(0)
+            getUsersModel?.loadUsers(token, object : IBaseModel.IModelCallBack {
+                override fun onStatus() {
+                    getUsersView?.hideLoading()
+                    when (getUsersModel!!.status) {
+                        Status.SUCCESS -> {
+                            getUsersModel?.fullInviteUser(alreadyInvite)
+                            getUsersView?.addAttendees(getUsersModel?.users)
+                        }
                         Status.FAILED -> getUsersView?.showToast(getUsersModel?.msg!!)
                         Status.FAILED_TOKEN_AUTH -> {
                             getUsersView?.showToast(R.string.error_re_login)

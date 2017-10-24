@@ -17,5 +17,6 @@ class AttendeeBean {
     }
 
     var role: String? = null
+    var invited: Boolean = false
 
 }

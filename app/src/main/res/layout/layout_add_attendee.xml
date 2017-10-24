@@ -53,6 +53,7 @@
         android:background="@color/orange"/>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/room_add_attendee_recycler"
         android:layout_width="230dp"
         android:layout_height="match_parent"
         android:layout_below="@id/room_add_attendee_line">

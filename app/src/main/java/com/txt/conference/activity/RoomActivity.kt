@@ -10,15 +10,20 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.common.utlis.ULog
 import com.common.widget.LoadingView
 import com.txt.conference.R
 import com.txt.conference.adapter.AttendeeAdapter
+import com.txt.conference.adapter.InviteAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
 import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.ParticipantBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.ClientPresenter
+import com.txt.conference.presenter.GetUsersPresenter
 import com.txt.conference.presenter.RoomPresenter
 import com.txt.conference.view.IClientView
 import com.txt.conference.view.IGetUsersView
@@ -57,7 +62,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     lateinit var roomPresenter: RoomPresenter
     lateinit var clientPresenter: ClientPresenter
+    lateinit var getUsersPresenter: GetUsersPresenter
+    var room: RoomBean? = null
     var attendeeAdapter: AttendeeAdapter? = null
+    var inviteAdapter: InviteAdapter? = null
 
     companion object {
         var KEY_ROOM = "room"
@@ -68,7 +76,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room)
 
-        var room: RoomBean = intent.getSerializableExtra(KEY_ROOM) as RoomBean
+        room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
         if (room == null || intent.getStringExtra(KEY_CONNECT_TOKEN) == null) {
             this.finish()
             return
@@ -77,8 +85,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         initGestureDetector()
         initViewEvent()
         roomPresenter = RoomPresenter(this)
-        roomPresenter.initRoomInfo(room)
+        roomPresenter.initRoomInfo(room!!)
         clientPresenter = ClientPresenter(this, this)
+        getUsersPresenter = GetUsersPresenter(this)
 
         methodRequiresTwoPermission()
     }
@@ -174,6 +183,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     //for clientPresenter end
 
     //for roomPresenter begin
+    override fun getInviteAttendees(): List<ParticipantBean> {
+        return room!!.participants!!
+    }
+
     override fun setAllAttendees(number: String) {
         room_attendee_tv_all_number.setText(number)
     }
@@ -201,8 +214,32 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     }
 
-    override fun addAttendees(conference: List<AttendeeBean>?) {
+    override fun addAttendees(users: List<AttendeeBean>?) {
+        if (room_layout_attendee_container.visibility != View.VISIBLE) {
+            room_layout_attendee_container.visibility = View.VISIBLE
+        }
+        if (room_layout_attendee.visibility == View.VISIBLE) {
+            room_layout_attendee.visibility = View.INVISIBLE
+        }
+        if (room_layout_add_attendee.visibility != View.VISIBLE) {
+            room_layout_add_attendee.visibility = View.VISIBLE
+        }
+        if (inviteAdapter == null) {
+            inviteAdapter = InviteAdapter(R.layout.item_invite, users)
+            inviteAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
+                override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
 
+                }
+            }
+
+            var layoutManager = LinearLayoutManager(this)
+            room_add_attendee_recycler.layoutManager = layoutManager
+            room_add_attendee_recycler.addItemDecoration(RecyclerViewDivider(this, R.drawable.invite_divider, 0, 0))
+            room_add_attendee_recycler.adapter = inviteAdapter
+        } else {
+            inviteAdapter?.setNewData(users)
+        }
+        startHideAllViewDelayed()
     }
 
     override fun back() {
@@ -240,10 +277,15 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 }
             }
             room_attendee_iv_add.id -> {
-
+                getUsersPresenter?.getUsers(getToken())
             }
             room_add_attendee_tv_cancel.id -> {
-
+                if (room_layout_add_attendee.visibility == View.VISIBLE) {
+                    room_layout_add_attendee.visibility = View.INVISIBLE
+                }
+                if (room_layout_attendee.visibility != View.VISIBLE) {
+                    room_layout_attendee.visibility = View.VISIBLE
+                }
             }
             room_add_attendee_tv_confirm.id -> {
 
