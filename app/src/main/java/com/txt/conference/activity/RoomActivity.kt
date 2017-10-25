@@ -187,7 +187,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     override fun end() {
-
+        showToast(R.string.conference_end)
+        this.finish()
     }
     //for roomPresenter end
 
