@@ -16,6 +16,9 @@ class LoginModel : ILoginModel {
     override var msg: String? = null
     override lateinit var mLoginBean: LoginBean
 
+
+    var nAccount = ""
+    var nPassword = ""
     var mPreference: TxSharedPreferencesFactory? = null
     var mLoginHttp: LoginHttpFactory? = null
 
@@ -63,6 +66,8 @@ class LoginModel : ILoginModel {
     }
 
     override fun login(account: String, password: String, loginCallBack: IBaseModel.IModelCallBack) {
+        nAccount = account
+        nPassword = password
         if (mLoginHttp == null) {
             mLoginHttp = LoginHttpFactory()
             mLoginHttp?.setHttpEventHandler(object : HttpEventHandler<GetLoginBean>() {
@@ -70,7 +75,7 @@ class LoginModel : ILoginModel {
                     status = result?.code!!
                     if (status == Status.SUCCESS) {
                         mLoginBean = result?.data!!
-                        saveUser(account, password)
+                        saveUser(nAccount, nPassword)
                         saveToken(mLoginBean.token)
                         saveUserName(mLoginBean.username)
 //                        savePhoneNumber(result?.pho)
@@ -90,8 +95,8 @@ class LoginModel : ILoginModel {
                 }
             })
         }
-        mLoginHttp?.account = account
-        mLoginHttp?.password = password
+        mLoginHttp?.account = nAccount
+        mLoginHttp?.password = nPassword
         mLoginHttp?.DownloaDatas()
     }
 }

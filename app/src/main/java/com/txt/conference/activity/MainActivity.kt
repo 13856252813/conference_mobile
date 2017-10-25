@@ -53,22 +53,8 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
 
     override fun addConferences(conference: List<RoomBean>?) {
         ULog.d(TAG, "addConferences")
-        if (mConferenceAdapter == null) {
-            mConferenceAdapter = ConferenceAdapter(R.layout.item_conference, conference)
-            mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
-                override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                    var room = adapter?.data?.get(position) as RoomBean
-                    ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
-                    if (room.status == RoomBean.STATUS_BEGING) {
-                        joinRoomPresenter?.joinRoom(room, getToken())
-                    }
-                }
-            }
-            home_rv.adapter = mConferenceAdapter
-        } else {
-            mConferenceAdapter?.setNewData(conference)
-            mConferenceAdapter?.notifyDataSetChanged()
-        }
+        mConferenceAdapter?.setNewData(conference)
+        mConferenceAdapter?.notifyDataSetChanged()
     }
 
     companion object {
@@ -132,6 +118,18 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
         var layoutManager = LinearLayoutManager(this)
         home_rv.layoutManager = layoutManager
         home_rv.addItemDecoration(RecyclerViewDivider(this))
+        mConferenceAdapter = ConferenceAdapter(R.layout.item_conference, null)
+        mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
+            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                var room = adapter?.data?.get(position) as RoomBean
+                ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
+                if (room.status == RoomBean.STATUS_BEGING) {
+                    joinRoomPresenter?.joinRoom(room, getToken())
+                }
+            }
+        }
+        mConferenceAdapter?.bindToRecyclerView(home_rv)
+        mConferenceAdapter?.setEmptyView(R.layout.layout_empty)
     }
 
     override fun onDestroy() {
