@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.layout_menu.*
 
-class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
+class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, ConferenceAdapter.TimeCallBack {
     val TAG = MainActivity::class.java.simpleName
     var getRoomsPresenter: GetRoomsPresenter? = null
     var mConferenceAdapter: ConferenceAdapter? = null
@@ -45,6 +45,10 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
     override fun jumpToLogin() {
         startActivity(Intent(this, LoginActivity::class.java))
         this.finish()
+    }
+
+    override fun onFinish() {
+        getRoomsPresenter?.getRooms(getToken())
     }
 
     override fun getToken(): String? {
@@ -119,6 +123,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
         home_rv.layoutManager = layoutManager
         home_rv.addItemDecoration(RecyclerViewDivider(this, 20, 20))
         mConferenceAdapter = ConferenceAdapter(R.layout.item_conference, null)
+        mConferenceAdapter?.timeCallBack = this
         mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 var room = adapter?.data?.get(position) as RoomBean

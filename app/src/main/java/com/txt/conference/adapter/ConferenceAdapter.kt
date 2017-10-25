@@ -19,6 +19,7 @@ import java.util.*
 class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdapter<RoomBean, ConferenceAdapter.RoomViewHolder>(layoutResId, data) {
     var TAG = ConferenceAdapter::class.java.simpleName
     var countDownMap: SparseArray<CountDownTimer>? = null
+    var timeCallBack: TimeCallBack? = null
 
     init {
         countDownMap = SparseArray<CountDownTimer>()
@@ -45,6 +46,7 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         if (room == null) {
             return
         }
+        initStatus(room)
         var currenTime = Date().time
         var countDown = (room?.start!! + room.getDurationMillis()) - currenTime
         var countDownOffset = 5 * 60 * 1000
@@ -59,26 +61,13 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         ULog.d(TAG, "onBindViewHolder $holder")
         holder?.countDownTimer = object : CountDownTimer(countDown, 1000) {
             override fun onFinish() {
-                mData.removeAt(holder!!.layoutPosition)
-                notifyItemRemoved(holder!!.layoutPosition)
+                timeCallBack?.onFinish()
+//                mData.removeAt(holder!!.layoutPosition)
+//                notifyItemRemoved(holder!!.layoutPosition)
             }
 
             override fun onTick(p0: Long) {
                 ULog.d(TAG, "onTick $p0")
-//                if (holder!!.beginCountDown > 0 && p0 > holder!!.beginCountDown) {
-//                    //not begin
-//                    bgColor = R.drawable.enter_normal
-//                    btText = mContext.getString(R.string.not_start)
-//                } else if ((holder?.beginCountDown > 0 && p0 <= holder?.beginCountDown) && (holder?.beginEnterTime > 0 && p0 > holder?.beginEnterTime)) {
-//                    //update countDown
-//                    bgColor = R.drawable.enter_countdown
-//                    btText = DateUtils().format(p0 - holder.beginEnterTime - TimeZone.getDefault().rawOffset, DateUtils.HH_mm_ss)
-//                } else {
-//                    //can enter room
-//                    bgColor = R.drawable.enter_beging
-//                    btText = mContext.getString(R.string.enter_room)
-//                }
-
                 offsetTime = room.start - Date().time
                 if (offsetTime >= countDownOffset) {
                     //not begin
@@ -108,6 +97,25 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         countDownMap?.put(holder?.countDownTimer!!.hashCode(), holder.countDownTimer)
     }
 
+    fun initStatus(room: RoomBean) {
+        var countDownOffset = 5 * 60 * 1000
+        var offsetTime = 0L
+
+        offsetTime = room.start - Date().time
+        if (offsetTime >= countDownOffset) {
+            //not begin
+            if (room.status != RoomBean.STATUS_NORMAL) room.status = RoomBean.STATUS_NORMAL
+        } else if (offsetTime > 0  && offsetTime < countDownOffset) {
+            //update countDown
+            if (room.status != RoomBean.STATUS_COUNT_DOWN) room.status = RoomBean.STATUS_COUNT_DOWN
+        } else {
+            //can enter room
+            if (room.status != RoomBean.STATUS_BEGING) {
+                room.status = RoomBean.STATUS_BEGING
+            }
+        }
+    }
+
     fun cancelAllTimers() {
         if (countDownMap == null) {
             return
@@ -125,5 +133,9 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         var countDownTimer: CountDownTimer? = null
 //        var beginEnterTime: Long = 0L
 //        var beginCountDown: Long = 0L
+    }
+
+    interface TimeCallBack {
+        fun onFinish()
     }
 }
