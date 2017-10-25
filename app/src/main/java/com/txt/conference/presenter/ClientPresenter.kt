@@ -228,6 +228,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     override fun onUserJoined(p0: User?) {
         ULog.d(TAG, "onUserJoined")
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
+        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
     }
 
     override fun onServerDisconnected() {
