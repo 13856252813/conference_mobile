@@ -125,7 +125,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
                 check = true
             }
             listadapter?.setItemCheck(i, check)
-            Log.i("mytest", i.toString())
+            //Log.i("mytest", i.toString())
             listadapter!!.notifyDataSetChanged()
             updateTitleBar()
         }

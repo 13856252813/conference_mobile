@@ -41,7 +41,7 @@ class CreateConferenceRoomMode : ICreateConferenceRoomMode {
             })
         }
         //mCreateRoomHttp?.mUser = UserBean(account, password)
-        Log.i("mytest", "CreateConferenceRoomMode: send post:" + strJson)
+        //Log.i("mytest", "CreateConferenceRoomMode: send post:" + strJson)
         mCreateRoomHttp?.mPostCreaetJsonStr = strJson
         mCreateRoomHttp?.DownloaDatas(token)
     }
