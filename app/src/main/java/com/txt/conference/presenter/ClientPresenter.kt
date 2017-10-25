@@ -132,8 +132,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
             override fun onSuccess(p0: User?) {
                 mContext?.runOnUiThread {
-                    Toast.makeText(mContext, "Room Connected",
-                            Toast.LENGTH_SHORT).show()
+                    ULog.d(TAG, "Room Connected")
                     val msg = roomHandler?.obtainMessage()
                     msg?.what = PUBLISH_STREAM
                     roomHandler?.sendMessage(msg)
@@ -520,10 +519,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             localStream?.disableVideo()
             localStream?.disableAudio()
             localStream?.detach()
-            mContext?.runOnUiThread {
-                Toast.makeText(mContext, "Woogeen is running in the background.",
-                        Toast.LENGTH_SHORT).show()
-            }
+            ULog.d(TAG, "Woogeen is running in the background.")
         }
         if (currentRemoteStream != null) {
             currentRemoteStream?.disableAudio()
