@@ -122,7 +122,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     fun initRecyclerView() {
         var layoutManager = LinearLayoutManager(this)
         room_attendee_recyclerView.layoutManager = layoutManager
-        room_attendee_recyclerView.addItemDecoration(RecyclerViewDivider(this))
+        room_attendee_recyclerView.addItemDecoration(RecyclerViewDivider(this, R.drawable.invite_divider))
     }
 
     private fun toast(str: String) {

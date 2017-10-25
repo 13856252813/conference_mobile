@@ -23,6 +23,16 @@ public class RecyclerViewDivider extends RecyclerView.ItemDecoration {
     /**
      *
      * @param context
+     * @param dividerRes R.drawable.divider_recycler
+     */
+    public RecyclerViewDivider(Context context, int dividerRes) {
+        this.context=context;
+        mDrawable = context.getResources().getDrawable(dividerRes);
+    }
+
+    /**
+     *
+     * @param context
      * @param marging_left
      * @param marging_right
      */
