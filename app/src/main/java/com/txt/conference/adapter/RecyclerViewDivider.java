@@ -13,9 +13,38 @@ public class RecyclerViewDivider extends RecyclerView.ItemDecoration {
 
     private Drawable mDrawable;
     private Context context;
+    private int marging_left = 0;
+    private int marging_right = 0;
     public RecyclerViewDivider(Context context) {
         this.context=context;
         mDrawable = context.getResources().getDrawable(R.drawable.divider_recycler);
+    }
+
+    /**
+     *
+     * @param context
+     * @param marging_left
+     * @param marging_right
+     */
+    public RecyclerViewDivider(Context context, int marging_left, int marging_right) {
+        this.context=context;
+        mDrawable = context.getResources().getDrawable(R.drawable.divider_recycler);
+        this.marging_left = marging_left;
+        this.marging_right = marging_right;
+    }
+
+    /**
+     *
+     * @param context
+     * @param dividerRes R.drawable.divider_recycler
+     * @param marging_left
+     * @param marging_right
+     */
+    public RecyclerViewDivider(Context context,int dividerRes, int marging_left, int marging_right) {
+        this.context=context;
+        mDrawable = context.getResources().getDrawable(dividerRes);
+        this.marging_left = marging_left;
+        this.marging_right = marging_right;
     }
 
     @Override
@@ -31,7 +60,7 @@ public class RecyclerViewDivider extends RecyclerView.ItemDecoration {
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + mDrawable.getIntrinsicHeight();
             //这里的四个值分别代表 left,top,right,bottom,可以指定分割线在布局中的位置
-            mDrawable.setBounds(left + 20, top, right - 20, bottom);
+            mDrawable.setBounds(left + marging_left, top, right - marging_right, bottom);
             mDrawable.draw(c);
         }
     }
