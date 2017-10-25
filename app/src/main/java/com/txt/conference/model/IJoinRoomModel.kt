@@ -1,5 +1,6 @@
 package com.txt.conference.model
 
+import com.txt.conference.bean.RoomBean
 import com.txt.conference.bean.TokenBean
 
 /**
@@ -7,6 +8,7 @@ import com.txt.conference.bean.TokenBean
  */
 interface IJoinRoomModel : IBaseModel {
     var token: TokenBean?
+    var room: RoomBean?
 
-    fun joinRoom(roomId: String, token: String, callBack: IBaseModel.IModelCallBack)
+    fun joinRoom(room: RoomBean, token: String, callBack: IBaseModel.IModelCallBack)
 }
