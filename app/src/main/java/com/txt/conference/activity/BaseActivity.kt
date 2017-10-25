@@ -28,7 +28,9 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
         } else {
             mLoadingView?.setMessage(msg)
         }
-        mLoadingView?.show()
+        if (!mLoadingView?.isShowing!!) {
+            mLoadingView?.show()
+        }
     }
 
     override fun hideLoading() {
