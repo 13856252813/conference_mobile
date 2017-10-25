@@ -42,6 +42,9 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
             holder?.countDownTimer?.cancel()
         }
         var room = getItem(position)
+        if (room == null) {
+            return
+        }
         var currenTime = Date().time
         var countDown = (room?.start!! + room.getDurationMillis()) - currenTime
         var countDownOffset = 5 * 60 * 1000
