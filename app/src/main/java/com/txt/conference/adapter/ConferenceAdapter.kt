@@ -48,7 +48,7 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         }
         initStatus(room)
         var currenTime = Date().time
-        var countDown = (room?.start!! + room.getDurationMillis()) - currenTime
+        var countDown = (room?.start!! + room.getDurationMillis() + room.getDelaytimeMillis()) - currenTime
         var countDownOffset = 5 * 60 * 1000
         var btText = ""
         var btTextColor = 0
@@ -58,9 +58,13 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
 //        holder?.beginCountDown = holder?.beginEnterTime!! + 5 * 60 * 1000
 //        holder?.beginCountDown = room?.start!! + 5 * 60 * 1000
 //        ULog.d(TAG, "onBindViewHolder $holder countDown:$countDown beginEnterTime:" + holder?.beginEnterTime + " beginCountDown:" + holder?.beginCountDown)
-        ULog.d(TAG, "onBindViewHolder $holder")
+        ULog.d(TAG, "onBindViewHolder countDown: $countDown")
+        if (countDown <= 0) {
+            return
+        }
         holder?.countDownTimer = object : CountDownTimer(countDown, 1000) {
             override fun onFinish() {
+                ULog.d(TAG, "onBindViewHolder onFinish")
                 timeCallBack?.onFinish()
 //                mData.removeAt(holder!!.layoutPosition)
 //                notifyItemRemoved(holder!!.layoutPosition)
