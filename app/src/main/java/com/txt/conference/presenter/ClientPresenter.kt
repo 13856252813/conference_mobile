@@ -408,8 +408,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             mRoom?.publish(localStream, option, object : ActionCallback<Void> {
 
                                 override fun onSuccess(result: Void?) {
-                                    clientModel?.cameraIsOpen = true
-                                    clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
+
                                 }
 
                                 override fun onFailure(e: WoogeenException) {
@@ -442,8 +441,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                 localStream?.close()
                                 localStream = null
                                 localStreamRenderer?.cleanFrame()
-                                clientModel?.cameraIsOpen = false
-                                clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
                             }
 
                             override fun onFailure(p0: WoogeenException?) {
@@ -543,13 +540,39 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
     fun onOffcamera() {
-        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
+//        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
+        if (localStream == null) {
+            return
+        }
+        if (clientModel?.cameraIsOpen!!) {
+            if (localStream?.disableVideo()!!) {
+                clientModel?.cameraIsOpen = false
+            }
+        } else {
+            if (localStream?.enableVideo()!!) {
+                clientModel?.cameraIsOpen = true
+            }
+        }
+        clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
     }
 
     fun onOffMicrophone() {
-        var audio = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audio.isMicrophoneMute = !audio.isMicrophoneMute
-        clientView?.isMicrophoneMute(audio.isMicrophoneMute)
+//        var audio = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+//        audio.isMicrophoneMute = !audio.isMicrophoneMute
+//        clientView?.isMicrophoneMute(audio.isMicrophoneMute)
+        if (localStream == null) {
+            return
+        }
+        if (clientModel?.microphoneIsOpen!!) {
+            if (localStream?.disableAudio()!!) {
+                clientModel?.microphoneIsOpen = false
+            }
+        } else {
+            if (localStream?.enableAudio()!!) {
+                clientModel?.microphoneIsOpen = true
+            }
+        }
+        clientView?.isMicrophoneMute(!clientModel?.microphoneIsOpen!!)
     }
 
     fun switchCamera() {
