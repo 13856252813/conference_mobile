@@ -25,15 +25,10 @@ class LogoffPresenter {
             logoffView?.jumpToLogin()
             return
         }
+        logoffView?.showLoading(R.string.loading_loginoff)
         logoffModel?.logoff(token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
-                if (logoffModel?.status == Status.SUCCESS) {
-                    logoffView?.jumpToLogin()
-                } else {
-                    logoffView?.showError(R.string.error_re_login)
-                    logoffView?.jumpToLogin()
-                }
-
+                logoffView?.hideLoading()
                 when (logoffModel!!.status) {
                     Status.SUCCESS -> logoffView?.jumpToLogin()
                     Status.FAILED -> {

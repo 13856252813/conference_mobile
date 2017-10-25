@@ -32,4 +32,5 @@
     <string name="finish">完成</string>
     <string name="starttime_before_nowtime">会议开始时间不能晚于当前时间！</string>
     <string name="loading_rooms">正在加载会议...</string>
+    <string name="loading_loginoff">正在退出...</string>
 </resources>
