@@ -117,7 +117,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView {
     fun initRecyclerView() {
         var layoutManager = LinearLayoutManager(this)
         home_rv.layoutManager = layoutManager
-        home_rv.addItemDecoration(RecyclerViewDivider(this))
+        home_rv.addItemDecoration(RecyclerViewDivider(this, 20, 20))
         mConferenceAdapter = ConferenceAdapter(R.layout.item_conference, null)
         mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
