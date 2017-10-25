@@ -11,8 +11,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
@@ -21,6 +23,8 @@ import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
+
+import com.common.utlis.ULog;
 import com.txt.conference.R;
 
 /**
@@ -92,25 +96,30 @@ public class DateTimePickDialogUtil implements OnDateChangedListener,
                 .getLayoutInflater().inflate(R.layout.common_datetime, null);
         datePicker = (DatePicker) dateTimeLayout.findViewById(R.id.datepicker);
 
-        try {
-            Field f[] = datePicker.getClass().getDeclaredFields();
-            //隐藏年
-            for (Field field : f) {
-                if (field.getName().equals("mYearPicker")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ((LinearLayout) ((ViewGroup)
+                    datePicker.getChildAt(0)).getChildAt(0)).getChildAt(0).setVisibility(View.GONE);
+        } else{
+            try {
+                Field f[] = datePicker.getClass().getDeclaredFields();
+                //隐藏年
+                for (Field field : f) {
+                    if (field.getName().equals("mYearPicker")
                         || field.getName().equals("mYearSpinner")) {
-                    field.setAccessible(true);
-                    Object yearPicker = new Object();
-                    yearPicker = field.get(datePicker);
-                    ((View) yearPicker).setVisibility(View.GONE);
+                        field.setAccessible(true);
+                        Object yearPicker = new Object();
+                        yearPicker = field.get(datePicker);
+                        ((View) yearPicker).setVisibility(View.GONE);
+                    }
                 }
-            }
-        }catch (SecurityException e) {
-            Log.e("ERROR", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            Log.e("ERROR", e.getMessage());
-        } catch (IllegalAccessException e) {
+            }catch (SecurityException e) {
+                ULog.e("ERROR", e.getMessage());
+            } catch (IllegalArgumentException e) {
+                ULog.e("ERROR", e.getMessage());
+            } catch (IllegalAccessException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            }
         }
         timePicker = (TimePicker) dateTimeLayout.findViewById(R.id.timepicker);
         init(datePicker, timePicker);
