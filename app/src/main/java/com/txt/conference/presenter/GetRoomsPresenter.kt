@@ -23,8 +23,10 @@ class GetRoomsPresenter {
         if (token == null || token.equals("")){
             getRoomsView?.jumpToLogin()
         } else {
+            getRoomsView?.showLoading(R.string.loading_rooms)
             getRoomsModel?.loadRooms(token, object : IBaseModel.IModelCallBack {
                 override fun onStatus() {
+                    getRoomsView?.hideLoading()
                     when (getRoomsModel!!.status) {
                         Status.SUCCESS -> getRoomsView?.addConferences(getRoomsModel?.rooms)
                         Status.FAILED -> getRoomsView?.showToast(getRoomsModel?.msg!!)
