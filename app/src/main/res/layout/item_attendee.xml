@@ -15,6 +15,8 @@
         android:id="@+id/item_attendee_iv_role"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/item_attendee_name"
+        android:src="@mipmap/role_presenter"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"/>
 
@@ -35,6 +37,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:padding="10dp"
+        android:visibility="gone"
         android:src="@mipmap/more" />
 
 </RelativeLayout>

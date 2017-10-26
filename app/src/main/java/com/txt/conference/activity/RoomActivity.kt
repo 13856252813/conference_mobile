@@ -183,6 +183,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         runOnUiThread {
             if (attendeeAdapter == null) {
                 attendeeAdapter = AttendeeAdapter(R.layout.item_attendee, users)
+                attendeeAdapter?.selfName = TxSharedPreferencesFactory(applicationContext).getUserName()
+                attendeeAdapter?.creatorName = room?.creator?.display
                 initRecyclerView()
                 room_attendee_recyclerView.adapter = attendeeAdapter
             } else {
