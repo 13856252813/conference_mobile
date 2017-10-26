@@ -19,6 +19,13 @@ import com.txt.conference.presenter.GetUsersPresenter
 
 
 class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
+    override fun setAttendeeNumber(number: Int) {
+
+    }
+
+    override fun setAttendeeAllNumber(number: Int) {
+
+    }
 
     override fun getToken(): String? {
         return TxSharedPreferencesFactory(applicationContext).getToken()

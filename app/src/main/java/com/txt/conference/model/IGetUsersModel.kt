@@ -9,7 +9,8 @@ import com.txt.conference.bean.ParticipantBean
  */
 interface IGetUsersModel : IBaseModel {
     var users: List<AttendeeBean>?
+    var inviteUser: List<ParticipantBean>?
 
     fun loadUsers(token: String, callBack: IBaseModel.IModelCallBack)
-    fun fullInviteUser(inviteUser: List<ParticipantBean>): List<AttendeeBean>
+    fun fullInviteUser(): List<AttendeeBean>
 }

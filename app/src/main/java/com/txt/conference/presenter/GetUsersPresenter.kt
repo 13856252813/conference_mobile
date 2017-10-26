@@ -40,17 +40,24 @@ class GetUsersPresenter {
         }
     }
 
+    fun getInvitedUserSize(): Int {
+        return if (getUsersModel?.inviteUser == null) 0 else getUsersModel?.inviteUser?.size!!
+    }
+
     fun getUsers(token: String?, alreadyInvite: List<ParticipantBean>) {
         if (token == null || token.equals("")){
             getUsersView?.jumpToLogin()
         } else {
             getUsersView?.showLoading(0)
+            getUsersModel?.inviteUser = alreadyInvite
             getUsersModel?.loadUsers(token, object : IBaseModel.IModelCallBack {
                 override fun onStatus() {
                     getUsersView?.hideLoading()
                     when (getUsersModel!!.status) {
                         Status.SUCCESS -> {
-                            getUsersModel?.fullInviteUser(alreadyInvite)
+                            getUsersView?.setAttendeeAllNumber(getUsersModel?.users?.size!!)
+                            getUsersView?.setAttendeeNumber(0)
+                            getUsersModel?.fullInviteUser()
                             getUsersView?.addAttendees(getUsersModel?.users)
                         }
                         Status.FAILED -> getUsersView?.showToast(getUsersModel?.msg!!)

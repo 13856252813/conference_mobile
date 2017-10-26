@@ -14,6 +14,7 @@
     <color name="grey_time">#999999</color>
     <color name="enter">#3c4061</color>
     <color name="attendee_bg">#f01f2028</color>
+    <color name="attendee_title">#cccccc</color>
     <color name="attendee_divider">#33ffffff</color>
     <color name="invite_corner_border">#66ffffff</color>
     <color name="no_color">#00000000</color>

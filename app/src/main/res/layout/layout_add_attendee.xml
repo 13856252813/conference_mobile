@@ -13,8 +13,9 @@
 
         <TextView
             android:id="@+id/room_add_attendee_tv_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:gravity="left|center_vertical"
             android:text="@string/cancel"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
@@ -24,10 +25,32 @@
             android:layout_weight="1"/>
 
         <TextView
-            android:id="@+id/room_add_attendee_tv_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_attendee_number2"
+            android:textColor="@color/attendee_title"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/room_add_attendee_tv_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/room_add_attendee_tv_all_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
 
@@ -38,8 +61,9 @@
 
         <TextView
             android:id="@+id/room_add_attendee_tv_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:gravity="right|center_vertical"
             android:text="@string/confirm"
             android:textColor="@color/orange"
             android:textSize="14sp"/>

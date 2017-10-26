@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -24,12 +26,13 @@ import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.ClientPresenter
 import com.txt.conference.presenter.GetUsersPresenter
+import com.txt.conference.presenter.InviteUsersPresenter
 import com.txt.conference.presenter.RoomPresenter
 import com.txt.conference.view.IClientView
 import com.txt.conference.view.IGetUsersView
+import com.txt.conference.view.IInviteUsersView
 import com.txt.conference.view.IRoomView
 import com.txt.conference_common.WoogeenSurfaceRenderer
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_room.*
 import kotlinx.android.synthetic.main.layout_add_attendee.*
 import kotlinx.android.synthetic.main.layout_attendee.*
@@ -39,7 +42,7 @@ import pub.devrel.easypermissions.EasyPermissions
 /**
  * Created by jane on 2017/10/15.
  */
-class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView {
+class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView {
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
 
@@ -63,6 +66,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     lateinit var roomPresenter: RoomPresenter
     lateinit var clientPresenter: ClientPresenter
     lateinit var getUsersPresenter: GetUsersPresenter
+    lateinit var inviteUsersPresenter: InviteUsersPresenter
     var room: RoomBean? = null
     var attendeeAdapter: AttendeeAdapter? = null
     var inviteAdapter: InviteAdapter? = null
@@ -88,6 +92,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         roomPresenter.initRoomInfo(room!!)
         clientPresenter = ClientPresenter(this, this)
         getUsersPresenter = GetUsersPresenter(this)
+        inviteUsersPresenter = InviteUsersPresenter(this)
 
         methodRequiresTwoPermission()
     }
@@ -128,6 +133,15 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         finish()
     }
 
+    override fun setAttendeeNumber(number: Int) {
+        ULog.d(TAG, "setAttendeeNumber $number")
+        room_add_attendee_tv_number.setText((getUsersPresenter?.getInvitedUserSize() + number).toString())
+    }
+
+    override fun setAttendeeAllNumber(number: Int) {
+        room_add_attendee_tv_all_number.setText(number.toString())
+    }
+
     fun initRecyclerView() {
         var layoutManager = LinearLayoutManager(this)
         room_attendee_recyclerView.layoutManager = layoutManager
@@ -137,6 +151,20 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     private fun toast(str: String) {
         Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
     }
+
+    //for inviteUsersPresenter begin
+    override fun inviteComplete(room: RoomBean) {
+        this.room = room
+        roomPresenter.initRoomInfo(this.room!!)
+        showAttendees()
+        showToast(R.string.tips_invite_success)
+        startHideAllViewDelayed()
+    }
+
+    override fun getRoomId(): String? {
+        return room?.roomId
+    }
+    //for inviteUsersPresenter end
 
     //for clientPresenter begin
     override fun onOffCamera(isOpenCamera: Boolean) {
@@ -214,7 +242,19 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     }
 
-    override fun addAttendees(users: List<AttendeeBean>?) {
+    fun showAttendees() {
+        if (room_layout_add_attendee.visibility == View.VISIBLE) {
+            room_layout_add_attendee.visibility = View.INVISIBLE
+        }
+        if (room_layout_add_attendee.visibility == View.VISIBLE) {
+            room_layout_add_attendee.visibility = View.INVISIBLE
+        }
+        if (room_layout_attendee.visibility != View.VISIBLE) {
+            room_layout_attendee.visibility = View.VISIBLE
+        }
+    }
+
+    fun showAddAttendees() {
         if (room_layout_attendee_container.visibility != View.VISIBLE) {
             room_layout_attendee_container.visibility = View.VISIBLE
         }
@@ -224,16 +264,33 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         if (room_layout_add_attendee.visibility != View.VISIBLE) {
             room_layout_add_attendee.visibility = View.VISIBLE
         }
+    }
+
+    override fun addAttendees(users: List<AttendeeBean>?) {
+        showAddAttendees()
         if (inviteAdapter == null) {
             inviteAdapter = InviteAdapter(R.layout.item_invite, users)
             inviteAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
                 override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-
+                    var inviteBean = adapter?.getItem(position) as AttendeeBean
+                    if (inviteBean.cantchange) {
+                        return
+                    }
+                    inviteBean.invited = !inviteBean.invited
+                    inviteUsersPresenter?.changeInviteList(inviteBean)
+                    adapter?.notifyItemChanged(position)
+                    startHideAllViewDelayed()
                 }
             }
 
             var layoutManager = LinearLayoutManager(this)
             room_add_attendee_recycler.layoutManager = layoutManager
+            room_add_attendee_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    startHideAllViewDelayed()
+                }
+            })
             room_add_attendee_recycler.addItemDecoration(RecyclerViewDivider(this, R.drawable.invite_divider, 0, 0))
             room_add_attendee_recycler.adapter = inviteAdapter
         } else {
@@ -277,18 +334,13 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 }
             }
             room_attendee_iv_add.id -> {
-                getUsersPresenter?.getUsers(getToken())
+                getUsersPresenter?.getUsers(getToken(), getInviteAttendees())
             }
             room_add_attendee_tv_cancel.id -> {
-                if (room_layout_add_attendee.visibility == View.VISIBLE) {
-                    room_layout_add_attendee.visibility = View.INVISIBLE
-                }
-                if (room_layout_attendee.visibility != View.VISIBLE) {
-                    room_layout_attendee.visibility = View.VISIBLE
-                }
+                showAttendees()
             }
             room_add_attendee_tv_confirm.id -> {
-
+                inviteUsersPresenter?.invite(getRoomId(), getToken())
             }
             room_iv_camera.id -> {
                 clientPresenter?.onOffcamera()
@@ -347,7 +399,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     fun startHideAllViewDelayed() {
         handler.removeMessages(MSG_HIDE_ALL)
-        handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 5)
+        handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 60)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
