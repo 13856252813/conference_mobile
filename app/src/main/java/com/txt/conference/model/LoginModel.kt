@@ -1,6 +1,7 @@
 package com.txt.conference.model
 
 import com.common.http.HttpEventHandler
+import com.common.utlis.ULog
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.GetLoginBean
 import com.txt.conference.bean.LoginBean
@@ -44,6 +45,13 @@ class LoginModel : ILoginModel {
         mPreference?.setUserName(userName)
     }
 
+    fun saveId(id: String?) {
+        if (mPreference == null) {
+            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
+        }
+        mPreference?.setId(id)
+    }
+
     override fun getAccount(): String {
         if (mPreference == null) {
             mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
@@ -78,6 +86,7 @@ class LoginModel : ILoginModel {
                         saveUser(nAccount, nPassword)
                         saveToken(mLoginBean.token)
                         saveUserName(mLoginBean.username)
+                        saveId(mLoginBean.id)
 //                        savePhoneNumber(result?.pho)
                     } else {
                         mLoginBean = LoginBean()
@@ -91,6 +100,7 @@ class LoginModel : ILoginModel {
                     status = Status.FAILED_UNKNOW
                     saveUser(null, null)
                     saveToken(null)
+                    saveId(null)
                     loginCallBack.onStatus()
                 }
             })
