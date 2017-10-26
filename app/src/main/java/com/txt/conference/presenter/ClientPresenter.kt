@@ -279,6 +279,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     override fun onUserLeft(p0: User?) {
         ULog.d(TAG, "onUserLeft")
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
+        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
     }
 
     override fun onStreamError(p0: Stream?, p1: WoogeenException?) {
