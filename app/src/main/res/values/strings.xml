@@ -29,11 +29,13 @@
     <string name="attendee_number">参会人&#160;&#160;</string>
     <string name="begin_time_value">%s  %s小时  %s</string>
     <string name="permission_camera">是否允许添加摄像头和录音权限？</string>
-    <string name="error_unknow">未知异常</string>
+    <string name="error_unknow">未连接服务器</string>
+    <string name="error_enter_room">加入房间失败，请重试。</string>
     <string name="finish">完成</string>
     <string name="starttime_before_nowtime">会议开始时间不能晚于当前时间！</string>
     <string name="loading_rooms">正在加载会议...</string>
     <string name="loading_loginoff">正在退出...</string>
     <string name="loading_add_attendee">正在添加参会人...</string>
+    <string name="loading_conference_connect">正在建立会议连接...</string>
     <string name="tips_invite_success">添加参会人成功</string>
 </resources>

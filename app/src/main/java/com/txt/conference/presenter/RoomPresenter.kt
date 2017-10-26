@@ -20,6 +20,7 @@ class RoomPresenter {
     fun initRoomInfo(room: RoomBean) {
         roomView.setRoomNumber(room.roomNo!!)
         roomView.setAllAttendees((room.participants?.size!! + 1).toString())
+        roomView.setInviteAbility(room.creator?.uid.equals(roomView?.getCurrentUid()))
         var coutDownTime = room.start + room.getDurationMillis() + room.getDelaytimeMillis() - Date().time
         if (countDownTimer != null) {
             countDownTimer?.cancel()

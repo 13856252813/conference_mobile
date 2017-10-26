@@ -10,5 +10,7 @@ interface IRoomView {
     fun setDurationTime(time: String)
     fun setAllAttendees(number: String)
     fun getInviteAttendees(): List<ParticipantBean>
+    fun setInviteAbility(ability: Boolean)
+    fun getCurrentUid(): String
     fun end()
 }

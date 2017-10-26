@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="254dp"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:background="@color/attendee_bg">
+    android:gravity="center_horizontal">
 
     <LinearLayout
         android:id="@+id/room_attendee_head"

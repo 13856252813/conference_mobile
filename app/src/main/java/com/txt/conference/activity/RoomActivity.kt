@@ -217,6 +217,14 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         return room!!.participants!!
     }
 
+    override fun setInviteAbility(ability: Boolean) {
+        room_attendee_iv_add.visibility = if (ability) View.VISIBLE else View.INVISIBLE
+    }
+
+    override fun getCurrentUid(): String {
+        return TxSharedPreferencesFactory(applicationContext).getId()!!
+    }
+
     override fun setAllAttendees(number: String) {
         room_attendee_tv_all_number.setText(number)
     }
