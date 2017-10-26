@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
+import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceUserAdapter
 import com.txt.conference.bean.AttendeeBean
@@ -36,15 +37,29 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
     override fun addAttendees(conference: List<AttendeeBean>?) {
 
         var num: Int = conference?.size!!
-        val bool_array = arrayOfNulls<Boolean>(conference?.size!!)
+
+        if (num > 0){
+            num = num - 1
+        }
+
+        val bool_array = arrayOfNulls<Boolean>(num)
+        val conflist  = java.util.ArrayList<AttendeeBean>()
         var i = 0
-        while (i < num){
-            bool_array[i] = false
+
+        while (i < conference?.size!!){
+            if (!(conference.get(i).uid.equals(getUserUid()))) {
+                conflist.add(conference?.get(i))
+            }
             i++
         }
 
+        for (j in conflist.indices){
+            bool_array[j] = false
+        }
+
+
         if (listadapter == null) {
-            listadapter = ConferenceUserAdapter(conference, bool_array, this)
+            listadapter = ConferenceUserAdapter(conflist, bool_array, this)
             listview?.setAdapter(listadapter)
         }
         updateTitleBar()
@@ -63,6 +78,10 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chooseman)
         initView()
+    }
+
+    fun getUserUid():String?{
+        return TxSharedPreferencesFactory(applicationContext).getId()
     }
 
     fun updateTitleBar() {
