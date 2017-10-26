@@ -238,6 +238,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         return TxSharedPreferencesFactory(applicationContext).getToken()
     }
 
+    override fun getUid(): String? {
+        return TxSharedPreferencesFactory(applicationContext).getId()
+    }
+
     override fun jumpActivity() {
 
     }

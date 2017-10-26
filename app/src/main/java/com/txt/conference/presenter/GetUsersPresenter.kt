@@ -55,9 +55,10 @@ class GetUsersPresenter {
                     getUsersView?.hideLoading()
                     when (getUsersModel!!.status) {
                         Status.SUCCESS -> {
-                            getUsersView?.setAttendeeAllNumber(getUsersModel?.users?.size!!)
                             getUsersView?.setAttendeeNumber(0)
                             getUsersModel?.fullInviteUser()
+                            getUsersModel?.removeMySelf(getUsersView?.getUid()!!)
+                            getUsersView?.setAttendeeAllNumber(getUsersModel?.users?.size!!)
                             getUsersView?.addAttendees(getUsersModel?.users)
                         }
                         Status.FAILED -> getUsersView?.showToast(getUsersModel?.msg!!)

@@ -14,7 +14,7 @@ class GetUsersModel : IGetUsersModel {
     override var inviteUser: List<ParticipantBean>? = null
     override var status: Int = Status.FAILED
     override var msg: String? = null
-    override var users: List<AttendeeBean>? = null
+    override var users: ArrayList<AttendeeBean>? = null
 
     private var getUsersHttp: GetAttendeeHttpFactory? = null
 
@@ -27,7 +27,7 @@ class GetUsersModel : IGetUsersModel {
                 override fun HttpSucessHandler(result: GetAttendeeBean?) {
                     status = result?.code!!
                     if (status == Status.SUCCESS) {
-                        users = result?.data
+                        users = result?.data as ArrayList<AttendeeBean>
                     } else {
                         users = null
                         msg = result?.msg
@@ -61,5 +61,20 @@ class GetUsersModel : IGetUsersModel {
             }
         }
         return users!!
+    }
+
+    override fun removeMySelf(uid: String) {
+        var index = -1
+        var user: AttendeeBean? = null
+        for (i in 0..users?.size!!-1) {
+            user = users?.get(i)
+            if (user?.uid.equals(uid)) {
+                index = i
+                break
+            }
+        }
+        if (index != -1){
+            this.users?.removeAt(index)
+        }
     }
 }
