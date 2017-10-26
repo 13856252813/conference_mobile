@@ -7,6 +7,9 @@ import com.txt.conference.bean.AttendeeBean
  */
 interface IGetUsersView : IBaseView {
     fun getToken(): String?
+    fun getUid(): String?
     fun addAttendees(conference: List<AttendeeBean>?)
     fun jumpToLogin()
+    fun setAttendeeNumber(number: Int)
+    fun setAttendeeAllNumber(number: Int)
 }

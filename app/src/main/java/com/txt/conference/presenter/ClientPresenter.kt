@@ -15,6 +15,7 @@ import com.common.utlis.ULog
 import com.intel.webrtc.base.*
 import com.intel.webrtc.conference.*
 import com.intel.webrtc.conference.PublishOptions
+import com.txt.conference.R
 import com.txt.conference.model.ClientModel
 import com.txt.conference.model.IClientModel
 import com.txt.conference.view.IClientView
@@ -123,6 +124,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
 
     fun joinRoom(token: String?) {
+        clientView?.showLoading(R.string.loading_conference_connect)
         init()
         val connectionOptions = ConnectionOptions()
         connectionOptions.sslContext = sslContext
@@ -279,6 +281,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     override fun onUserLeft(p0: User?) {
         ULog.d(TAG, "onUserLeft")
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
+        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
     }
 
     override fun onStreamError(p0: Stream?, p1: WoogeenException?) {
@@ -408,7 +411,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             mRoom?.publish(localStream, option, object : ActionCallback<Void> {
 
                                 override fun onSuccess(result: Void?) {
-
+                                    mContext?.runOnUiThread {
+                                        clientView?.hideLoading()
+                                    }
                                 }
 
                                 override fun onFailure(e: WoogeenException) {
@@ -417,7 +422,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                         localStreamRenderer!!.cleanFrame()
                                         localStream = null
                                     }
-                                    e.printStackTrace()
+                                    ULog.e(TAG, "onFailure", e)
                                 }
 
                             })

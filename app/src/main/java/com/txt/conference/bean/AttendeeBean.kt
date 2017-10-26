@@ -4,6 +4,10 @@ package com.txt.conference.bean
  * Created by jane on 2017/10/17.
  */
 class AttendeeBean {
+    companion object {
+        val ROLE_SELF = "self"
+        val ROLE_CREATOR = "creator"
+    }
     var uid: String? = null
     var display: String? = null
     get() {
@@ -17,5 +21,7 @@ class AttendeeBean {
     }
 
     var role: String? = null
+    var invited: Boolean = false
+    var cantchange: Boolean = false
 
 }

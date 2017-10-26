@@ -18,7 +18,7 @@
     <string name="not_start">未开始</string>
     <string name="add_attendee">添加参会人</string>
     <string name="add_attendee_number">添加参会人(%s)</string>
-    <string name="add_attendee_number2">添加参会人 %s/%s</string>
+    <string name="add_attendee_number2">添加参会人&#160;&#160;</string>
     <string name="begin_time">开始时间</string>
     <string name="continue_time">持续时长</string>
     <string name="created">确认创建</string>
@@ -29,9 +29,13 @@
     <string name="attendee_number">参会人&#160;&#160;</string>
     <string name="begin_time_value">%s  %s小时  %s</string>
     <string name="permission_camera">是否允许添加摄像头和录音权限？</string>
-    <string name="error_unknow">未知异常</string>
+    <string name="error_unknow">未连接服务器</string>
+    <string name="error_enter_room">加入房间失败，请重试。</string>
     <string name="finish">完成</string>
     <string name="starttime_before_nowtime">会议开始时间不能晚于当前时间！</string>
     <string name="loading_rooms">正在加载会议...</string>
     <string name="loading_loginoff">正在退出...</string>
+    <string name="loading_add_attendee">正在添加参会人...</string>
+    <string name="loading_conference_connect">正在建立会议连接...</string>
+    <string name="tips_invite_success">添加参会人成功</string>
 </resources>

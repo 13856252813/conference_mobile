@@ -11,7 +11,7 @@ import java.util.*
  */
 class RoomPresenter {
     lateinit var roomView: IRoomView
-    lateinit var countDownTimer: CountDownTimer
+    var countDownTimer: CountDownTimer? = null
 
     constructor(view: IRoomView) {
         roomView = view
@@ -20,7 +20,11 @@ class RoomPresenter {
     fun initRoomInfo(room: RoomBean) {
         roomView.setRoomNumber(room.roomNo!!)
         roomView.setAllAttendees((room.participants?.size!! + 1).toString())
+        roomView.setInviteAbility(room.creator?.uid.equals(roomView?.getCurrentUid()))
         var coutDownTime = room.start + room.getDurationMillis() + room.getDelaytimeMillis() - Date().time
+        if (countDownTimer != null) {
+            countDownTimer?.cancel()
+        }
         countDownTimer = object : CountDownTimer(coutDownTime, 1000){
             override fun onFinish() {
                 roomView.end()
