@@ -39,5 +39,6 @@ class RoomPresenter {
 
     fun cancelCountDown() {
         countDownTimer?.cancel()
+        countDownTimer=null
     }
 }

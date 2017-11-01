@@ -139,14 +139,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     msg?.what = PUBLISH_STREAM
                     roomHandler?.sendMessage(msg)
                 }
-                statsTimer = Timer()
-                statsTimer!!.schedule(object : TimerTask() {
-                    override fun run() {
-                        val msg = roomHandler?.obtainMessage()
-                        msg?.what = STATUS_REMOTE
-                        roomHandler?.sendMessage(msg)
-                    }
-                }, 1000, 3000)
                 var users = mRoom?.users
                 ULog.d(TAG, "user size: " + users?.size)
                 for (i in 0..users!!.size-1) {
@@ -462,10 +454,12 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             localStream?.close()
                             localStream = null
                             statsTimer?.cancel()
+                            mContext?.finish()
                         }
 
                         override fun onFailure(p0: WoogeenException?) {
                             ULog.e(TAG, "leave failure ", p0)
+                            mContext?.finish()
                         }
                     })
                 }
@@ -544,6 +538,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         roomHandler?.sendEmptyMessage(MSG_ROOM_DISCONNECTED)
     }
 
+
     fun onOffcamera() {
 //        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
         if (localStream == null) {
@@ -588,8 +583,12 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     }
 
-    fun dettach() {
+    fun finishMeet(){
+        unPublish()
         leave()
+    }
+
+    fun onDestroy() {
         mContext = null
         clientView = null
     }

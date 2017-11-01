@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.common.utlis.ULog
-import com.common.widget.LoadingView
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
@@ -30,6 +30,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, 
     var mConferenceAdapter: ConferenceAdapter? = null
     var joinRoomPresenter: JoinRoomPresenter? = null
     var logoffPresenter: LogoffPresenter? = null
+    var mCurrentTime:Long = 0
 
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
@@ -143,5 +144,18 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, 
     }
 
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event!!.action == KeyEvent.ACTION_DOWN) {
+            if (System.currentTimeMillis() - mCurrentTime > 2000) {
+                showToast("再按一次返回键退出应用")
+                mCurrentTime = System.currentTimeMillis()
+                return true
+            } else {
+                finish()
+                System.exit(0)
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
 
 }

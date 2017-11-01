@@ -32,6 +32,8 @@
     <string name="error_unknow">未连接服务器</string>
     <string name="error_enter_room">加入房间失败，请重试。</string>
     <string name="finish">完成</string>
+    <string name="tip">提示</string>
+    <string name="tip_quit_meet">确定退出会议吗？</string>
     <string name="starttime_before_nowtime">会议开始时间不能晚于当前时间！</string>
     <string name="loading_rooms">正在加载会议...</string>
     <string name="loading_loginoff">正在退出...</string>
