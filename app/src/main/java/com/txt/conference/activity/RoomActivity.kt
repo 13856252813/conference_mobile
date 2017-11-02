@@ -2,6 +2,8 @@ package com.txt.conference.activity
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -37,6 +39,10 @@ import kotlinx.android.synthetic.main.layout_add_attendee.*
 import kotlinx.android.synthetic.main.layout_attendee.*
 import kotlinx.android.synthetic.main.layout_control.*
 import pub.devrel.easypermissions.EasyPermissions
+import android.bluetooth.BluetoothHeadset
+import android.content.IntentFilter
+
+
 
 /**
  * Created by jane on 2017/10/15.
@@ -77,10 +83,42 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         var KEY_CONNECT_TOKEN = "connect_token"
     }
 
+
+    private val headsetPlugReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (action == Intent.ACTION_HEADSET_PLUG) {
+                if (intent.hasExtra("state")) {
+                    if (intent.getIntExtra("state", 0) == 0) {
+                        //Toast.makeText(context, "headset not connected", Toast.LENGTH_LONG).show()
+                        clientPresenter?.onOffLoud()
+                    } else if (intent.getIntExtra("state", 0) == 1) {
+                        //Toast.makeText(context, "headset connected", Toast.LENGTH_LONG).show()
+                        clientPresenter?.onOffLoud()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun registerHeadsetPlugReceiver() {
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("android.intent.action.HEADSET_PLUG")
+        registerReceiver(headsetPlugReceiver, intentFilter)
+
+        // for bluetooth headset connection receiver
+        val bluetoothFilter = IntentFilter(BluetoothHeadset.ACTION_CONNECTION_STATE_CHANGED)
+        registerReceiver(headsetPlugReceiver, bluetoothFilter)
+    }
+
+    private fun unregisterHeadsetPlugReceiver() {
+        unregisterReceiver(headsetPlugReceiver)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room)
-
+        registerHeadsetPlugReceiver()
         room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
         if (room == null || intent.getStringExtra(KEY_CONNECT_TOKEN) == null) {
             this.finish()
@@ -113,6 +151,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun onDestroy() {
         roomPresenter?.cancelCountDown()
         clientPresenter.onDestroy()
+        unregisterHeadsetPlugReceiver()
         ULog.d(TAG, "onDestroy")
         super.onDestroy()
     }

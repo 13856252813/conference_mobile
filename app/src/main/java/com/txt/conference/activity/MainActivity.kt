@@ -29,7 +29,8 @@ import kotlinx.android.synthetic.main.layout_control.*
 import kotlinx.android.synthetic.main.layout_menu.*
 import android.content.DialogInterface
 import com.txt.conference.utils.CustomDialog
-
+import android.content.BroadcastReceiver
+import android.content.Context
 
 
 class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomView, ILogoffView, ConferenceAdapter.TimeCallBack {
@@ -42,6 +43,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
     var deleteRoomPresenter: DeleteRoomPresenter? = null
 
     var mCurrentTime:Long = 0
+
 
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
@@ -127,6 +129,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
     override fun onResume() {
         super.onResume()
         getRoomsPresenter?.getRooms(getToken())
+
     }
 
     override fun onPause() {
