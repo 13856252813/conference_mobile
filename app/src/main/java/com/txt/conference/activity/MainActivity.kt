@@ -123,7 +123,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, 
         var layoutManager = LinearLayoutManager(this)
         home_rv.layoutManager = layoutManager
         home_rv.addItemDecoration(RecyclerViewDivider(this, 20, 20))
-        mConferenceAdapter = ConferenceAdapter(R.layout.item_conference, null)
+        mConferenceAdapter = ConferenceAdapter(R.layout.item_conference_new, null)
         mConferenceAdapter?.timeCallBack = this
         mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {

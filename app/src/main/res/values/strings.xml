@@ -40,4 +40,6 @@
     <string name="loading_add_attendee">正在添加参会人...</string>
     <string name="loading_conference_connect">正在建立会议连接...</string>
     <string name="tips_invite_success">添加参会人成功</string>
+    <string name="add_conference_attend">添加参会</string>
+    <string name="delete_conference">取消会议</string>
 </resources>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:gravity="center_vertical"
+    android:layout_height="65dp">
+
+    <com.txt.conference.utils.SwipeLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp">
+    <LinearLayout
+        android:id="@+id/font"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:layout_height="65dp">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:src="@mipmap/icon_video"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp">
+
+        <TextView
+            android:id="@+id/item_tv_room_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/grey_room"
+            android:text="ssss"/>
+
+        <TextView
+            android:text="08-12 14:30  2小时  sss"
+            android:id="@+id/item_tv_begin_time"
+            android:layout_below="@id/item_tv_room_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:textColor="@color/grey_time"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/item_bt_enter"
+        android:layout_width="70dp"
+        android:layout_height="30.5dp"
+        android:layout_marginRight="10.5dp"
+        android:textSize="12sp"
+        android:textColor="@color/grey_time"
+        android:background="@drawable/enter_normal" />
+    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/back"
+            android:layout_width="100dp"
+            android:layout_height="65dp">
+            <RelativeLayout
+                android:id="@+id/add_attend"
+                android:clickable="true"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/grey200">
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:text="@string/add_conference_attend"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/delete_button"
+                android:clickable="true"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="#ff0000">
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/welcome"
+                    android:text="@string/delete_conference"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </com.txt.conference.utils.SwipeLayout>
+</LinearLayout>
