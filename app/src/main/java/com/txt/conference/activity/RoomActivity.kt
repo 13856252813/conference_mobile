@@ -1,21 +1,20 @@
 package com.txt.conference.activity
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.GestureDetector
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.listener.OnItemChildClickListener
 import com.common.utlis.ULog
-import com.common.widget.LoadingView
 import com.txt.conference.R
 import com.txt.conference.adapter.AttendeeAdapter
 import com.txt.conference.adapter.InviteAdapter
@@ -110,10 +109,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         roomPresenter?.cancelCountDown()
-        clientPresenter.dettach()
+        clientPresenter.onDestroy()
         ULog.d(TAG, "onDestroy")
+        super.onDestroy()
     }
 
     private fun methodRequiresTwoPermission() {
@@ -135,11 +134,11 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     override fun setAttendeeNumber(number: Int) {
         ULog.d(TAG, "setAttendeeNumber $number")
-        room_add_attendee_tv_number.setText((getUsersPresenter?.getInvitedUserSize() + number).toString())
+        room_add_attendee_tv_number.text = (getUsersPresenter?.getInvitedUserSize() + number).toString()
     }
 
     override fun setAttendeeAllNumber(number: Int) {
-        room_add_attendee_tv_all_number.setText(number.toString())
+        room_add_attendee_tv_all_number.text = number.toString()
     }
 
     fun initRecyclerView() {
@@ -226,20 +225,20 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     override fun setAllAttendees(number: String) {
-        room_attendee_tv_all_number.setText(number)
+        room_attendee_tv_all_number.text = number
     }
 
     override fun setRoomNumber(number: String) {
-        room_tv_number.setText(String.format(getString(R.string.room_number), number))
+        room_tv_number.text = String.format(getString(R.string.room_number), number)
     }
 
     override fun setDurationTime(time: String) {
-        room_tv_time.setText(time)
+        room_tv_time.text = time
     }
 
     override fun end() {
         showToast(R.string.conference_end)
-        this.finish()
+        clientPresenter.finishMeet()
     }
     //for roomPresenter end
 
@@ -325,7 +324,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     private fun initViewEvent() {
         room_iv_quit.setOnClickListener {
             ULog.d(TAG, "image click")
-            this.finish()
+            clientPresenter.finishMeet()
         }
 
         room_iv_attendee.setOnClickListener(this)
@@ -411,6 +410,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         })
     }
 
+
+
     fun startHideAllViewDelayed() {
         handler.removeMessages(MSG_HIDE_ALL)
         handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 60)
@@ -419,5 +420,18 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
         return gesture.onTouchEvent(event)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event?.action == KeyEvent.ACTION_DOWN) {
+            AlertDialog.Builder(this).setTitle(R.string.tip).setMessage(R.string
+                    .tip_quit_meet).setPositiveButton(R.string.confirm, { dialog, which ->
+                clientPresenter.finishMeet()
+            }).setNegativeButton(R.string.cancel, { dialog, which ->
+                dialog.dismiss()
+            }).show()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
