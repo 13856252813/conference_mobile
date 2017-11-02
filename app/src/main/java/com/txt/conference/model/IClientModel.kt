@@ -9,5 +9,6 @@ import com.txt.conference.bean.AttendeeBean
 interface IClientModel : IBaseModel {
     var cameraIsOpen: Boolean
     var microphoneIsOpen: Boolean
+    var loudIsOpen: Boolean
     fun getUsers(users: List<User>): List<AttendeeBean>
 }

@@ -73,7 +73,7 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:textSize="12sp"
-                    android:textColor="@color/white"
+                    android:textColor="@color/grey_time"
                     android:text="@string/add_conference_attend"/>
             </RelativeLayout>
             <RelativeLayout
@@ -81,7 +81,7 @@
                 android:clickable="true"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="#ff0000">
+                android:background="#ee0000">
                 <TextView
                     android:layout_centerInParent="true"
                     android:layout_width="28dp"

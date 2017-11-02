@@ -42,4 +42,9 @@
     <string name="tips_invite_success">添加参会人成功</string>
     <string name="add_conference_attend">添加参会</string>
     <string name="delete_conference">取消会议</string>
+    <string name="delete_conference_confirm">确认要取消该会议房间?</string>
+    <string name="company_address">企业通讯录</string>
+    <string name="conference_device">会议室设备</string>
+    <string name="phone_address">手机通讯录</string>
+    <string name="weixin_friend">微信好友</string>
 </resources>

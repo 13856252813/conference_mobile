@@ -10,6 +10,7 @@ class ClientModel : IClientModel {
     override var msg: String? = null
     override var microphoneIsOpen: Boolean = true
     override var cameraIsOpen: Boolean = true
+    override var loudIsOpen: Boolean = true
     override var status: Int = Status.FAILED
 
     override fun getUsers(users: List<User>): List<AttendeeBean> {

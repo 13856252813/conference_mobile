@@ -42,6 +42,8 @@ import pub.devrel.easypermissions.EasyPermissions
  * Created by jane on 2017/10/15.
  */
 class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView {
+
+
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
 
@@ -171,6 +173,14 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             runOnUiThread { room_iv_camera.setImageResource(R.mipmap.camera_open) }
         } else {
             runOnUiThread { room_iv_camera.setImageResource(R.mipmap.camera_closed) }
+        }
+    }
+
+    override fun onOffLoud(isOpenLoud: Boolean) {
+        if (isOpenLoud) {
+            runOnUiThread { room_iv_loud.setImageResource(R.mipmap.loud) }
+        } else {
+            runOnUiThread { room_iv_loud.setImageResource(R.mipmap.loud_off) }
         }
     }
 
@@ -336,6 +346,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         room_iv_mute.setOnClickListener(this)
         room_iv_share.setOnClickListener(this)
         room_iv_turn.setOnClickListener(this)
+        room_iv_loud.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -366,6 +377,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             }
             room_iv_turn.id -> {
                 clientPresenter?.switchCamera()
+            }
+            room_iv_loud.id -> {
+                clientPresenter?.onOffLoud()
             }
         }
     }

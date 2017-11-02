@@ -14,22 +14,33 @@ import com.txt.conference.adapter.ConferenceAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
+import com.txt.conference.presenter.DeleteRoomPresenter
 import com.txt.conference.presenter.GetRoomsPresenter
 import com.txt.conference.presenter.JoinRoomPresenter
 import com.txt.conference.presenter.LogoffPresenter
+import com.txt.conference.view.IDeleteRoomView
 import com.txt.conference.view.IGetRoomsView
 import com.txt.conference.view.IJoinRoomView
 import com.txt.conference.view.ILogoffView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main2.*
+import kotlinx.android.synthetic.main.item_conference_new.*
+import kotlinx.android.synthetic.main.layout_control.*
 import kotlinx.android.synthetic.main.layout_menu.*
+import android.content.DialogInterface
+import com.txt.conference.utils.CustomDialog
 
-class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, ConferenceAdapter.TimeCallBack {
+
+
+class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomView, ILogoffView, ConferenceAdapter.TimeCallBack {
+
     val TAG = MainActivity::class.java.simpleName
     var getRoomsPresenter: GetRoomsPresenter? = null
     var mConferenceAdapter: ConferenceAdapter? = null
     var joinRoomPresenter: JoinRoomPresenter? = null
     var logoffPresenter: LogoffPresenter? = null
+    var deleteRoomPresenter: DeleteRoomPresenter? = null
+
     var mCurrentTime:Long = 0
 
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
@@ -37,6 +48,10 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, 
         i.putExtra(RoomActivity.KEY_ROOM, room)
         i.putExtra(RoomActivity.KEY_CONNECT_TOKEN, connect_token)
         startActivity(i)
+    }
+
+    override fun deleteFinished() {
+        getRoomsPresenter?.getRooms(getToken())
     }
 
     override fun showError(errorRes: Int) {
@@ -92,7 +107,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, 
         getRoomsPresenter = GetRoomsPresenter(this)
         joinRoomPresenter = JoinRoomPresenter(this)
         logoffPresenter = LogoffPresenter(this)
-
+        deleteRoomPresenter = DeleteRoomPresenter(this)
         home_ib_logoff.setOnClickListener { logoffPresenter?.logoff(getToken()) }
         home_iv_menu.setOnClickListener {
             if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
@@ -119,6 +134,20 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, 
         mConferenceAdapter?.cancelAllTimers()
     }
 
+    fun showConfirmDialog(room: RoomBean){
+        val builder = CustomDialog.Builder(this)
+        builder.setMessage(getString(R.string.delete_conference_confirm))
+        builder.setTitle(getString(R.string.delete_conference))
+        builder.setPositiveButton(getString(R.string.confirm)) { dialog, which ->
+            dialog.dismiss()
+            deleteRoomPresenter?.deleteRoom(room, getToken())
+        }
+
+        builder.setNegativeButton(getString(R.string.cancel)
+        ) { dialog, which -> dialog.dismiss() }
+
+        builder.create().show()
+    }
     fun initRecyclerView() {
         var layoutManager = LinearLayoutManager(this)
         home_rv.layoutManager = layoutManager
@@ -128,10 +157,24 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, ILogoffView, 
         mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
             override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
                 var room = adapter?.data?.get(position) as RoomBean
-                ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
-                if (room.status == RoomBean.STATUS_BEGING) {
-                    joinRoomPresenter?.joinRoom(room, getToken())
+                ULog.d(TAG, "onItemChildClick $position ")
+                when(view?.id) {
+                    item_bt_enter.id -> {
+                        ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
+                        if (room.status == RoomBean.STATUS_BEGING) {
+                            joinRoomPresenter?.joinRoom(room, getToken())
+                        }
+                    }
+                    add_attend.id -> {
+                        ULog.d(TAG, "onItemChildClick $position add_attend")
+                    }
+                    delete_button.id -> {
+                        ULog.d(TAG, "onItemChildClick $position delete")
+                        //deleteRoomPresenter?.deleteRoom(room, getToken())
+                        showConfirmDialog(room)
+                    }
                 }
+
             }
         }
         mConferenceAdapter?.bindToRecyclerView(home_rv)
