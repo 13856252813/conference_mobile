@@ -91,10 +91,18 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
                         //Toast.makeText(context, "headset not connected", Toast.LENGTH_LONG).show()
-                        clientPresenter?.onOffLoud()
+                        if (clientPresenter.getIsSpeakerLoad()){
+
+                        } else {
+                            clientPresenter?.onOffLoud()
+                        }
+
                     } else if (intent.getIntExtra("state", 0) == 1) {
                         //Toast.makeText(context, "headset connected", Toast.LENGTH_LONG).show()
-                        clientPresenter?.onOffLoud()
+                        if (clientPresenter.getIsSpeakerLoad()){
+                            clientPresenter?.onOffLoud()
+                        }
+
                     }
                 }
             }
