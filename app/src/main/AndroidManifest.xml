@@ -51,21 +51,21 @@
 
         <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:theme="@style/activity_common">
         </activity>
 
         <activity android:name=".activity.RoomActivity"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+            android:theme="@style/activity_common">
 
         </activity>
         <activity android:name=".activity.CreateConferenceRoomActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+            android:theme="@style/activity_common">
         </activity>
         <activity android:name=".activity.ChooseManActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:theme="@style/activity_common">
         </activity>
     </application>
 
