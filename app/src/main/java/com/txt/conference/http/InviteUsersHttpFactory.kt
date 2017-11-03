@@ -2,6 +2,7 @@ package com.txt.conference.http
 
 import com.common.http.HttpStringFactoryBase
 import com.common.utlis.ULog
+import com.common.utlis.URLEncoderUtils
 import com.google.gson.Gson
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.InviteUsersBean
@@ -32,7 +33,7 @@ class InviteUsersHttpFactory : HttpStringFactoryBase<InviteUsersBean>() {
      * 1 token
      */
     override fun CreateUri(vararg args: Any?): String {
-        return String.format(Urls.INVItE_USERS, URLEncoder.encode(args[0] as String, "UTF-8"), args[1])
+        return String.format(Urls.INVItE_USERS, URLEncoderUtils.encode(args[0] as String), args[1])
     }
 
     override fun getPostArgs(): ArrayList<org.apache.http.NameValuePair> {

@@ -556,6 +556,25 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
     }
 
+    fun onOffLoud() {
+//        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
+
+        setSpeakerphoneOn(clientModel?.loudIsOpen!!)
+        if (clientModel?.loudIsOpen!!) {
+            clientModel?.loudIsOpen = false
+        } else {
+            clientModel?.loudIsOpen = true
+        }
+        clientView?.onOffLoud(clientModel?.loudIsOpen!!)
+    }
+
+    fun setSpeakerphoneOn(isSpeakerphoneOn: Boolean){
+        val audioManager = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager.setSpeakerphoneOn(isSpeakerphoneOn)
+        if(!isSpeakerphoneOn){
+            audioManager.setMode(AudioManager.MODE_NORMAL)
+        }
+}
     fun onOffMicrophone() {
 //        var audio = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 //        audio.isMicrophoneMute = !audio.isMicrophoneMute

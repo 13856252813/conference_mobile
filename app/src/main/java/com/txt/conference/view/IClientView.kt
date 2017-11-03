@@ -20,4 +20,6 @@ interface IClientView : IBaseView{
     fun setAlreadyAttendees(number: String)
 
     fun updateUsers(users: List<AttendeeBean>)
+
+    fun onOffLoud(isOpenLoud: Boolean)
 }

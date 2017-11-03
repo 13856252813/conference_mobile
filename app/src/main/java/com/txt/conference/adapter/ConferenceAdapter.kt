@@ -29,6 +29,8 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         helper?.setText(R.id.item_tv_room_number, item?.roomNo)
         helper?.setText(R.id.item_tv_begin_time, String.format(TxApplication.mInstance!!.getString(R.string.begin_time_value), DateUtils().format(item?.start, DateUtils.MM_dd_HH_mm), item?.duration, item?.creator?.display))
         helper?.addOnClickListener(R.id.item_bt_enter)
+        helper?.addOnClickListener(R.id.add_attend)
+        helper?.addOnClickListener(R.id.delete_button)
 //        var bgColor = 0
 //        when (item?.status) {
 //            RoomBean.STATUS_NORMAL -> bgColor = R.color.grey_time
