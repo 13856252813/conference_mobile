@@ -10,6 +10,7 @@ import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceUserAdapter
 import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.view.IGetUsersView
 import com.txt.conference.presenter.GetUsersPresenter
@@ -39,12 +40,20 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
 
     }
 
+    companion object {
+        var KEY_ROOM = "room_key"
+    }
     var getuserPresenter: GetUsersPresenter? = null
     var listview: ListView? = null
     var listadapter: ConferenceUserAdapter? = null
     var titlebar_back: TextView? = null
     var titlebar_title: TextView? = null
     var titlebar_finish: TextView? = null
+
+    var room: RoomBean? = null
+    val requestCode: Int = 0
+
+
     override fun addAttendees(conference: List<AttendeeBean>?) {
 
         var num: Int = conference?.size!!
@@ -66,6 +75,14 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
 
         for (j in conflist.indices){
             bool_array[j] = false
+            if (room != null) {
+                for (k in room?.participants!!.indices) {
+                    if (room?.participants!!.get(k).id!!.equals(conflist.get(j).uid)) {
+                        bool_array[j] = true
+                        break
+                    }
+                }
+            }
         }
 
 
@@ -146,6 +163,10 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
         titlebar_finish = this.findViewById<TextView>(R.id.right_attandfinish_text)
         titlebar_title = this.findViewById<TextView>(R.id.title_attand)
         listview= this.findViewById<ListView>(R.id.listUserView)
+
+        if (intent.getSerializableExtra(KEY_ROOM) != null) {
+            room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
+        }
         titlebar_back?.setOnClickListener(this)
         titlebar_finish?.setOnClickListener(this)
         listview?.setOnItemClickListener { adapterView, view, i, l ->
@@ -155,7 +176,6 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
                 check = true
             }
             listadapter?.setItemCheck(i, check)
-            //Log.i("mytest", i.toString())
             listadapter!!.notifyDataSetChanged()
             updateTitleBar()
         }
