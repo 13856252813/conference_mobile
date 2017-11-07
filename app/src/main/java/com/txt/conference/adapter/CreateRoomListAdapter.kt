@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.ImageView
 import java.util.*
@@ -35,6 +36,12 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
         holder.textinfo2.text = list[position].strinfo2
         holder.imageView1.setImageResource(list[position].icon)
         holder.imageView2.setImageResource(list[position].icon2)
+
+        if (position == 0){
+            holder.imageView2.setVisibility(View.GONE)
+            //holder.textinfo2.setVisibility(View.GONE)
+            //holder.editview.setVisibility(View.VISIBLE)
+        }
         return v
     }
 
@@ -56,5 +63,6 @@ class CreateRoomListViewHolder(var viewItem: View) {
     var imageView1: ImageView = viewItem.findViewById<ImageView>(R.id.imageView1)
     var textinfo: TextView = viewItem.findViewById<TextView>(R.id.textinfo)
     var textinfo2: TextView = viewItem.findViewById<TextView>(R.id.textinfo2)
+    var editview: EditText = viewItem.findViewById<EditText>(R.id.editviewinfo)
     var imageView2: ImageView = viewItem.findViewById<ImageView>(R.id.imageView2)
 }

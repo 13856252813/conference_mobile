@@ -17,19 +17,20 @@ class CreateConferenceModel : ICreateConferenceModel {
 
         val formatter = SimpleDateFormat("MM-dd HH:mm")
         val curDate = Date(System.currentTimeMillis())//获取当前时间
-        //var calendar: Calendar  = Calendar.getInstance()
-        /*if (curDate.minutes< 58){
-            calendar.set(curDate.year, curDate.month, curDate.day, curDate.hours, curDate.minutes + 2)
-        } else {
-            calendar.set(curDate.year, curDate.month, curDate.day, curDate.hours + 1, 0)
-        }*/
+
 
         val str = formatter.format(curDate)
-        val list = ArrayList<CreateRoomListAdapterBean>(4)
+        val list = ArrayList<CreateRoomListAdapterBean>(5)
+        var bean0: CreateRoomListAdapterBean = CreateRoomListAdapterBean()
         var bean1: CreateRoomListAdapterBean = CreateRoomListAdapterBean()
         var bean2: CreateRoomListAdapterBean = CreateRoomListAdapterBean()
         var bean3: CreateRoomListAdapterBean = CreateRoomListAdapterBean()
         var bean4: CreateRoomListAdapterBean = CreateRoomListAdapterBean()
+
+        bean0.icon = R.mipmap.conf_title
+        bean0.strinfo = "会议主题"
+        bean0.strinfo2 = "请填写"
+        bean0.icon2 = R.mipmap.right_arrow
         bean1.icon = R.mipmap.mutiman
         bean1.strinfo = "添加参会人"
         bean1.strinfo2 = "0"
@@ -46,6 +47,7 @@ class CreateConferenceModel : ICreateConferenceModel {
         bean4.strinfo = "持续时长"
         bean4.strinfo2 = "1"
         bean4.icon2 = R.mipmap.right_arrow
+        list.add(bean0)
         list.add(bean1)
         list.add(bean2)
         list.add(bean3)

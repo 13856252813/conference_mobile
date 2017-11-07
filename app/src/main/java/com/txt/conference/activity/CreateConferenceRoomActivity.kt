@@ -111,6 +111,10 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         startActivityForResult(i, REQUEST_CODE_CHOOSE_DEVICE)
     }
 
+    fun startEditTitle(){
+
+    }
+
     fun startCostTime(){
         var costtimepick: CostTimePickDialogUtil = CostTimePickDialogUtil(this)
         costtimepick.setCostTimePickeristener(this)
@@ -180,10 +184,11 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         listview?.setOnItemClickListener { adapterView, view, i, l ->
 
             when(i){
-                0 -> this.startChooseAttand()
-                1 -> this.startChooseDeviceAttand()
-                2 -> this.startDateTimer()
-                3 -> this.startCostTime()
+                0 -> this.startEditTitle()
+                1 -> this.startChooseAttand()
+                2 -> this.startChooseDeviceAttand()
+                3 -> this.startDateTimer()
+                4 -> this.startCostTime()
 
             }
         }
