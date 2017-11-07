@@ -53,21 +53,25 @@
 
         <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/activity_common">
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         </activity>
 
         <activity android:name=".activity.RoomActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/activity_common">
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
 
         </activity>
         <activity android:name=".activity.CreateConferenceRoomActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/activity_common">
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         </activity>
         <activity android:name=".activity.ChooseManActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/activity_common">
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        </activity>
+        <activity android:name=".activity.CreateConferenceFinishedActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         </activity>
     </application>
 
