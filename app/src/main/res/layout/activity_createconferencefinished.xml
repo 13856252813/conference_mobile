@@ -11,20 +11,18 @@
 
     <ImageView
         android:id="@+id/create_finished_icon_id"
-        android:layout_marginTop="42.5dp"
+        android:layout_marginTop="85dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/title_bar"
         android:src="@mipmap/create_finished"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-
-
     <Button
         android:id="@+id/bt_enter"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/create_finished_icon_id"
-        android:layout_marginTop="29dp"
+        android:layout_marginTop="58dp"
         android:layout_width="250dp"
         android:layout_height="43.5dp"
         android:textSize="14sp"
@@ -35,7 +33,7 @@
         android:id="@+id/bt_back"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/bt_enter"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="22dp"
         android:layout_width="250dp"
         android:layout_height="43.5dp"
         android:textSize="14sp"
@@ -46,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/bt_back"
-        android:layout_marginTop="34.5dp"
+        android:layout_marginTop="69dp"
         android:background="@color/hint">
         <TextView
             android:id="@+id/invite_friend_id"
@@ -72,11 +70,15 @@
                 android:layout_marginLeft="96dp"
                 android:src="@mipmap/phone_address"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/weixin_icon_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="75dp"
+                android:layout_marginRight="96dp"
                 android:src="@mipmap/weixin_icon"/>
         </LinearLayout>
     </RelativeLayout>

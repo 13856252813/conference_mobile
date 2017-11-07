@@ -35,8 +35,8 @@ class CreateConferenceRoomPresenter {
             override fun onStatus() {
                 mCreateRoomView?.hideLoading()
                 if (mCreateRoomModel?.status == Status.SUCCESS) {
-                    mCreateRoomView?.jumpActivity()
-
+                    //mCreateRoomView?.jumpActivity()
+                    mCreateRoomView?.jumpActivity(mCreateRoomModel?.mCreateRoomBean?.data!!)
                 } else {
                     mCreateRoomView?.showError("创建房间失败")
                 }

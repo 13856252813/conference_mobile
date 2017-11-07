@@ -235,8 +235,8 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
                 inviteBean!!.display = contacts?.get(0)
                 inviteBean!!.uid = contacts?.get(1)
                 inviteBean!!.invited = true
-                ULog.i(TAG, "inviteBean display:" + inviteBean!!.display)
-                ULog.i(TAG, "inviteBean uid:" + inviteBean!!.uid)
+                ULog.i(TAG, "inviteBean:")
+                ULog.i(TAG, contacts?.get(1))
                 inviteUsersPresenter.changeInviteList(inviteBean)
                 inviteUsersPresenter.invite(getRoomId(), getToken())
                 /*val cursorLoader = CursorLoader(this, uri, null, null, null, null);
