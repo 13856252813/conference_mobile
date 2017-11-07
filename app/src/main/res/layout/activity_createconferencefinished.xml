@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        layout="@layout/title_bar" />
+
+    <ImageView
+        android:id="@+id/create_finished_icon_id"
+        android:layout_marginTop="42.5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/title_bar"
+        android:src="@mipmap/create_finished"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+    <Button
+        android:id="@+id/bt_enter"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/create_finished_icon_id"
+        android:layout_marginTop="29dp"
+        android:layout_width="250dp"
+        android:layout_height="43.5dp"
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        android:text="@string/enter_room"
+        android:background="@drawable/login_corners"/>
+    <Button
+        android:id="@+id/bt_back"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/bt_enter"
+        android:layout_marginTop="11dp"
+        android:layout_width="250dp"
+        android:layout_height="43.5dp"
+        android:textSize="14sp"
+        android:textColor="@color/blue80"
+        android:text="@string/back_to_front"
+        android:background="@drawable/create_finished_corners_back"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/bt_back"
+        android:layout_marginTop="34.5dp"
+        android:background="@color/hint">
+        <TextView
+            android:id="@+id/invite_friend_id"
+            android:layout_centerHorizontal="true"
+            android:text="@string/invite_friend"
+            android:textColor="@color/blue80"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_marginTop="10.5dp"
+            android:layout_width="250dp"
+            android:layout_height="43.5dp"/>
+        <LinearLayout
+            android:id="@+id/home_ll_create"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_below="@id/invite_friend_id"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/phone_address_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="96dp"
+                android:src="@mipmap/phone_address"/>
+
+            <ImageView
+                android:id="@+id/weixin_icon_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="75dp"
+                android:src="@mipmap/weixin_icon"/>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>
