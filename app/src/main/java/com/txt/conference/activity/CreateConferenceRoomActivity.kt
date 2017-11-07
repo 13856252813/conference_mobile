@@ -57,6 +57,10 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     }
 
+    companion object {
+        var REQUEST_CODE_CHOOSE_ATTEND = 10
+        var REQUEST_CODE_CHOOSE_DEVICE = 11
+    }
 
     //var mPresenter: CreateConferencePresenter()
     var mPresenter: CreateConferencePresenter? = null
@@ -69,6 +73,10 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     //var mAttandList: Array<AttendeeBean>? = null
     var namelist: ArrayList<String>? = null
     var displaylist: ArrayList<String>? = null
+
+    var namedevicelist: ArrayList<String>? = null
+    var displaydevicelist: ArrayList<String>? = null
+
     var mCostTime: String? = "1"
     var mStartTime: String? = ""
     override fun initListViewData(listdata: ArrayList<CreateRoomListAdapterBean>) {
@@ -93,8 +101,14 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     fun startChooseAttand(){
         var i = Intent(this, ChooseManActivity::class.java)
-        var requestCode: Int = 10
-        startActivityForResult(i, requestCode)
+        //var requestCode: Int = 10
+        startActivityForResult(i, REQUEST_CODE_CHOOSE_ATTEND)
+    }
+
+    fun startChooseDeviceAttand(){
+        var i = Intent(this, ChooseDeviceActivity::class.java)
+        //var requestCode: Int = 11
+        startActivityForResult(i, REQUEST_CODE_CHOOSE_DEVICE)
     }
 
     fun startCostTime(){
@@ -116,10 +130,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         jsonTime.put("hour",Constants.TimeStrGetHour(mStartTime))
         jsonTime.put("min",Constants.TimeStrGetMin(mStartTime))
         jsonObj.put("start", jsonTime) // start time
-        if (namelist == null ){
-            jsonObj.put("names", namearray)
-            jsonObj.put("participants", pararray)
-        } else {
+        if (namelist != null ) {
             val num = namelist?.size!!
             var i = 0
             while (i < num){
@@ -127,10 +138,19 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
                 pararray.put(namelist?.get(i))
                 i++
             }
-            jsonObj.put("names", namearray)
-            jsonObj.put("participants", pararray)
         }
 
+        if (namedevicelist != null ) {
+            val num = namedevicelist?.size!!
+            var i = 0
+            while (i < num){
+                namearray.put(displaydevicelist?.get(i))
+                pararray.put(namedevicelist?.get(i))
+                i++
+            }
+        }
+        jsonObj.put("names", namearray)
+        jsonObj.put("participants", pararray)
 
         return jsonObj?.toString()
     }
@@ -161,9 +181,9 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
             when(i){
                 0 -> this.startChooseAttand()
-
-                1 -> this.startDateTimer()
-                2 -> this.startCostTime()
+                1 -> this.startChooseDeviceAttand()
+                2 -> this.startDateTimer()
+                3 -> this.startCostTime()
 
             }
         }
@@ -215,6 +235,14 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
             listadapter!!.notifyDataSetChanged()
         }
     }
+
+    fun onDeviceManUpdate(str: String?) {
+        if (listadapter != null) {
+            listadapter!!.updateItemStr(1, str)
+            listadapter!!.notifyDataSetChanged()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         //Log.i("mytest3", requestCode.toString() + ":" + resultCode.toString())
@@ -222,11 +250,17 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         if (resultCode != 0) {
             return
         }
+
         if (data != null) {
-            namelist  = data?.getStringArrayListExtra("nameattandList")
-            displaylist = data?.getStringArrayListExtra("displayattandList")
-            //Log.i("mytest2", namelist?.size.toString())
-            onAttandManUpdate(namelist?.size.toString())
+            if (requestCode == REQUEST_CODE_CHOOSE_ATTEND) {
+                namelist = data?.getStringArrayListExtra("nameattandList")
+                displaylist = data?.getStringArrayListExtra("displayattandList")
+                onAttandManUpdate(namelist?.size.toString())
+            } else if (requestCode == REQUEST_CODE_CHOOSE_DEVICE){
+                namedevicelist = data?.getStringArrayListExtra("nameattandList")
+                displaydevicelist = data?.getStringArrayListExtra("displayattandList")
+                onDeviceManUpdate(namedevicelist?.size.toString())
+            }
         }
 
 

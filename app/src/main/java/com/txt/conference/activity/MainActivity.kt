@@ -311,6 +311,15 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         //startActivity(i)
     }
 
+    fun startDeviceActivity(room: RoomBean){
+        var i = Intent(this, ChooseDeviceActivity::class.java)
+        i.putExtra(ChooseDeviceActivity.KEY_ROOM, room)
+        //var requestCode: Int = 101
+        startActivityForResult(i, REQUEST_ATTEND)
+        //startActivity(i)
+    }
+
+
     fun showChoosAttendDialog(room: RoomBean){
         val builder = CustomAttendDialog.Builder(this)
         selectroom = room
@@ -320,6 +329,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         }
         builder.setdeviceButton(){
             dialog, which -> dialog.dismiss()
+            startDeviceActivity(room)
         }
         builder.setphoneButton(){
             dialog, which -> dialog.dismiss()
