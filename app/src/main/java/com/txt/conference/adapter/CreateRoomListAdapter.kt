@@ -11,6 +11,12 @@ import java.util.*
 import com.txt.conference.R
 
 import com.txt.conference.bean.CreateRoomListAdapterBean
+import android.text.Editable
+import android.support.v7.widget.RecyclerView.ViewHolder
+import android.text.TextWatcher
+import com.common.utlis.ULog
+
+
 /**
  * Created by pc on 2017/10/15.
  */
@@ -20,6 +26,8 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
     override fun getCount(): Int {
         return list.size
     }
+    var clickFirst = false
+    var editText = ""
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         var holder: CreateRoomListViewHolder
@@ -37,11 +45,38 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
         holder.imageView1.setImageResource(list[position].icon)
         holder.imageView2.setImageResource(list[position].icon2)
 
-        if (position == 0){
+        class MyTextWatcher(private val mHolder: CreateRoomListViewHolder) : TextWatcher {
+
+            override fun onTextChanged(s: CharSequence, start: Int,
+                                       before: Int, count: Int) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int,
+                                           count: Int, after: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s != null){
+                    editText = s.toString()
+                }
+            }
+        }
+        if (holder.textinfo.text.equals("会议主题") && clickFirst == false){
             holder.imageView2.setVisibility(View.GONE)
+            holder.textinfo2.setVisibility(View.VISIBLE)
+            holder.editview.setVisibility(View.GONE)
+            if (editText.equals("") == false){
+                holder.textinfo2.text = editText
+            }
             //holder.textinfo2.setVisibility(View.GONE)
             //holder.editview.setVisibility(View.VISIBLE)
+        } else if (holder.textinfo.text.equals("会议主题") && clickFirst == true){
+            holder.textinfo2.setVisibility(View.GONE)
+            holder.editview.setVisibility(View.VISIBLE)
         }
+
+        holder.editview.addTextChangedListener(MyTextWatcher(holder))
+
         return v
     }
 
@@ -57,6 +92,9 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
         list.get(position).strinfo2 = str
     }
 
+    fun updateItemStr(click: Boolean) {
+        clickFirst = click
+    }
 }
 
 class CreateRoomListViewHolder(var viewItem: View) {

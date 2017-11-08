@@ -60,6 +60,12 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     companion object {
         var REQUEST_CODE_CHOOSE_ATTEND = 10
         var REQUEST_CODE_CHOOSE_DEVICE = 11
+
+        var ITEM_TITLE = 0
+        var ITEM_ATTEND = 1
+        var ITEM_DEVICE = 2
+        var ITEM_STARTTIME = 3
+        var ITEM_COSTTIME = 4
     }
 
     //var mPresenter: CreateConferencePresenter()
@@ -112,7 +118,8 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     fun startEditTitle(){
-
+        listadapter!!.updateItemStr(true)
+        listadapter!!.notifyDataSetChanged()
     }
 
     fun startCostTime(){
@@ -122,11 +129,15 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     fun createRoomJsonString (): String? {
+        var title = ""
+        if (listadapter?.editText != null){
+            title = listadapter?.editText!!
+        }
         var jsonTime: JSONObject = JSONObject()
         var jsonObj: JSONObject = JSONObject()
         var pararray: JSONArray = JSONArray()
         var namearray: JSONArray = JSONArray()
-        jsonObj.put("topic", "")     // title
+        jsonObj.put("topic", title)     // title
         jsonObj.put("duration", mCostTime)  // time
         jsonTime.put("year", Constants.TimeStrGetYear(mStartTime))
         jsonTime.put("month", Constants.TimeStrGetMonth(mStartTime))
@@ -182,7 +193,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
         listview= this.findViewById<ListView>(R.id.listCreateRoomView)
         listview?.setOnItemClickListener { adapterView, view, i, l ->
-
+            listadapter!!.updateItemStr(false)
             when(i){
                 0 -> this.startEditTitle()
                 1 -> this.startChooseAttand()
@@ -209,7 +220,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
         if (listadapter != null) {
             mStartTime = str
-            listadapter!!.updateItemStr(1, str?.substring(5, str.length))
+            listadapter!!.updateItemStr(ITEM_STARTTIME, str?.substring(5, str.length))
             listadapter!!.notifyDataSetChanged()
         }
 
@@ -224,7 +235,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     override fun onCostTimeConfirm(str: String?) {
         if (listadapter != null) {
-            listadapter!!.updateItemStr(2, str)
+            listadapter!!.updateItemStr(ITEM_COSTTIME, str)
             mCostTime = str
             listadapter!!.notifyDataSetChanged()
         }
@@ -236,14 +247,14 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     fun onAttandManUpdate(str: String?) {
         if (listadapter != null) {
-            listadapter!!.updateItemStr(0, str)
+            listadapter!!.updateItemStr(ITEM_ATTEND, str)
             listadapter!!.notifyDataSetChanged()
         }
     }
 
     fun onDeviceManUpdate(str: String?) {
         if (listadapter != null) {
-            listadapter!!.updateItemStr(1, str)
+            listadapter!!.updateItemStr(ITEM_DEVICE, str)
             listadapter!!.notifyDataSetChanged()
         }
     }
