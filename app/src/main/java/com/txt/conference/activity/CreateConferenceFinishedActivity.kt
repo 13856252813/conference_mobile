@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -84,7 +85,7 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
     fun OpenPhoneAddress(){
 
         ULog.i(TAG, "OpenPhoneAddress" )
-        var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS)
+        /*var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS)
         if (EasyPermissions.hasPermissions(this, *args)) {
             ULog.i(TAG, "OpenPhoneAddress hasPermission" )
             val uri = Uri.parse("content://contacts/people")
@@ -93,7 +94,12 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
         } else {
             ULog.i(TAG, "OpenPhoneAddress requestPermissions" )
             EasyPermissions.requestPermissions(this, getString(R.string.permission_phone_address), 100, *args)
-        }
+        }*/
+
+        var smsToUri = Uri.parse("smsto:")
+        var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
+        intent.putExtra("sms_body", getString(R.string.sms_message))
+        startActivity(intent)
     }
 
     fun startPhoneAddress(){
@@ -106,6 +112,9 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
     }
 
     fun initView() {
+
+        var time =System.currentTimeMillis()
+
         var titlebar_back: TextView = this.findViewById<TextView>(R.id.left_text)
         titlebar_back.setClickable(true)
         titlebar_back.setOnClickListener({ this.onBackPressed() })
@@ -121,6 +130,12 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
 
         var btn_phone: ImageView = this.findViewById<ImageView>(R.id.phone_address_id)
         btn_phone.setOnClickListener { this.startPhoneAddress() }
+
+        if (time >= room!!.start){
+            btn_enter.visibility = View.VISIBLE
+        } else {
+            btn_enter.visibility = View.INVISIBLE
+        }
     }
 
 }
