@@ -162,18 +162,8 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
     }
 
     fun OpenPhoneAddress(){
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !== PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf<String>(Manifest.permission.READ_CONTACTS),
-                        0)
-            }
-        } else {
-            val uri = Uri.parse("content://contacts/people")
-            val intent = Intent(Intent.ACTION_PICK, uri)
-            startActivityForResult(intent, REQUEST_PHONE)
-        }*/
         ULog.i(TAG, "OpenPhoneAddress" )
-        var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS)
+        /*var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS)
         if (EasyPermissions.hasPermissions(this, *args)) {
             ULog.i(TAG, "OpenPhoneAddress hasPermission" )
             val uri = Uri.parse("content://contacts/people")
@@ -182,7 +172,12 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         } else {
             ULog.i(TAG, "OpenPhoneAddress requestPermissions" )
             EasyPermissions.requestPermissions(this, getString(R.string.permission_phone_address), 100, *args)
-        }
+        }*/
+
+        var smsToUri = Uri.parse("smsto:")
+        var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
+        intent.putExtra("sms_body", getString(R.string.sms_message))
+        startActivity(intent)
     }
 
 

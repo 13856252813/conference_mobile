@@ -48,6 +48,7 @@
     <string name="delete_conference_confirm">确认要取消该会议房间?</string>
     <string name="company_address">企业通讯录</string>
     <string name="conference_device">会议室设备</string>
-    <string name="phone_address">手机通讯录</string>
+    <string name="phone_address">手机短信</string>
     <string name="weixin_friend">微信好友</string>
+    <string name="sms_message">"测试发送短信, 打开如下链接：http://www.baidu.com "</string>
 </resources>

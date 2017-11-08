@@ -28,7 +28,7 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
     }
     var clickFirst = false
     var editText = ""
-
+    val TAG = CreateRoomListAdapter::class.java.simpleName
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View? {
         var holder: CreateRoomListViewHolder
         var v: View
@@ -40,6 +40,7 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
             v = convertView
             holder = v.tag as CreateRoomListViewHolder
         }
+        //ULog.i("test", "getview position:" + position)
         holder.textinfo.text = list[position].strinfo
         holder.textinfo2.text = list[position].strinfo2
         holder.imageView1.setImageResource(list[position].icon)
@@ -68,9 +69,12 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
             if (editText.equals("") == false){
                 holder.textinfo2.text = editText
             }
+            //ULog.i(TAG, "position:" + position)
+            //ULog.i(TAG, "holder.textinfo.text:" + holder.textinfo.text)
             //holder.textinfo2.setVisibility(View.GONE)
             //holder.editview.setVisibility(View.VISIBLE)
         } else if (holder.textinfo.text.equals("会议主题") && clickFirst == true){
+
             holder.textinfo2.setVisibility(View.GONE)
             holder.editview.setVisibility(View.VISIBLE)
         }
