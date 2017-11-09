@@ -330,9 +330,9 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
             dialog, which -> dialog.dismiss()
             OpenPhoneAddress()
         }
-        builder.setweixinButton(){
+        /*builder.setweixinButton(){
             dialog, which -> dialog.dismiss()
-        }
+        }*/
         builder.setCancelButton(){
             dialog, which -> dialog.dismiss()
         }

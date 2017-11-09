@@ -33,7 +33,7 @@ public class CustomAttendDialog extends Dialog {
         private DialogInterface.OnClickListener companyButtonClickListener;
         private DialogInterface.OnClickListener deviceButtonClickListener;
         private DialogInterface.OnClickListener phoneButtonClickListener;
-        private DialogInterface.OnClickListener weixinButtonClickListener;
+        //private DialogInterface.OnClickListener weixinButtonClickListener;
         private DialogInterface.OnClickListener cancelButtonClickListener;
 
         public Builder(Context context) {  
@@ -57,10 +57,10 @@ public class CustomAttendDialog extends Dialog {
             this.phoneButtonClickListener = listener;
             return this;
         }
-        public Builder setweixinButton(DialogInterface.OnClickListener listener) {
+        /*public Builder setweixinButton(DialogInterface.OnClickListener listener) {
             this.weixinButtonClickListener = listener;
             return this;
-        }
+        }*/
         public Builder setCancelButton(DialogInterface.OnClickListener listener) {
             this.cancelButtonClickListener = listener;
             return this;
@@ -107,7 +107,7 @@ public class CustomAttendDialog extends Dialog {
                         });
             }
 
-            if (weixinButtonClickListener != null) {
+            /*if (weixinButtonClickListener != null) {
                 ((Button) layout.findViewById(R.id.attend_bt_weixin))
                         .setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
@@ -115,7 +115,7 @@ public class CustomAttendDialog extends Dialog {
                                         DialogInterface.BUTTON_NEUTRAL);
                             }
                         });
-            }
+            }*/
 
             if (cancelButtonClickListener != null) {
                 ((Button) layout.findViewById(R.id.attend_bt_cancel))
