@@ -28,11 +28,23 @@
         android:textSize="14sp"
         android:textColor="@color/gray"
         android:text="@string/enter_room"
+        android:background="@drawable/enter_corners"/>
+    <Button
+        android:id="@+id/bt_sms_invite"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/bt_enter"
+        android:layout_marginTop="22dp"
+        android:layout_width="250dp"
+        android:layout_height="43.5dp"
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        android:text="@string/invite_sms_friend"
         android:background="@drawable/login_corners"/>
+
     <Button
         android:id="@+id/bt_back"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/bt_enter"
+        android:layout_below="@id/bt_sms_invite"
         android:layout_marginTop="22dp"
         android:layout_width="250dp"
         android:layout_height="43.5dp"
@@ -40,7 +52,7 @@
         android:textColor="@color/blue80"
         android:text="@string/back_to_front"
         android:background="@drawable/create_finished_corners_back"/>
-    <RelativeLayout
+    <!--<RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/bt_back"
@@ -82,4 +94,5 @@
                 android:src="@mipmap/weixin_icon"/>
         </LinearLayout>
     </RelativeLayout>
+    -->
 </RelativeLayout>
