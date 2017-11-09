@@ -41,7 +41,6 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
     fun jumpOneKeyEnter() {
         var i = Intent(this, OneKeyEnterActivity::class.java)
         startActivity(i)
-        //this.finish()
     }
     override fun onClick(p0: View?) {
         when (p0!!.id){
