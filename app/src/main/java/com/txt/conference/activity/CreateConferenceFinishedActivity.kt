@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.bean.RoomBean
@@ -55,7 +56,7 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
     }
 
     override fun showError(errorRes: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, errorRes, Toast.LENGTH_SHORT).show()
     }
 
     var room: RoomBean? = null
@@ -96,16 +97,22 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
             EasyPermissions.requestPermissions(this, getString(R.string.permission_phone_address), 100, *args)
         }*/
 
-        var smsToUri = Uri.parse("smsto:")
-        var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
-        intent.putExtra("sms_body", getString(R.string.sms_message))
-        startActivity(intent)
     }
 
     fun startPhoneAddress(){
         ULog.i(TAG, "startPhoneAddress")
         OpenPhoneAddress()
     }
+
+    fun startSendSms(){
+        ULog.i(TAG, "startSendSms" )
+        var smsToUri = Uri.parse("smsto:")
+        var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
+        var str_sms_Message = String.format(getString(R.string.sms_message), room?.roomNo)
+        intent.putExtra("sms_body", str_sms_Message)
+        startActivity(intent)
+    }
+
 
     fun startWeixinAddress(){
         ULog.i(TAG, "startWeixinAddress")
@@ -125,11 +132,14 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
         var btn_enter: Button = this.findViewById<Button>(R.id.bt_enter)
         btn_enter.setOnClickListener { this.enterConference() }
 
-        var btn_weixin: ImageView = this.findViewById<ImageView>(R.id.weixin_icon_id)
+        var bt_sms: Button = this.findViewById<Button>(R.id.bt_sms_invite)
+        bt_sms.setOnClickListener { this.startSendSms() }
+
+        /*var btn_weixin: ImageView = this.findViewById<ImageView>(R.id.weixin_icon_id)
         btn_weixin.setOnClickListener { this.startWeixinAddress() }
 
         var btn_phone: ImageView = this.findViewById<ImageView>(R.id.phone_address_id)
-        btn_phone.setOnClickListener { this.startPhoneAddress() }
+        btn_phone.setOnClickListener { this.startPhoneAddress() }*/
 
         if (time >= room!!.start){
             btn_enter.visibility = View.VISIBLE
