@@ -12,13 +12,13 @@
         android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/login_et_account"
+        android:id="@+id/enter_et_account"
         android:layout_centerHorizontal="true"
-        android:drawableLeft="@mipmap/account"
+        android:drawableLeft="@mipmap/room_icon"
         android:drawablePadding="10dp"
         android:textSize="14sp"
         android:textColorHint="@color/hint"
-        android:hint="@string/hint_user"
+        android:hint="@string/hint_roomno"
         android:inputType="text"
         android:text="lmf"
         android:layout_marginTop="207.5dp"
@@ -26,52 +26,50 @@
         android:layout_height="43dp" />
 
     <EditText
-        android:id="@+id/login_et_password"
+        android:id="@+id/enter_et_name"
         android:layout_centerHorizontal="true"
         android:drawableLeft="@mipmap/password"
         android:drawablePadding="10dp"
         android:textSize="14sp"
         android:textColorHint="@color/hint"
         android:inputType="textPassword"
-        android:hint="@string/hint_password"
+        android:hint="@string/hint_username"
         android:text="lmf123"
-        android:layout_below="@id/login_et_account"
+        android:layout_below="@id/enter_et_account"
         android:layout_marginTop="22dp"
         android:layout_width="310dp"
         android:layout_height="43dp" />
-
     <TextView
-        android:id="@+id/login_tv_error"
+        android:id="@+id/enter_tv_error"
         android:layout_centerHorizontal="true"
         android:visibility="invisible"
         android:text="@string/login_error"
         android:textColor="@color/orange"
-        android:layout_below="@id/login_et_password"
+        android:layout_below="@id/enter_et_name"
         android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/login_bt_login"
+        android:id="@+id/enter_bt_enter"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/login_et_password"
+        android:layout_below="@id/enter_tv_error"
         android:layout_marginTop="147dp"
         android:layout_width="250dp"
         android:layout_height="43.5dp"
         android:textSize="14sp"
         android:textColor="@color/gray"
-        android:text="@string/login"
+        android:text="@string/enter_room"
         android:background="@drawable/login_corners"/>
-
     <Button
-        android:id="@+id/login_bt_onekeyenter"
+        android:id="@+id/enter_bt_back"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/login_bt_login"
-        android:layout_marginTop="69dp"
+        android:layout_below="@id/enter_tv_error"
+        android:layout_marginTop="147dp"
         android:layout_width="250dp"
         android:layout_height="43.5dp"
         android:textSize="14sp"
-        android:textColor="@color/orange"
-        android:text="@string/onekey_enter"
+        android:textColor="@color/gray"
+        android:text="@string/enter_room"
         android:background="@drawable/onekeyenter_corners"/>
 </RelativeLayout>

@@ -2,8 +2,12 @@
     <string name="app_name">云智会</string>
     <string name="hint_password">请输入密码</string>
     <string name="hint_user">请输入手机号/邮箱</string>
+    <string name="hint_roomno">请输入房间号</string>
+    <string name="hint_roompass">请输入房间密码</string>
+    <string name="hint_username">请输入姓名</string>
     <string name="login_error">账号或密码输入有误</string>
     <string name="login">登录</string>
+    <string name="onekey_enter">一键参会</string>
     <string name="loginng">正在登录中...</string>
     <string name="logoff">退出登录</string>
     <string name="error_logoff">退出登录失败，请重试!</string>
@@ -50,5 +54,5 @@
     <string name="conference_device">会议室设备</string>
     <string name="phone_address">手机短信</string>
     <string name="weixin_friend">微信好友</string>
-    <string name="sms_message">"测试发送短信, 打开如下链接：http://www.baidu.com "</string>
+    <string name="sms_message">"测试发送短信, 打开如下链接：https://192.168.16.53:3304/#/LoginR/%s"</string>
 </resources>
