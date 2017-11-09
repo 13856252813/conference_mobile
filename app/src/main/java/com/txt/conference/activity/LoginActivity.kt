@@ -38,10 +38,18 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
 
     var mLoginPresenter: LoginPresenter? = null
 
+    fun jumpOneKeyEnter() {
+        var i = Intent(this, OneKeyEnterActivity::class.java)
+        startActivity(i)
+        //this.finish()
+    }
     override fun onClick(p0: View?) {
         when (p0!!.id){
             R.id.login_bt_login -> {
                 mLoginPresenter?.doLogin(getAccount(), getPassword())
+            }
+            R.id.login_bt_onekeyenter-> {
+                jumpOneKeyEnter()
             }
         }
     }
@@ -52,6 +60,7 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
 
         mLoginPresenter = LoginPresenter(this)
         login_bt_login.setOnClickListener(this)
+        login_bt_onekeyenter.setOnClickListener(this)
     }
 
     override fun getAccount(): String {
