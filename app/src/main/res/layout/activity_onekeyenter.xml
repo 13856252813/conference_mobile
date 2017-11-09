@@ -12,7 +12,7 @@
         android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/enter_et_account"
+        android:id="@+id/enter_et_roomno"
         android:layout_centerHorizontal="true"
         android:drawableLeft="@mipmap/room_icon"
         android:drawablePadding="10dp"
@@ -20,7 +20,6 @@
         android:textColorHint="@color/hint"
         android:hint="@string/hint_roomno"
         android:inputType="text"
-        android:text="lmf"
         android:layout_marginTop="207.5dp"
         android:layout_width="310dp"
         android:layout_height="43dp" />
@@ -28,14 +27,13 @@
     <EditText
         android:id="@+id/enter_et_name"
         android:layout_centerHorizontal="true"
-        android:drawableLeft="@mipmap/password"
+        android:drawableLeft="@mipmap/edit_icon"
         android:drawablePadding="10dp"
         android:textSize="14sp"
         android:textColorHint="@color/hint"
-        android:inputType="textPassword"
+        android:inputType="text"
         android:hint="@string/hint_username"
-        android:text="lmf123"
-        android:layout_below="@id/enter_et_account"
+        android:layout_below="@id/enter_et_roomno"
         android:layout_marginTop="22dp"
         android:layout_width="310dp"
         android:layout_height="43dp" />
@@ -43,7 +41,7 @@
         android:id="@+id/enter_tv_error"
         android:layout_centerHorizontal="true"
         android:visibility="invisible"
-        android:text="@string/login_error"
+        android:text="@string/onekeyenter_error"
         android:textColor="@color/orange"
         android:layout_below="@id/enter_et_name"
         android:layout_marginTop="15dp"
@@ -53,7 +51,7 @@
     <Button
         android:id="@+id/enter_bt_enter"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/enter_tv_error"
+        android:layout_below="@id/enter_et_name"
         android:layout_marginTop="147dp"
         android:layout_width="250dp"
         android:layout_height="43.5dp"
@@ -64,12 +62,12 @@
     <Button
         android:id="@+id/enter_bt_back"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/enter_tv_error"
-        android:layout_marginTop="147dp"
+        android:layout_below="@id/enter_bt_enter"
+        android:layout_marginTop="69dp"
         android:layout_width="250dp"
         android:layout_height="43.5dp"
         android:textSize="14sp"
-        android:textColor="@color/gray"
-        android:text="@string/enter_room"
+        android:textColor="@color/orange"
+        android:text="@string/back_to_last"
         android:background="@drawable/onekeyenter_corners"/>
 </RelativeLayout>
