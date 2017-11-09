@@ -67,7 +67,7 @@
                 android:clickable="true"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
-                android:background="@color/blue80">
+                android:background="@color/item_add">
                 <ImageView
                     android:layout_centerInParent="true"
                     android:layout_width="36dp"
