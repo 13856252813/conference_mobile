@@ -6,8 +6,10 @@
     <string name="hint_roompass">请输入房间密码</string>
     <string name="hint_username">请输入姓名</string>
     <string name="login_error">账号或密码输入有误</string>
+    <string name="onekeyenter_error">房间或密码输入有误</string>
     <string name="login">登录</string>
     <string name="onekey_enter">一键参会</string>
+    <string name="back_to_last">返回</string>
     <string name="loginng">正在登录中...</string>
     <string name="logoff">退出登录</string>
     <string name="error_logoff">退出登录失败，请重试!</string>
@@ -21,6 +23,7 @@
     <string name="enter_room_failed">获取房间token失败，请重试~</string>
     <string name="not_start">未开始</string>
     <string name="add_attendee">添加参会人</string>
+    <string name="add_attendee_device">添加会议室设备</string>
     <string name="add_attendee_number">添加参会人(%s)</string>
     <string name="add_attendee_number2">添加参会人&#160;&#160;</string>
     <string name="begin_time">开始时间</string>
@@ -49,10 +52,11 @@
     <string name="delete_conference">取消会议</string>
     <string name="back_to_front">返回首页</string>
     <string name="invite_friend">邀请外部好友</string>
+    <string name="invite_sms_friend">短信邀请好友</string>
     <string name="delete_conference_confirm">确认要取消该会议房间?</string>
     <string name="company_address">企业通讯录</string>
     <string name="conference_device">会议室设备</string>
     <string name="phone_address">手机短信</string>
     <string name="weixin_friend">微信好友</string>
-    <string name="sms_message">"测试发送短信, 打开如下链接：https://192.168.16.53:3304/#/LoginR/%s"</string>
+    <string name="sms_message">"您被邀请加入会议, 打开如下链接：https://192.168.16.53:3304/#/LoginR/%s"</string>
 </resources>
