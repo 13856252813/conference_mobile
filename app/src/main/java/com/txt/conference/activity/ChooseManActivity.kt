@@ -170,6 +170,14 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
         titlebar_back?.setOnClickListener(this)
         titlebar_finish?.setOnClickListener(this)
         listview?.setOnItemClickListener { adapterView, view, i, l ->
+
+            if (room != null) {
+                for (k in room?.participants!!.indices) {
+                    if (room?.participants!!.get(k).id!!.equals(listadapter!!.list?.get(i)?.uid)) {
+                        return@setOnItemClickListener
+                    }
+                }
+            }
             if (listadapter!!.getItemCheck(i) == true){
                 check = false
             } else {
