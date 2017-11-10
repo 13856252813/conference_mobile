@@ -25,6 +25,7 @@
     <string name="add_attendee">添加参会人</string>
     <string name="add_attendee_device">添加会议室设备</string>
     <string name="add_attendee_number">添加参会人(%s)</string>
+    <string name="add_attendee_and_device">添加参会</string>
     <string name="add_attendee_number2">添加参会人&#160;&#160;</string>
     <string name="begin_time">开始时间</string>
     <string name="continue_time">持续时长</string>

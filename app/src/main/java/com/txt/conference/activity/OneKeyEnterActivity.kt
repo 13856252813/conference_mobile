@@ -130,7 +130,7 @@ class OneKeyEnterActivity : BaseActivity(), IOneKeyEnterView, IJoinRoomView, Vie
         if (checkAndInitUri() == true){
             enter_bt_back.visibility = View.INVISIBLE
             if (mstrRoomNo != null){
-                enter_et_name.setText(mstrRoomNo)
+                enter_et_roomno.setText(mstrRoomNo)
             }
         }
     }

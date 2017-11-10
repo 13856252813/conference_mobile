@@ -50,6 +50,7 @@ class GetUsersModel : IGetUsersModel {
         }
         var invite: ParticipantBean? = null
         var user: AttendeeBean? = null
+        val checkinviteUser = ArrayList<ParticipantBean>()
         for (i in 0..inviteUser?.size!!-1) {
             invite = inviteUser?.get(i)
             for (j in 0..users!!.size-1) {
@@ -57,9 +58,11 @@ class GetUsersModel : IGetUsersModel {
                 if (invite?.id.equals(user?.uid)) {
                     user?.invited = true
                     user?.cantchange = true
+                    checkinviteUser.add(inviteUser?.get(i)!!)
                 }
             }
         }
+        inviteUser = checkinviteUser
         return users!!
     }
 
