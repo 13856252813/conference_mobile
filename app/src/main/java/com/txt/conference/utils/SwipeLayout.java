@@ -17,7 +17,7 @@ public class SwipeLayout extends LinearLayout {
     private View contentView;
     private View actionView;
     private int dragDistance;
-    private final double AUTO_OPEN_SPEED_LIMIT = 800.0;
+    private final double AUTO_OPEN_SPEED_LIMIT = 1200.0;
     private int draggedX;
 
     public SwipeLayout(Context context) {

@@ -60,35 +60,31 @@
     </LinearLayout>
         <LinearLayout
             android:id="@+id/back"
-            android:layout_width="100dp"
+            android:layout_width="130dp"
             android:layout_height="65dp">
             <RelativeLayout
                 android:id="@+id/add_attend"
                 android:clickable="true"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@color/grey200">
-                <TextView
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@color/item_add">
+                <ImageView
                     android:layout_centerInParent="true"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/grey_time"
-                    android:text="@string/add_conference_attend"/>
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@mipmap/add_attend"/>
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/delete_button"
                 android:clickable="true"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="#ee0000">
-                <TextView
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@color/orange">
+                <ImageView
                     android:layout_centerInParent="true"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/welcome"
-                    android:text="@string/delete_conference"/>
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@mipmap/delete_confe"/>
             </RelativeLayout>
         </LinearLayout>
     </com.txt.conference.utils.SwipeLayout>

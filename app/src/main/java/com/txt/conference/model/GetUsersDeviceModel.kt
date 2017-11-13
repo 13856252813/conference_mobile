@@ -5,24 +5,25 @@ import com.common.utlis.ULog
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.GetAttendeeBean
 import com.txt.conference.bean.ParticipantBean
+import com.txt.conference.http.GetAttendeeDeviceHttpFactory
 import com.txt.conference.http.GetAttendeeHttpFactory
 
 /**
- * Created by jane on 2017/10/13.
+ * Created by pc on 2017/11/07.
  */
-class GetUsersModel : IGetUsersModel {
+class GetUsersDeviceModel : IGetUsersModel {
     override var inviteUser: List<ParticipantBean>? = null
     override var status: Int = Status.FAILED
     override var msg: String? = null
     override var users: ArrayList<AttendeeBean>? = null
 
-    private var getUsersHttp: GetAttendeeHttpFactory? = null
+    private var getUsersHttp: GetAttendeeDeviceHttpFactory? = null
 
 
 
     override fun loadUsers(token: String, callBack: IBaseModel.IModelCallBack) {
         if (getUsersHttp == null) {
-            getUsersHttp = GetAttendeeHttpFactory()
+            getUsersHttp = GetAttendeeDeviceHttpFactory()
             getUsersHttp?.setHttpEventHandler(object : HttpEventHandler<GetAttendeeBean>() {
                 override fun HttpSucessHandler(result: GetAttendeeBean?) {
                     status = result?.code!!
@@ -50,6 +51,7 @@ class GetUsersModel : IGetUsersModel {
         }
         var invite: ParticipantBean? = null
         var user: AttendeeBean? = null
+        //var checkinviteUser: List<ParticipantBean>?
         val checkinviteUser = ArrayList<ParticipantBean>()
         for (i in 0..inviteUser?.size!!-1) {
             invite = inviteUser?.get(i)
@@ -61,6 +63,7 @@ class GetUsersModel : IGetUsersModel {
                     checkinviteUser.add(inviteUser?.get(i)!!)
                 }
             }
+
         }
         inviteUser = checkinviteUser
         return users!!

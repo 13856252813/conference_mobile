@@ -574,7 +574,13 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         if(!isSpeakerphoneOn){
             audioManager.setMode(AudioManager.MODE_NORMAL)
         }
-}
+    }
+
+    fun getIsSpeakerLoad() :Boolean {
+        val audioManager = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        return audioManager.isSpeakerphoneOn()
+    }
+
     fun onOffMicrophone() {
 //        var audio = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 //        audio.isMicrophoneMute = !audio.isMicrophoneMute

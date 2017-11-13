@@ -12,14 +12,15 @@ import com.txt.conference.adapter.ConferenceUserAdapter
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
+import com.txt.conference.presenter.GetUserDevicePresenter
 import com.txt.conference.view.IGetUsersView
 import com.txt.conference.presenter.GetUsersPresenter
 /**
- * Created by pc on 2017/10/15.
+ * Created by pc on 2017/11/07.
  */
 
 
-class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
+class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
     override fun getUid(): String? {
         return ""
     }
@@ -43,7 +44,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
     companion object {
         var KEY_ROOM = "room_key"
     }
-    var getuserPresenter: GetUsersPresenter? = null
+    var getuserPresenter: GetUserDevicePresenter? = null
     var listview: ListView? = null
     var listadapter: ConferenceUserAdapter? = null
     var titlebar_back: TextView? = null
@@ -58,9 +59,6 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
 
         var num: Int = conference?.size!!
 
-        if (num > 0){
-            num = num - 1
-        }
 
         val bool_array = arrayOfNulls<Boolean>(num)
         val conflist  = java.util.ArrayList<AttendeeBean>()
@@ -113,7 +111,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
     }
 
     fun updateTitleBar() {
-        titlebar_title?.text = this.resources.getString(R.string.add_attendee) + "(" +  listadapter?.getCheckedNum().toString() +")"
+        titlebar_title?.text = this.resources.getString(R.string.add_attendee_device) + "(" +  listadapter?.getCheckedNum().toString() +")"
 
     }
 
@@ -187,7 +185,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
             listadapter!!.notifyDataSetChanged()
             updateTitleBar()
         }
-        getuserPresenter = GetUsersPresenter(this)
+        getuserPresenter = GetUserDevicePresenter(this)
         getuserPresenter?.getUsers(getToken())
         updateTitleBar()
     }

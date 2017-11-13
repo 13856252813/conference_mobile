@@ -11,6 +11,7 @@
     <color name="blue80">#cc3c4061</color>
     <color name="grey200">#eeeeee</color>
     <color name="grey_room">#333333</color>
+    <color name="grey_attend">#33333333</color>
     <color name="grey_time">#999999</color>
     <color name="enter">#3c4061</color>
     <color name="attendee_bg">#f01f2028</color>
@@ -21,4 +22,5 @@
     <color name="title_text_color">#ffffffff</color>
     <color name="white">#ffffff</color>
     <color name="sufer_bg">#46495a</color>
+    <color name="item_add">#ccccd8</color>
 </resources>

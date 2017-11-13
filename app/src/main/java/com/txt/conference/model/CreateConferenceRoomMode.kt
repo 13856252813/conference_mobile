@@ -14,8 +14,8 @@ class CreateConferenceRoomMode : ICreateConferenceRoomMode {
 
     override var status: Int = Status.FAILED
 
-    var mCreateRoomHttp: CreateConferenceRoomHttpFactory? = null
-    var mCreateRoomBean: CreateConferenceRoomBean? = null
+    override var mCreateRoomHttp: CreateConferenceRoomHttpFactory? = null
+    override var mCreateRoomBean: CreateConferenceRoomBean? = null
 
     override fun createroom(strJson: String?, token: String?, createCallBack: IBaseModel.IModelCallBack) {
         Log.i("mytest", "CreateConferenceRoomMode: create Room")

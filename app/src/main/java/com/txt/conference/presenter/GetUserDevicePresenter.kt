@@ -7,15 +7,15 @@ import com.txt.conference.model.*
 import com.txt.conference.view.IGetUsersView
 
 /**
- * Created by jane on 2017/10/12.
+ * Created by jane on 2017/11/07.
  */
-class GetUsersPresenter {
+class GetUserDevicePresenter {
     var getUsersView: IGetUsersView? = null
     var getUsersModel: IGetUsersModel? = null
 
     constructor(view: IGetUsersView) {
         getUsersView = view
-        getUsersModel = GetUsersModel()
+        getUsersModel = GetUsersDeviceModel()
     }
 
     fun getUsers(token: String?) {
