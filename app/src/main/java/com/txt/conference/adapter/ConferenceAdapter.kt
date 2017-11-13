@@ -3,6 +3,7 @@ package com.txt.conference.adapter
 import android.os.CountDownTimer
 import android.util.SparseArray
 import android.view.View
+import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.common.utlis.DateUtils
@@ -11,7 +12,6 @@ import com.txt.conference.R
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.RoomBean
 import java.util.*
-
 
 /**
  * Created by jane on 2017/10/11.
@@ -27,6 +27,7 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
 
     override fun convert(helper: RoomViewHolder?, item: RoomBean?) {
         helper?.setText(R.id.item_tv_room_number, item?.topic)
+        helper?.getView<TextView>(R.id.item_tv_room_number)?.isSelected=true
         helper?.setText(R.id.item_tv_begin_time, String.format(TxApplication.mInstance!!.getString(R.string.begin_time_value), DateUtils().format(item?.start, DateUtils.MM_dd_HH_mm), item?.duration, item?.creator?.display))
         helper?.addOnClickListener(R.id.item_bt_enter)
         helper?.addOnClickListener(R.id.add_attend)
