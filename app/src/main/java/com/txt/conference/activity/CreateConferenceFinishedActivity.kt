@@ -84,19 +84,9 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
         }
     }
 
-    fun OpenPhoneAddress(){
+    private fun OpenPhoneAddress(){
 
         ULog.i(TAG, "OpenPhoneAddress" )
-        /*var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS)
-        if (EasyPermissions.hasPermissions(this, *args)) {
-            ULog.i(TAG, "OpenPhoneAddress hasPermission" )
-            val uri = Uri.parse("content://contacts/people")
-            val intent = Intent(Intent.ACTION_PICK, uri)
-            startActivityForResult(intent, MainActivity.REQUEST_PHONE)
-        } else {
-            ULog.i(TAG, "OpenPhoneAddress requestPermissions" )
-            EasyPermissions.requestPermissions(this, getString(R.string.permission_phone_address), 100, *args)
-        }*/
 
     }
 

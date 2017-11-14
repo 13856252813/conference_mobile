@@ -1,7 +1,10 @@
 package com.txt.conference.activity
 
-import android.content.*
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.KeyEvent
@@ -11,20 +14,23 @@ import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
+import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main2.*
-import kotlinx.android.synthetic.main.item_conference_new.*
-import kotlinx.android.synthetic.main.layout_menu.*
-import android.net.Uri
-import android.provider.ContactsContract
-import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.presenter.*
 import com.txt.conference.utils.CustomAttendDialog
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
-import java.util.ArrayList
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main2.*
+import kotlinx.android.synthetic.main.item_conference_new.*
+import kotlinx.android.synthetic.main.layout_menu.*
+import java.util.*
+import android.support.v4.widget.DrawerLayout
+import android.view.View
+import com.txt.conference.utils.StatusBarUtil
+
+
 
 
 class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomView, ILogoffView, IInviteUsersView, ConferenceAdapter.TimeCallBack {
@@ -110,13 +116,15 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         home_ll_create.setOnClickListener {
             var i = Intent(this, CreateConferenceRoomActivity::class.java)
             startActivity(i)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         }
         initRecyclerView()
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
+        super.onCreate(savedInstanceState)
 
         initView()
         initInfomation()
@@ -402,4 +410,9 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         return super.onKeyDown(keyCode, event)
     }
 
+    override fun setStatusBar() {
+        var mStatusBarColor = resources.getColor(R.color.colorPrimary)
+        StatusBarUtil.setColorForDrawerLayout(this, findViewById<View>(R.id.drawer_layout) as DrawerLayout,
+                mStatusBarColor, 112)
+    }
 }

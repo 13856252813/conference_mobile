@@ -1,31 +1,22 @@
 package com.txt.conference.utils;
 
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TimePicker;
-import android.widget.TimePicker.OnTimeChangedListener;
-import android.widget.Toast;
 
 import com.common.utlis.ULog;
 import com.txt.conference.R;
+
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * 日期时间选择控件 使用方法： private EditText inputDate;//需要设置的日期时间文本编辑框 private String
@@ -40,7 +31,7 @@ import com.txt.conference.R;
  *           } });
  */
 public class DateTimePickDialogUtil implements OnDateChangedListener,
-        OnTimeChangedListener {
+        TimePicker.OnTimeChangedListener {
     private DatePicker datePicker;
     private TimePicker timePicker;
     private AlertDialog ad;
@@ -125,57 +116,6 @@ public class DateTimePickDialogUtil implements OnDateChangedListener,
         init(datePicker, timePicker);
         timePicker.setIs24HourView(true);
         timePicker.setOnTimeChangedListener(this);
-
-        /*LinearLayout llFirst = (LinearLayout) datePicker.getChildAt(0);
-        LinearLayout mSpinners = (LinearLayout) llFirst.getChildAt(0);
-        for (int i = 0; i < mSpinners.getChildCount(); i++) {
-            NumberPicker picker = (NumberPicker) mSpinners.getChildAt(i);
-
-            Field[] pickerFields = NumberPicker.class.getDeclaredFields();
-            for (Field pf : pickerFields) {
-                if (pf.getName().equals("mSelectionDivider")) {
-                    pf.setAccessible(true);
-                    try {
-                        pf.set(picker, new ColorDrawable(Color.parseColor("#f89200")));//设置分割线颜色
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (Resources.NotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-            }
-        }
-
-        LinearLayout lltimeFirst = (LinearLayout) timePicker.getChildAt(0);
-        LinearLayout mtimeSpinners = (LinearLayout) lltimeFirst.getChildAt(0);
-        for (int i = 0; i < mtimeSpinners.getChildCount(); i++) {
-            View child =  mtimeSpinners.getChildAt(i);
-            if(!(child instanceof NumberPicker)){
-                continue;
-            }
-            NumberPicker picker1 = (NumberPicker) child;
-            Field[] pickerFields = NumberPicker.class.getDeclaredFields();
-            for (Field pf : pickerFields) {
-                if (pf.getName().equals("mSelectionDivider")) {
-                    pf.setAccessible(true);
-                    try {
-                        pf.set(picker1, new ColorDrawable(Color.parseColor("#f89200")));//设置分割线颜色
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (Resources.NotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-            }
-        }*/
-
-
         ad = new AlertDialog.Builder(activity)
                 .setTitle(initDateTime)
                 .setView(dateTimeLayout)
@@ -289,8 +229,8 @@ public class DateTimePickDialogUtil implements OnDateChangedListener,
     }
 
     public interface ITimePickDialogClick {
-        public void onConfirm(String str);
-        public void onCancel();
+         void onConfirm(String str);
+         void onCancel();
     }
 
 }

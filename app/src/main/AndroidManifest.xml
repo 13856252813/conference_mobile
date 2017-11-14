@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.txt.conference">
 
     <uses-feature android:name="android.hardware.camera" />
@@ -37,8 +38,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.WelcomeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/welcome">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,13 +47,11 @@
         </activity>
 
         <activity android:name=".activity.LoginActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".activity.RoomActivity"
@@ -62,24 +60,20 @@
 
         </activity>
         <activity android:name=".activity.CreateConferenceRoomActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:theme="@style/AppTheme_2"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.ChooseManActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.CreateConferenceFinishedActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.ChooseDeviceActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".activity.OneKeyEnterActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
