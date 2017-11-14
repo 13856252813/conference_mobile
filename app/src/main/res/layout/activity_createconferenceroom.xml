@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:divider="@drawable/divider_recycler"
-        android:listSelector="#00ffffff"></ListView>
+        android:listSelector="#00ffffff"/>
 
     <Button
         android:id="@+id/bt_createroom"

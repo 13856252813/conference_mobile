@@ -1,14 +1,10 @@
 package com.txt.conference.activity
 
-import android.Manifest
 import android.content.*
-import android.content.pm.PackageManager
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.KeyEvent
-import android.view.View
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.common.utlis.ULog
@@ -20,20 +16,15 @@ import com.txt.conference.data.TxSharedPreferencesFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.item_conference_new.*
-import kotlinx.android.synthetic.main.layout_control.*
 import kotlinx.android.synthetic.main.layout_menu.*
-import com.txt.conference.utils.CustomDialog
 import android.net.Uri
-import android.os.Build
 import android.provider.ContactsContract
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.presenter.*
 import com.txt.conference.utils.CustomAttendDialog
 import com.txt.conference.view.*
+import com.txt.conference.widget.CustomDialog
 import java.util.ArrayList
-import pub.devrel.easypermissions.EasyPermissions
 
 
 class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomView, ILogoffView, IInviteUsersView, ConferenceAdapter.TimeCallBack {
@@ -134,7 +125,16 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         logoffPresenter = LogoffPresenter(this)
         deleteRoomPresenter = DeleteRoomPresenter(this)
         inviteUsersPresenter = InviteUsersPresenter(this)
-        home_ib_logoff.setOnClickListener { logoffPresenter?.logoff(getToken()) }
+        home_ib_logoff.setOnClickListener {
+            CustomDialog.showSelectDialog(this,resources.getString(R.string.logoff_sure),
+                    object :com.txt.conference.widget.CustomDialog.DialogClickListener{
+                        override fun confirm() {
+                            logoffPresenter?.logoff(getToken())
+                        }
+                        override fun cancel() {
+                        }
+                    })
+        }
         home_iv_menu.setOnClickListener {
             if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
                 drawer_layout.closeDrawer(Gravity.LEFT)
@@ -145,9 +145,9 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
     }
 
     private fun initInfomation() {
-        home_tv_name.setText(TxSharedPreferencesFactory(applicationContext).getUserName())
-        home_tv_phone.setText(TxSharedPreferencesFactory(applicationContext).getPhoneNumber())
-        home_tv_version.setText("版本：" + packageManager.getPackageInfo(packageName, 0).versionName)
+        home_tv_name.text = TxSharedPreferencesFactory(applicationContext).getUserName()
+        home_tv_phone.text = TxSharedPreferencesFactory(applicationContext).getPhoneNumber()
+        home_tv_version.text = "版本：" + packageManager.getPackageInfo(packageName, 0).versionName
     }
 
     override fun onResume() {
@@ -339,48 +339,43 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         builder.create().show()
     }
 
-    fun showConfirmDialog(room: RoomBean){
-        val builder = CustomDialog.Builder(this)
-        builder.setMessage(getString(R.string.delete_conference_confirm))
-        builder.setTitle(getString(R.string.delete_conference))
-        builder.setPositiveButton(getString(R.string.confirm)) { dialog, which ->
-            dialog.dismiss()
-            deleteRoomPresenter?.deleteRoom(room, getToken())
-        }
+    private fun showConfirmDialog(room: RoomBean){
+        CustomDialog.showSelectDialog(this,resources.getString(R.string.delete_conference_confirm),
+                object :com.txt.conference.widget.CustomDialog.DialogClickListener{
+                    override fun confirm() {
+                        deleteRoomPresenter?.deleteRoom(room, getToken())
+                    }
 
-        builder.setNegativeButton(getString(R.string.cancel)
-        ) { dialog, which -> dialog.dismiss() }
+                    override fun cancel() {
+                    }
 
-        builder.create().show()
+                })
     }
-    fun initRecyclerView() {
+    private fun initRecyclerView() {
         var layoutManager = LinearLayoutManager(this)
         home_rv.layoutManager = layoutManager
         home_rv.addItemDecoration(RecyclerViewDivider(this, 20, 20))
         mConferenceAdapter = ConferenceAdapter(R.layout.item_conference_new, null)
         mConferenceAdapter?.timeCallBack = this
-        mConferenceAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
-            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                var room = adapter?.data?.get(position) as RoomBean
-                ULog.d(TAG, "onItemChildClick $position ")
-                when(view?.id) {
-                    item_bt_enter.id -> {
-                        ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
-                        if (room.status == RoomBean.STATUS_BEGING) {
-                            joinRoomPresenter?.joinRoom(room, getToken())
-                        }
-                    }
-                    add_attend.id -> {
-                        ULog.d(TAG, "onItemChildClick $position add_attend")
-                        showChoosAttendDialog(room)
-                    }
-                    delete_button.id -> {
-                        ULog.d(TAG, "onItemChildClick $position delete")
-                        //deleteRoomPresenter?.deleteRoom(room, getToken())
-                        showConfirmDialog(room)
+        mConferenceAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
+            var room = adapter?.data?.get(position) as RoomBean
+            ULog.d(TAG, "onItemChildClick $position ")
+            when(view?.id) {
+                item_bt_enter.id -> {
+                    ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
+                    if (room.status == RoomBean.STATUS_BEGING) {
+                        joinRoomPresenter?.joinRoom(room, getToken())
                     }
                 }
-
+                add_attend.id -> {
+                    ULog.d(TAG, "onItemChildClick $position add_attend")
+                    showChoosAttendDialog(room)
+                }
+                delete_button.id -> {
+                    ULog.d(TAG, "onItemChildClick $position delete")
+                    //deleteRoomPresenter?.deleteRoom(room, getToken())
+                    showConfirmDialog(room)
+                }
             }
         }
         mConferenceAdapter?.bindToRecyclerView(home_rv)
