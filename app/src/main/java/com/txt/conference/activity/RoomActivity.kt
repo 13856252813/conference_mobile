@@ -38,7 +38,6 @@ import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
 import com.txt.conference.presenter.*
 import com.txt.conference.view.*
-import kotlinx.android.synthetic.main.layout_add_attendee.view.*
 import kotlinx.android.synthetic.main.layout_add_attendee_list.*
 
 
@@ -93,6 +92,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             if (action == Intent.ACTION_HEADSET_PLUG) {
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
+                        room_iv_loud.isEnabled=true;
                         //Toast.makeText(context, "headset not connected", Toast.LENGTH_LONG).show()
                         if (clientPresenter.getIsSpeakerLoad()){
 
@@ -102,6 +102,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
                     } else if (intent.getIntExtra("state", 0) == 1) {
                         //Toast.makeText(context, "headset connected", Toast.LENGTH_LONG).show()
+                        room_iv_loud.isEnabled=false;
                         if (clientPresenter.getIsSpeakerLoad()){
                             clientPresenter?.onOffLoud()
                         }
@@ -321,7 +322,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     }
 
-    fun showAttendees() {
+    private fun showAttendees() {
         if (room_layout_attendee_container.visibility != View.VISIBLE) {
             room_layout_attendee_container.visibility = View.VISIBLE
         }
@@ -336,7 +337,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         }
     }
 
-    fun showAddAttendees() {
+    private fun showAddAttendees() {
         if (room_layout_attendee_container.visibility != View.VISIBLE) {
             room_layout_attendee_container.visibility = View.VISIBLE
         }
@@ -351,7 +352,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         }
     }
 
-    fun showAddTypeAttendees() {
+    private fun showAddTypeAttendees() {
         if (room_layout_attendee_container.visibility != View.VISIBLE) {
             room_layout_attendee_container.visibility = View.VISIBLE
         }
