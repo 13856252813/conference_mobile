@@ -38,6 +38,7 @@ import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
 import com.txt.conference.presenter.*
 import com.txt.conference.view.*
+import com.txt.conference.widget.CustomDialog
 import kotlinx.android.synthetic.main.layout_add_attendee_list.*
 
 
@@ -567,12 +568,15 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event?.action == KeyEvent.ACTION_DOWN) {
-            AlertDialog.Builder(this).setTitle(R.string.tip).setMessage(R.string
-                    .tip_quit_meet).setPositiveButton(R.string.confirm, { dialog, which ->
-                clientPresenter.finishMeet()
-            }).setNegativeButton(R.string.cancel, { dialog, which ->
-                dialog.dismiss()
-            }).show()
+            CustomDialog.showSelectDialog(this,resources.getString(R.string.tip_quit_meet),
+                    object :com.txt.conference.widget.CustomDialog.DialogClickListener{
+                        override fun confirm() {
+                            clientPresenter.finishMeet()
+                        }
+                        override fun cancel() {
+                        }
+
+                    })
             return true
         }
         return super.onKeyDown(keyCode, event)

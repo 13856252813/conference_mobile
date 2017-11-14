@@ -12,6 +12,7 @@
     <string name="back_to_last">返回</string>
     <string name="loginng">正在登录中...</string>
     <string name="logoff">退出登录</string>
+    <string name="logoff_sure">确定退出登录吗?</string>
     <string name="error_logoff">退出登录失败，请重试!</string>
     <string name="error_re_login">帐号异常，请重新登录!</string>
     <string name="forget_the_password">忘记密码</string>
@@ -60,4 +61,5 @@
     <string name="phone_address">手机短信</string>
     <string name="weixin_friend">微信好友</string>
     <string name="sms_message">%1$s邀请您加入会议,时间:%2$s,您可以在电脑/手机端从此链接进入：https://192.168.16.53:3304/#/LoginR/%3$s</string>
+    <string name="ok">确定</string>
 </resources>
