@@ -34,7 +34,14 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
     }
 
     override fun hideLoading() {
-        mLoadingView?.dismiss()
+        if (mLoadingView != null) {
+            mLoadingView?.dismiss()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        hideLoading()
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
