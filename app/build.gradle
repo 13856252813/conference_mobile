@@ -90,6 +90,7 @@ dependencies {
     implementation 'cn.hugeterry.updatefun:updatefun:2.0.6'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'pub.devrel:easypermissions:1.0.1'
+    implementation 'com.android.support:design:26.+'
     testImplementation 'junit:junit:4.12'
 //    testImplementation 'org.mockito:mockito-core:2.+'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
