@@ -46,6 +46,20 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
         mLoadingView?.dismiss()
     }
 
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_right)
+    }
+
+    override fun onDestroy() {
+        if(mLoadingView!=null && mLoadingView?.isShowing!!){
+            mLoadingView?.dismiss()
+            mLoadingView=null
+        }
+        super.onDestroy()
+    }
+
+
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
 
     }
@@ -60,7 +74,7 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
 
 
      open fun setStatusBar() {
-         StatusBarUtil.setColor(this, resources.getColor(R.color.colorPrimary),0)
+         StatusBarUtil.setTransparent(this)
     }
 
 }

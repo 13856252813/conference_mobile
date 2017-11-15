@@ -37,6 +37,7 @@ import android.net.Uri
 import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
 import com.txt.conference.presenter.*
+import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
 import kotlinx.android.synthetic.main.layout_add_attendee_list.*
@@ -59,11 +60,11 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             when (msg?.what) {
                 MSG_HIDE_ALL -> {
                     if (room_layout_attendee_container.visibility == View.VISIBLE) {
-                        room_layout_attendee_container.visibility = View.INVISIBLE
+                        room_layout_attendee_container.visibility = View.GONE
                     }
 
                     if (room_layout_control.visibility == View.VISIBLE) {
-                        room_layout_control.visibility = View.INVISIBLE
+                        room_layout_control.visibility = View.GONE
                     }
                 }
             }
@@ -285,7 +286,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     override fun setInviteAbility(ability: Boolean) {
-        room_attendee_iv_add.visibility = if (ability) View.VISIBLE else View.INVISIBLE
+        room_attendee_iv_add.visibility = if (ability) View.VISIBLE else View.GONE
     }
 
     override fun getCurrentUid(): String {
@@ -331,10 +332,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             room_layout_attendee.visibility = View.VISIBLE
         }
         if (room_layout_add_attendee_list.visibility == View.VISIBLE) {
-            room_layout_add_attendee_list.visibility = View.INVISIBLE
+            room_layout_add_attendee_list.visibility = View.GONE
         }
         if (room_layout_add_attendee.visibility == View.VISIBLE) {
-            room_layout_add_attendee.visibility = View.INVISIBLE
+            room_layout_add_attendee.visibility = View.GONE
         }
     }
 
@@ -343,13 +344,13 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             room_layout_attendee_container.visibility = View.VISIBLE
         }
         if (room_layout_attendee.visibility == View.VISIBLE) {
-            room_layout_attendee.visibility = View.INVISIBLE
+            room_layout_attendee.visibility = View.GONE
         }
         if (room_layout_add_attendee.visibility != View.VISIBLE) {
             room_layout_add_attendee.visibility = View.VISIBLE
         }
         if (room_layout_add_attendee_list.visibility == View.VISIBLE) {
-            room_layout_add_attendee_list.visibility = View.INVISIBLE
+            room_layout_add_attendee_list.visibility = View.GONE
         }
     }
 
@@ -358,13 +359,13 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             room_layout_attendee_container.visibility = View.VISIBLE
         }
         if (room_layout_attendee.visibility == View.VISIBLE) {
-            room_layout_attendee.visibility = View.INVISIBLE
+            room_layout_attendee.visibility = View.GONE
         }
         if (room_layout_add_attendee_list.visibility != View.VISIBLE) {
             room_layout_add_attendee_list.visibility = View.VISIBLE
         }
         if (room_layout_add_attendee.visibility == View.VISIBLE) {
-            room_layout_add_attendee.visibility = View.INVISIBLE
+            room_layout_add_attendee.visibility = View.GONE
         }
     }
 
@@ -522,7 +523,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
             override fun onSingleTapUp(p0: MotionEvent?): Boolean {
                 if (room_layout_attendee_container.visibility == View.VISIBLE) {
-                    room_layout_attendee_container.visibility = View.INVISIBLE
+                    room_layout_attendee_container.visibility = View.GONE
                     startHideAllViewDelayed()
                     return false
                 }
@@ -530,7 +531,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                     room_layout_control.visibility = View.VISIBLE
                     startHideAllViewDelayed()
                 } else {
-                    room_layout_control.visibility = View.INVISIBLE
+                    room_layout_control.visibility = View.GONE
                 }
                 return false
             }
@@ -581,4 +582,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         }
         return super.onKeyDown(keyCode, event)
     }
+
+    override fun setStatusBar() {
+        StatusBarUtil.setTransparent(this)
+    }
+
+
 }

@@ -1,70 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="254dp"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/room_attendee_head"
         android:layout_width="230dp"
         android:layout_height="53dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/attendee_number"
             android:textColor="@color/orange"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/room_attendee_tv_already_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/orange"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="/"
             android:textColor="@color/orange"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/room_attendee_tv_all_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/orange"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/room_attendee_iv_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:src="@mipmap/add"/>
+            android:src="@mipmap/add" />
     </LinearLayout>
 
     <View
         android:id="@+id/room_attendee_line"
         android:layout_width="230dp"
         android:layout_height="1dp"
-        android:layout_below="@id/room_attendee_head"
-        android:background="@color/orange"/>
+        android:background="@color/orange" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/room_attendee_recyclerView"
         android:layout_width="230dp"
-        android:layout_height="match_parent"
-        android:layout_below="@id/room_attendee_line">
+        android:layout_height="match_parent" />
 
-    </android.support.v7.widget.RecyclerView>
-
-
-</RelativeLayout>
+</LinearLayout>

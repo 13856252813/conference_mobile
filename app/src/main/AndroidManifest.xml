@@ -55,8 +55,7 @@
         </activity>
 
         <activity android:name=".activity.RoomActivity"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+            android:screenOrientation="landscape">
 
         </activity>
         <activity android:name=".activity.CreateConferenceRoomActivity"

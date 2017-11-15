@@ -1,47 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/welcome"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/room_remote_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:orientation="horizontal" />
 
     <include
         android:id="@+id/room_layout_control"
         layout="@layout/layout_control"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:id="@+id/room_layout_attendee_container"
-        android:visibility="invisible"
         android:layout_width="254dp"
         android:layout_height="match_parent"
-        android:background="@color/attendee_bg">
+        android:background="@color/attendee_bg"
+        android:visibility="gone">
 
         <include
             android:id="@+id/room_layout_attendee"
             layout="@layout/layout_attendee"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <include
             android:id="@+id/room_layout_add_attendee_list"
             layout="@layout/layout_add_attendee_list"
-            android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
         <include
             android:id="@+id/room_layout_add_attendee"
             layout="@layout/layout_add_attendee"
-            android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
