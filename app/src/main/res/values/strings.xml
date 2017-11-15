@@ -36,7 +36,7 @@
     <string name="confirm">确认</string>
     <string name="room_number">房间号：%s</string>
     <string name="attendee_number">参会人&#160;&#160;</string>
-    <string name="begin_time_value">%s  %s小时  %s</string>
+    <string name="begin_time_value">房间: %s %s  %s小时  %s</string>
     <string name="permission_camera">是否允许添加摄像头和录音权限？</string>
     <string name="permission_phone_address">是否允许访问手机通讯录？</string>
     <string name="error_unknow">未连接服务器</string>
