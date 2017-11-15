@@ -34,6 +34,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import android.bluetooth.BluetoothHeadset
 import android.content.IntentFilter
 import android.net.Uri
+import com.common.utlis.DateUtils
 import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
 import com.txt.conference.presenter.*
@@ -371,9 +372,17 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     fun startSendSms(){
         ULog.i(TAG, "startSendSms" )
-        var smsToUri = Uri.parse("smsto:")
+        /*var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
         var str_sms_Message = String.format(getString(R.string.sms_message), room?.roomNo)
+        intent.putExtra("sms_body", str_sms_Message)
+        startActivity(intent)*/
+        var date= DateUtils()
+        ULog.i(TAG, "startSendSms" )
+        var smsToUri = Uri.parse("smsto:")
+        var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
+        var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
+                date.format(room?.start, DateUtils.yyyy_MM_dd__HH_mm_ss),room?.roomNo)
         intent.putExtra("sms_body", str_sms_Message)
         startActivity(intent)
     }
