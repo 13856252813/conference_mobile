@@ -28,7 +28,7 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
     override fun convert(helper: RoomViewHolder?, item: RoomBean?) {
         helper?.setText(R.id.item_tv_room_number, item?.topic)
         helper?.getView<TextView>(R.id.item_tv_room_number)?.isSelected=true
-        helper?.setText(R.id.item_tv_begin_time, String.format(TxApplication.mInstance!!.getString(R.string.begin_time_value), DateUtils().format(item?.start, DateUtils.MM_dd_HH_mm), item?.duration, item?.creator?.display))
+        helper?.setText(R.id.item_tv_begin_time, String.format(TxApplication.mInstance!!.getString(R.string.begin_time_value), item?.roomNo ,DateUtils().format(item?.start, DateUtils.MM_dd_HH_mm), item?.duration, item?.creator?.display))
         helper?.addOnClickListener(R.id.item_bt_enter)
         helper?.addOnClickListener(R.id.add_attend)
         helper?.addOnClickListener(R.id.delete_button)
