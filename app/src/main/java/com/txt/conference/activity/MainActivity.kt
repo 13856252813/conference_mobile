@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.layout_menu.*
 import java.util.*
 import android.support.v4.widget.DrawerLayout
 import android.view.View
+import com.common.utlis.DateUtils
 import com.txt.conference.utils.StatusBarUtil
 
 
@@ -169,21 +170,13 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         mConferenceAdapter?.cancelAllTimers()
     }
 
-    fun OpenPhoneAddress(){
+    private fun OpenPhoneAddress(room: RoomBean){
         ULog.i(TAG, "OpenPhoneAddress" )
-        /*var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS)
-        if (EasyPermissions.hasPermissions(this, *args)) {
-            ULog.i(TAG, "OpenPhoneAddress hasPermission" )
-            val uri = Uri.parse("content://contacts/people")
-            val intent = Intent(Intent.ACTION_PICK, uri)
-            startActivityForResult(intent, REQUEST_PHONE)
-        } else {
-            ULog.i(TAG, "OpenPhoneAddress requestPermissions" )
-            EasyPermissions.requestPermissions(this, getString(R.string.permission_phone_address), 100, *args)
-        }*/
-
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
+        var date=DateUtils()
+        var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
+                date.format(room?.start, DateUtils.yyyy_MM_dd__HH_mm_ss),room?.roomNo)
         intent.putExtra("sms_body", getString(R.string.sms_message))
         startActivity(intent)
     }
@@ -326,17 +319,17 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
     fun showChoosAttendDialog(room: RoomBean){
         val builder = CustomAttendDialog.Builder(this)
         selectroom = room
-        builder.setcompanyButton(){
-            dialog, which -> dialog.dismiss()
+        builder.setcompanyButton{
+            dialog, _ -> dialog.dismiss()
             startCommpanAttendActivity(room)
         }
-        builder.setdeviceButton(){
-            dialog, which -> dialog.dismiss()
+        builder.setdeviceButton{
+            dialog, _ -> dialog.dismiss()
             startDeviceActivity(room)
         }
-        builder.setphoneButton(){
-            dialog, which -> dialog.dismiss()
-            OpenPhoneAddress()
+        builder.setphoneButton{
+            dialog, _ -> dialog.dismiss()
+            OpenPhoneAddress(room)
         }
         /*builder.setweixinButton(){
             dialog, which -> dialog.dismiss()

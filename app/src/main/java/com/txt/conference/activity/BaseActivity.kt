@@ -74,7 +74,7 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
 
 
      open fun setStatusBar() {
-         StatusBarUtil.setTransparent(this)
+         StatusBarUtil.setColor(this, resources.getColor(R.color.colorPrimary),0)
     }
 
 }
