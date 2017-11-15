@@ -62,18 +62,18 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
                 }
             }
         }
-        if (holder.textinfo.text.equals("会议主题") && clickFirst == false){
-            holder.imageView2.setVisibility(View.GONE)
-            holder.textinfo2.setVisibility(View.VISIBLE)
-            holder.editview.setVisibility(View.GONE)
-            if (editText.equals("") == false){
+        if (holder.textinfo.text.equals("会议主题") && !clickFirst){
+            holder.imageView2.visibility = View.GONE
+            holder.textinfo2.visibility = View.VISIBLE
+            holder.editview.visibility = View.GONE
+            if (!editText.equals("")){
                 holder.textinfo2.text = editText
             }
             //ULog.i(TAG, "position:" + position)
             //ULog.i(TAG, "holder.textinfo.text:" + holder.textinfo.text)
             //holder.textinfo2.setVisibility(View.GONE)
             //holder.editview.setVisibility(View.VISIBLE)
-        } else if (holder.textinfo.text.equals("会议主题") && clickFirst == true){
+        } else if (holder.textinfo.text.equals("会议主题") && clickFirst){
 
             holder.textinfo2.setVisibility(View.GONE)
             holder.editview.setVisibility(View.VISIBLE)
@@ -91,6 +91,7 @@ class CreateRoomListAdapter(val list: ArrayList<CreateRoomListAdapterBean>, val 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
+
 
     fun updateItemStr(position: Int, str: String?) {
         list.get(position).strinfo2 = str

@@ -16,6 +16,7 @@ import com.txt.conference.presenter.CreateConferenceRoomPresenter
 import com.txt.conference.utils.Constants
 import com.txt.conference.utils.CostTimePickDialogUtil
 import com.txt.conference.utils.DateTimePickDialogUtil
+import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.ICreateConferenceRoomView
 import com.txt.conference.view.ICreateConferenceView
 import org.json.JSONArray
@@ -85,7 +86,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     var mStartTime: String? = ""
     override fun initListViewData(listdata: ArrayList<CreateRoomListAdapterBean>) {
         listadapter = CreateRoomListAdapter(listdata, this)
-        listview?.setAdapter(listadapter)
+        listview?.adapter = listadapter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
