@@ -101,7 +101,7 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
         var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
-                date.format(room?.start,DateUtils.yyyy_MM_dd__HH_mm_ss),room?.roomNo)
+                date.format(room?.start,DateUtils.HH_mm), room?.roomNo)
         intent.putExtra("sms_body", str_sms_Message)
         startActivity(intent)
     }

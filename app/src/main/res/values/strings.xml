@@ -60,6 +60,6 @@
     <string name="conference_device">会议室设备</string>
     <string name="phone_address">手机短信</string>
     <string name="weixin_friend">微信好友</string>
-    <string name="sms_message">%1$s邀请您加入会议,时间:%2$s,您可以在电脑/手机端从此链接进入：https://192.168.16.53:3304/#/LoginR/%3$s</string>
+    <string name="sms_message">"【云智会】 %1$s邀请您参加视频会议,时间:%2$s,房间号:%3$s,您可以在电脑/手机端从此链接进入：https://192.168.16.53:3304/#/LoginR/%3$s,手机端下载\"云智会\"APP。"</string>
     <string name="ok">确定</string>
 </resources>
