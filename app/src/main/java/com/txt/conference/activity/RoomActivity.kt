@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.layout_control.*
 import pub.devrel.easypermissions.EasyPermissions
 import android.bluetooth.BluetoothHeadset
 import android.content.IntentFilter
+import android.media.AudioManager
 import android.net.Uri
 import com.common.utlis.DateUtils
 import com.txt.conference.adapter.AddTypeAdapter
@@ -48,9 +49,19 @@ import kotlinx.android.synthetic.main.layout_add_attendee_list.*
  * Created by jane on 2017/10/15.
  */
 class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
+    override fun onJoined() {
+        headsetType = isWiredHeadsetOn()//DeviceUtils.isHeadsetExists()
+        ULog.i(TAG, "headsetType:" + headsetType)
+        if (headsetType){
+            clientPresenter?.onOffLoud()
+        }
+    }
 
 
-
+    fun isWiredHeadsetOn() :Boolean {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        return audioManager.isWiredHeadsetOn
+    }
 
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
@@ -83,6 +94,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     var inviteAdapter: InviteAdapter? = null
     var addTypeAdapter: AddTypeAdapter? = null
     var mClickedItem = 0
+    var headsetType = false
+
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
@@ -134,6 +147,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room)
         registerHeadsetPlugReceiver()
+
+
         room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
         if (room == null || intent.getStringExtra(KEY_CONNECT_TOKEN) == null) {
             this.finish()
