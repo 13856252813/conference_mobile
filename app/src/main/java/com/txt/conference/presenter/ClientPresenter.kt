@@ -326,7 +326,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     option.videoCodec = MediaCodec.VideoCodec.H264
                     var remoteStream = msg.obj as RemoteStream
                     if (remoteStream is RemoteMixedStream) {
-                        option.setResolution(640, 480)
+                        //option.setResolution(640, 480)
 
                     }
                     mRoom!!.subscribe(remoteStream, option, object : ActionCallback<RemoteStream> {
