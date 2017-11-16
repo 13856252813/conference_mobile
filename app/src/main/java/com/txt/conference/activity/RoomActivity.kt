@@ -144,7 +144,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         initViewEvent()
         roomPresenter = RoomPresenter(this)
         roomPresenter.initRoomInfo(room!!)
-        clientPresenter = ClientPresenter(this, this)
+        clientPresenter = ClientPresenter(this, this, room)
         getUsersPresenter = GetUsersPresenter(this)
         getUserDevicePresenter = GetUserDevicePresenter(this)
         addTypePresenter = AddTypePresenter(this)

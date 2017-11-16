@@ -16,6 +16,7 @@ import com.intel.webrtc.base.*
 import com.intel.webrtc.conference.*
 import com.intel.webrtc.conference.PublishOptions
 import com.txt.conference.R
+import com.txt.conference.bean.RoomBean
 import com.txt.conference.model.ClientModel
 import com.txt.conference.model.IClientModel
 import com.txt.conference.view.IClientView
@@ -65,9 +66,12 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     private var statsTimer: Timer? = null
     private var cameraID = 1
 
-    constructor(context: Activity, view: IClientView) {
+    private var mRoomBean: RoomBean? = null
+
+    constructor(context: Activity, view: IClientView, room: RoomBean?) {
         mContext = context
         clientView = view
+        mRoomBean = room
         clientModel = ClientModel()
     }
 
@@ -145,7 +149,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     ULog.d(TAG, "userName: " + users?.get(i).name + " role:" + users?.get(i).role)
                 }
                 clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
-                clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
+                clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
             }
 
             override fun onFailure(p0: WoogeenException?) {
@@ -222,7 +226,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     override fun onUserJoined(p0: User?) {
         ULog.d(TAG, "onUserJoined")
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
-        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
+        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
     }
 
     override fun onServerDisconnected() {
@@ -273,7 +277,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     override fun onUserLeft(p0: User?) {
         ULog.d(TAG, "onUserLeft")
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
-        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
+        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
     }
 
     override fun onStreamError(p0: Stream?, p1: WoogeenException?) {
