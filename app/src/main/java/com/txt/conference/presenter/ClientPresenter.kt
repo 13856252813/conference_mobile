@@ -75,6 +75,10 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         clientModel = ClientModel()
     }
 
+    fun updateRoomBean(rooBeam: RoomBean){
+        mRoomBean = rooBeam
+    }
+
     fun init() {
         var audioManager = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioManager.isSpeakerphoneOn = true

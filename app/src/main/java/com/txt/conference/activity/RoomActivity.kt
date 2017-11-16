@@ -217,6 +217,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun inviteComplete(room: RoomBean) {
         this.room = room
         roomPresenter.initRoomInfo(this.room!!)
+        clientPresenter.updateRoomBean(room)
         showAttendees()
         showToast(R.string.tips_invite_success)
         startHideAllViewDelayed()
