@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:textSize="15sp"
+            android:textColor="@color/grey200"
             android:text="@string/create_room"/>
 
         <View
