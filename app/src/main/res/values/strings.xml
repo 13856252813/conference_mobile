@@ -12,6 +12,11 @@
     <string name="back_to_last">返回</string>
     <string name="loginng">正在登录中...</string>
     <string name="logoff">退出登录</string>
+    <string name="conference_tilte">会议主题</string>
+    <string name="conference_input">请填写</string>
+    <string name="conference_add_device">会议室设备</string>
+    <string name="conference_starttime">开始时间</string>
+    <string name="conference_costtime">持续时长</string>
     <string name="logoff_sure">确定退出登录吗?</string>
     <string name="error_logoff">退出登录失败，请重试!</string>
     <string name="error_re_login">帐号异常，请重新登录!</string>

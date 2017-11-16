@@ -19,6 +19,7 @@ import com.txt.conference.utils.DateTimePickDialogUtil
 import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.ICreateConferenceRoomView
 import com.txt.conference.view.ICreateConferenceView
+import kotlinx.android.synthetic.main.activity_createconferenceroom.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -70,8 +71,8 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     //var mPresenter: CreateConferencePresenter()
     var mPresenter: CreateConferencePresenter? = null
     var mCreateRoomPresenter: CreateConferenceRoomPresenter? = null
-    var listview: ListView? = null
-    var listadapter: CreateRoomListAdapter? = null
+    //var listview: ListView? = null
+    //var listadapter: CreateRoomListAdapter? = null
     //var getuserPresenter: GetUsersPresenter? = null
     var userNum: String? = null
 
@@ -85,8 +86,8 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     var mCostTime: String? = "1"
     var mStartTime: String? = ""
     override fun initListViewData(listdata: ArrayList<CreateRoomListAdapterBean>) {
-        listadapter = CreateRoomListAdapter(listdata, this)
-        listview?.adapter = listadapter
+        //listadapter = CreateRoomListAdapter(listdata, this)
+        //listview?.adapter = listadapter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,8 +118,8 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     fun startEditTitle(){
-        listadapter!!.updateItemStr(true)
-        listadapter!!.notifyDataSetChanged()
+        //listadapter!!.updateItemStr(true)
+        //listadapter!!.notifyDataSetChanged()
     }
 
     fun startCostTime(){
@@ -129,9 +130,10 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     fun createRoomJsonString (): String? {
         var title = ""
-        if (listadapter?.editText != null){
+        /*if (listadapter?.editText != null){
             title = listadapter?.editText!!
-        }
+        }*/
+        title = editviewinfo.text.toString()
         var jsonTime: JSONObject = JSONObject()
         var jsonObj: JSONObject = JSONObject()
         var pararray: JSONArray = JSONArray()
@@ -171,9 +173,18 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     fun initView() {
         var titlebar_back: TextView = this.findViewById<TextView>(R.id.left_text)
-        var titlebar_title: TextView = this.findViewById<TextView>(R.id.title)
+        //var titlebar_title: TextView = this.findViewById<TextView>(R.id.title)
         var btn_create: Button = this.findViewById<Button>(R.id.bt_createroom)
         titlebar_back.setClickable(true)
+
+        val nowformatter = SimpleDateFormat("MM-dd HH:mm")
+        val nowcurDate = Date(System.currentTimeMillis())//获取当前时间
+
+
+        val strNow = nowformatter.format(nowcurDate)
+        mStartTime = strNow
+        textinfo_create_conference_starttime.text = mStartTime
+
         btn_create.setOnClickListener {
 
             val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
@@ -189,8 +200,12 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         }
         titlebar_back.setOnClickListener({ this.onBackPressed()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
 
+        create_addman.setOnClickListener({ this.startChooseAttand()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
+        create_adddevice.setOnClickListener({ this.startChooseDeviceAttand()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
+        create_conference_starttime.setOnClickListener({ this.startDateTimer()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
+        create_conference_costtime.setOnClickListener({ this.startCostTime()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
 
-        listview= this.findViewById<ListView>(R.id.listCreateRoomView)
+        /*listview= this.findViewById<ListView>(R.id.listCreateRoomView)
         listview?.setOnItemClickListener { adapterView, view, i, l ->
             listadapter!!.updateItemStr(false)
             when(i){
@@ -201,7 +216,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
                 4 -> this.startCostTime()
 
             }
-        }
+        }*/
 
         mPresenter = CreateConferencePresenter(this)
         mCreateRoomPresenter = CreateConferenceRoomPresenter(this)
@@ -217,14 +232,15 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     override fun onConfirm(str: String?) {
 
-        if (listadapter != null) {
+        /*if (listadapter != null) {
             mStartTime = str
             listadapter!!.updateItemStr(ITEM_STARTTIME, str?.substring(5, str.length))
             listadapter!!.notifyDataSetChanged()
-        }
+        }*/
 
-
+        mStartTime = str
         //Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
+        textinfo_create_conference_starttime.text = str
 
     }
 
@@ -233,11 +249,17 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     override fun onCostTimeConfirm(str: String?) {
-        if (listadapter != null) {
+        /*if (listadapter != null) {
             listadapter!!.updateItemStr(ITEM_COSTTIME, str)
             mCostTime = str
             listadapter!!.notifyDataSetChanged()
+        }*/
+        if (str == null || str.equals("")){
+            mCostTime = "1"
+        } else {
+            mCostTime = str
         }
+        textinfo_create_conference_costtime.text = str
     }
 
     override fun onCostTimeCancel() {
@@ -245,17 +267,19 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     fun onAttandManUpdate(str: String?) {
-        if (listadapter != null) {
+        /*if (listadapter != null) {
             listadapter!!.updateItemStr(ITEM_ATTEND, str)
             listadapter!!.notifyDataSetChanged()
-        }
+        }*/
+        create_addman_num.text = str
     }
 
     fun onDeviceManUpdate(str: String?) {
-        if (listadapter != null) {
+        /*if (listadapter != null) {
             listadapter!!.updateItemStr(ITEM_DEVICE, str)
             listadapter!!.notifyDataSetChanged()
-        }
+        }*/
+        create_device_num.text = str
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
