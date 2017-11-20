@@ -34,7 +34,16 @@ import com.txt.conference.utils.StatusBarUtil
 
 
 
-class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomView, ILogoffView, IInviteUsersView, ConferenceAdapter.TimeCallBack {
+class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomView, IDeleteRoomView, ILogoffView, IInviteUsersView, ConferenceAdapter.TimeCallBack {
+
+    override fun getRoomInfoFinished(getRoom: Boolean?, roombean: RoomBean?) {
+        if (getRoom == true){
+            joinRoomPresenter?.joinRoom(roombean!!, getToken())
+        } else {
+            getRoomsPresenter?.getRooms(getToken())
+        }
+    }
+
     override fun setAttendeeNumber(number: Int) {
         ULog.d(TAG, "setAttendeeNumber $number")
     }
@@ -58,12 +67,17 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
     var logoffPresenter: LogoffPresenter? = null
     var deleteRoomPresenter: DeleteRoomPresenter? = null
 
+    var getRoomInfoPresenter: GetRoomInfoPresenter? = null
+
     var selectroom: RoomBean? = null
 
     var mCurrentTime:Long = 0
 
     lateinit var inviteUsersPresenter: InviteUsersPresenter
 
+    fun getUserId(): String? {
+        return TxSharedPreferencesFactory(applicationContext).getId()
+    }
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
         i.putExtra(RoomActivity.KEY_ROOM, room)
@@ -134,6 +148,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         logoffPresenter = LogoffPresenter(this)
         deleteRoomPresenter = DeleteRoomPresenter(this)
         inviteUsersPresenter = InviteUsersPresenter(this)
+        getRoomInfoPresenter = GetRoomInfoPresenter(this)
         home_ib_logoff.setOnClickListener {
             CustomDialog.showSelectDialog(this,resources.getString(R.string.logoff_sure),
                     object :com.txt.conference.widget.CustomDialog.DialogClickListener{
@@ -366,6 +381,8 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
         home_rv.layoutManager = layoutManager
         home_rv.addItemDecoration(RecyclerViewDivider(this, 20, 20))
         mConferenceAdapter = ConferenceAdapter(R.layout.item_conference_new, null)
+        ULog.d(TAG, "getUserId :" + getUserId())
+        mConferenceAdapter?.setUid(this.getUserId())
         mConferenceAdapter?.timeCallBack = this
         mConferenceAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
             var room = adapter?.data?.get(position) as RoomBean
@@ -374,7 +391,8 @@ class MainActivity : BaseActivity(), IGetRoomsView, IJoinRoomView, IDeleteRoomVi
                 item_bt_enter.id -> {
                     ULog.d(TAG, "onItemChildClick $position roomId:" + room.roomId)
                     if (room.status == RoomBean.STATUS_BEGING) {
-                        joinRoomPresenter?.joinRoom(room, getToken())
+                        //joinRoomPresenter?.joinRoom(room, getToken())
+                        getRoomInfoPresenter?.getRoomInfo(room.roomNo, getToken())
                     }
                 }
                 add_attend.id -> {

@@ -34,7 +34,10 @@ class GetRoomsPresenter {
                             getRoomsView?.showToast(R.string.error_re_login)
                             getRoomsView?.jumpToLogin()
                         }
-                        Status.FAILED_UNKNOW -> getRoomsView?.showToast(R.string.error_unknow)
+                        Status.FAILED_UNKNOW -> {
+                            getRoomsView?.jumpToLogin()
+                            //getRoomsView?.showToast(R.string.error_unknow)
+                        }
                     }
                 }
             })

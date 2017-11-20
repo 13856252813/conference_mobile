@@ -72,6 +72,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         mContext = context
         clientView = view
         mRoomBean = room
+        localStream = null
         clientModel = ClientModel()
     }
 
@@ -444,13 +445,16 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     if (localStream != null) {
                         mRoom?.unpublish(localStream, object : ActionCallback<Void> {
                             override fun onSuccess(p0: Void?) {
-                                localStream?.close()
-                                localStream = null
-                                localStreamRenderer?.cleanFrame()
+                                //localStream?.close()
+                                //localStream = null
+                                //localStreamRenderer?.cleanFrame()
+                                ULog.e(TAG, "unpublish Success ")
+                                leave()
                             }
 
                             override fun onFailure(p0: WoogeenException?) {
-
+                                ULog.e(TAG, "unpublish failure ", p0)
+                                leave()
                             }
                         })
                     }
@@ -619,7 +623,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     fun finishMeet(){
         unPublish()
-        leave()
+        //leave()
     }
 
     fun onDestroy() {

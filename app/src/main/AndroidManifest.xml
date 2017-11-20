@@ -59,7 +59,8 @@
 
         <activity
             android:name=".activity.RoomActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
 
         </activity>
         <activity
@@ -68,7 +69,7 @@
             android:theme="@style/AppTheme_2"/>
         <activity
             android:name=".activity.ChooseManActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CreateConferenceFinishedActivity"
             android:screenOrientation="portrait"/>

@@ -52,6 +52,13 @@ class LoginModel : ILoginModel {
         mPreference?.setId(id)
     }
 
+    fun saveIsLogin(type: String?) {
+        if (mPreference == null) {
+            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
+        }
+        mPreference?.setLogin(type)
+    }
+
     override fun getAccount(): String {
         if (mPreference == null) {
             mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
@@ -87,9 +94,11 @@ class LoginModel : ILoginModel {
                         saveToken(mLoginBean.token)
                         saveUserName(mLoginBean.username)
                         saveId(mLoginBean.id)
+                        saveIsLogin("true")
 //                        savePhoneNumber(result?.pho)
                     } else {
                         mLoginBean = LoginBean()
+                        saveIsLogin("false")
                         msg = result?.msg
                     }
                     loginCallBack.onStatus()

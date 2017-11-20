@@ -12,6 +12,7 @@
     <string name="back_to_last">返回</string>
     <string name="loginng">正在登录中...</string>
     <string name="logoff">退出登录</string>
+    <string name="roomno_empty">房间号没有输入</string>
     <string name="conference_tilte">会议主题</string>
     <string name="conference_input">请填写</string>
     <string name="conference_add_device">会议室设备</string>
@@ -44,13 +45,15 @@
     <string name="begin_time_value">房间: %s %s  %s小时  %s</string>
     <string name="permission_camera">是否允许添加摄像头和录音权限？</string>
     <string name="permission_phone_address">是否允许访问手机通讯录？</string>
-    <string name="error_unknow">未连接服务器</string>
+    <string name="error_unknow">未知异常,请重新连接</string>
+    <string name="conference_unknow">会议</string>
     <string name="error_enter_room">加入房间失败，请重试。</string>
     <string name="finish">完成</string>
     <string name="tip">提示</string>
     <string name="tip_quit_meet">确定退出会议吗？</string>
     <string name="starttime_before_nowtime">会议开始时间不能晚于当前时间！</string>
     <string name="loading_rooms">正在加载会议...</string>
+    <string name="geting_room_info">正在获取房间信息...</string>
     <string name="loading_loginoff">正在退出...</string>
     <string name="loading_add_attendee">正在添加参会人...</string>
     <string name="loading_conference_connect">正在建立会议连接...</string>
@@ -65,6 +68,6 @@
     <string name="conference_device">会议室设备</string>
     <string name="phone_address">手机短信</string>
     <string name="weixin_friend">微信好友</string>
-    <string name="sms_message">"【云智会】 %1$s邀请您参加视频会议,时间:%2$s,房间号:%3$s,您可以在电脑/手机端从此链接进入：https://192.168.16.53:3304/#/LoginR/%3$s ，手机端下载\"云智会\"APP。"</string>
+    <string name="sms_message">"【云智会】 %1$s邀请您参加视频会议,时间:%2$s,房间号:%3$s,您可以在电脑/手机端从此链接进入：https://demo.ikandy.cn:3304/#/LoginR/%3$s ，手机端下载\"云智会\"APP。"</string>
     <string name="ok">确定</string>
 </resources>
