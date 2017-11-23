@@ -29,6 +29,8 @@ import java.util.*
 import android.support.v4.widget.DrawerLayout
 import android.view.View
 import com.common.utlis.DateUtils
+import com.txt.conference.http.Urls
+import com.txt.conference.utils.CommonUtils
 import com.txt.conference.utils.StatusBarUtil
 
 
@@ -195,14 +197,16 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
         intent.putExtra("sms_body", getString(R.string.sms_message))
         startActivity(intent)*/
 
-        var date= DateUtils()
+        /*var date= DateUtils()
         ULog.i(TAG, "startSendSms" )
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
         var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
-                date.format(room?.start,DateUtils.HH_mm), room?.roomNo)
+                date.format(room?.start,DateUtils.HH_mm), room?.roomNo, Urls.HOST)
         intent.putExtra("sms_body", str_sms_Message)
-        startActivity(intent)
+        startActivity(intent)*/
+
+        CommonUtils.startSendSms(this, room!!)
     }
 
 

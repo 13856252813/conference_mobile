@@ -38,7 +38,9 @@ import android.net.Uri
 import com.common.utlis.DateUtils
 import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
+import com.txt.conference.http.Urls
 import com.txt.conference.presenter.*
+import com.txt.conference.utils.CommonUtils
 import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
@@ -96,6 +98,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     var mClickedItem = 0
     var headsetType = false
 
+    var mContext:Context? = null
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
@@ -148,7 +151,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         setContentView(R.layout.activity_room)
         registerHeadsetPlugReceiver()
 
-
+        mContext = this
         room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
         if (room == null || intent.getStringExtra(KEY_CONNECT_TOKEN) == null) {
             this.finish()
@@ -386,22 +389,17 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         }
     }
 
-    fun startSendSms(){
+    /*fun startSendSms(){
         ULog.i(TAG, "startSendSms" )
-        /*var smsToUri = Uri.parse("smsto:")
-        var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
-        var str_sms_Message = String.format(getString(R.string.sms_message), room?.roomNo)
-        intent.putExtra("sms_body", str_sms_Message)
-        startActivity(intent)*/
         var date= DateUtils()
         ULog.i(TAG, "startSendSms" )
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
         var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
-                date.format(room?.start,DateUtils.HH_mm), room?.roomNo)
+                date.format(room?.start,DateUtils.HH_mm), room?.roomNo, Urls.HOST)
         intent.putExtra("sms_body", str_sms_Message)
         startActivity(intent)
-    }
+    }*/
 
     override fun initAddTypeViewData(listdata: ArrayList<AddTypeBean>) {
         ULog.i(TAG, listdata?.size!!.toString())
@@ -419,7 +417,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
                         }
                         2 -> {
-                            startSendSms()
+                            //startSendSms()
+                            CommonUtils.startSendSms(mContext!!, room!!)
                         }
                     }
                     mClickedItem = position

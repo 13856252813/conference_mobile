@@ -16,7 +16,9 @@ import com.txt.conference.R
 import com.txt.conference.bean.RoomBean
 
 import com.txt.conference.data.TxSharedPreferencesFactory
+import com.txt.conference.http.Urls
 import com.txt.conference.presenter.JoinRoomPresenter
+import com.txt.conference.utils.CommonUtils
 import com.txt.conference.view.IJoinRoomView
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -95,16 +97,16 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
         OpenPhoneAddress()
     }
 
-    private fun startSendSms(){
+    /*private fun startSendSms(){
         var date= DateUtils()
         ULog.i(TAG, "startSendSms" )
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
         var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
-                date.format(room?.start,DateUtils.HH_mm), room?.roomNo)
+                date.format(room?.start,DateUtils.HH_mm), room?.roomNo, Urls.HOST)
         intent.putExtra("sms_body", str_sms_Message)
         startActivity(intent)
-    }
+    }*/
 
 
     fun startWeixinAddress(){
@@ -126,7 +128,10 @@ class CreateConferenceFinishedActivity : BaseActivity(), IJoinRoomView {
         btn_enter.setOnClickListener { this.enterConference() }
 
         var bt_sms: Button = this.findViewById<Button>(R.id.bt_sms_invite)
-        bt_sms.setOnClickListener { this.startSendSms() }
+        bt_sms.setOnClickListener {
+            //this.startSendSms()
+            CommonUtils.startSendSms(this, room!!)
+        }
 
         /*var btn_weixin: ImageView = this.findViewById<ImageView>(R.id.weixin_icon_id)
         btn_weixin.setOnClickListener { this.startWeixinAddress() }
