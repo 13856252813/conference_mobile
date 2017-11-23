@@ -20,6 +20,7 @@ public class CustomDialog {
 
 	public final static int SELECT_DIALOG = 1;
 	public final static int RADIO_DIALOG = 2;
+	public final static int CONFIRM_DIALOG = 3;
 
 	/**
 	 * 创建�?个单选对话框
@@ -74,6 +75,13 @@ public class CustomDialog {
 				SELECT_DIALOG);
 	}
 
+	public static android.app.Dialog showConfirmDialog(Context context,String title,
+													  String toast,
+													  final DialogClickListener dialogClickListener) {
+		return ShowDialog(context, title, toast, dialogClickListener,
+				CONFIRM_DIALOG);
+	}
+
 	private static android.app.Dialog ShowDialog(Context context, String title,
                                                  String toast, final DialogClickListener dialogClickListener,
                                                  int DialogType) {
@@ -85,9 +93,14 @@ public class CustomDialog {
 		((TextView) view.findViewById(R.id.point)).setText(title);
 //		((TextView) view.findViewById(R.id.toast)).setText(toast);
 		if (DialogType == RADIO_DIALOG) {
-		} else {
+		} else if (DialogType == SELECT_DIALOG) {
 			view.findViewById(R.id.ok).setVisibility(View.GONE);
 			view.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+		} else if (DialogType == CONFIRM_DIALOG) {
+			((TextView) view.findViewById(R.id.point_message)).setText(toast);
+			view.findViewById(R.id.ok).setVisibility(View.GONE);
+			view.findViewById(R.id.divider).setVisibility(View.GONE);
+			view.findViewById(R.id.cancel).setVisibility(View.GONE);
 		}
 		view.findViewById(R.id.confirm).setOnClickListener(
 				new OnClickListener() {
