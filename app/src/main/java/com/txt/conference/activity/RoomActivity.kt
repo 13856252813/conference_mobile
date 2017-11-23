@@ -86,7 +86,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     lateinit var roomPresenter: RoomPresenter
-    lateinit var clientPresenter: ClientPresenter
+    var clientPresenter: ClientPresenter? = null
     lateinit var getUsersPresenter: GetUsersPresenter
     lateinit var getUserDevicePresenter: GetUserDevicePresenter
     lateinit var inviteUsersPresenter: InviteUsersPresenter
@@ -113,7 +113,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                     if (intent.getIntExtra("state", 0) == 0) {
                         room_iv_loud.isEnabled=true;
                         //Toast.makeText(context, "headset not connected", Toast.LENGTH_LONG).show()
-                        if (clientPresenter.getIsSpeakerLoad()){
+                        if (clientPresenter!!.getIsSpeakerLoad()){
 
                         } else {
                             clientPresenter?.onOffLoud()
@@ -122,7 +122,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                     } else if (intent.getIntExtra("state", 0) == 1) {
                         //Toast.makeText(context, "headset connected", Toast.LENGTH_LONG).show()
                         room_iv_loud.isEnabled=false;
-                        if (clientPresenter.getIsSpeakerLoad()){
+                        if (clientPresenter!!.getIsSpeakerLoad()){
                             clientPresenter?.onOffLoud()
                         }
 
@@ -174,7 +174,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun onResume() {
         super.onResume()
         startHideAllViewDelayed()
-        clientPresenter.onResume()
+        clientPresenter!!.onResume()
     }
 
     override fun onPause() {
@@ -185,7 +185,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     override fun onDestroy() {
         roomPresenter?.cancelCountDown()
-        clientPresenter.onDestroy()
+        clientPresenter!!.onDestroy()
+        clientPresenter = null
         unregisterHeadsetPlugReceiver()
         ULog.d(TAG, "onDestroy")
         super.onDestroy()
@@ -194,14 +195,14 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     private fun methodRequiresTwoPermission() {
         var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (EasyPermissions.hasPermissions(this, *args)) {
-            clientPresenter.joinRoom(getConnectToken())
+            clientPresenter?.joinRoom(getConnectToken())
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.permission_camera), 100, *args)
         }
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) {
-        clientPresenter.joinRoom(getConnectToken())
+        clientPresenter?.joinRoom(getConnectToken())
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
@@ -235,7 +236,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun inviteComplete(room: RoomBean) {
         this.room = room
         roomPresenter.initRoomInfo(this.room!!)
-        clientPresenter.updateRoomBean(room)
+        clientPresenter?.updateRoomBean(room)
         showAttendees()
         showToast(R.string.tips_invite_success)
         startHideAllViewDelayed()
@@ -327,7 +328,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     override fun end() {
         showToast(R.string.conference_end)
-        clientPresenter.finishMeet()
+        clientPresenter?.finishMeet()
     }
     //for roomPresenter end
 
@@ -483,7 +484,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     private fun initViewEvent() {
         room_iv_quit.setOnClickListener {
             ULog.d(TAG, "image click")
-            clientPresenter.finishMeet()
+            clientPresenter?.finishMeet()
         }
 
         room_iv_attendee.setOnClickListener(this)
@@ -596,7 +597,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             CustomDialog.showSelectDialog(this,resources.getString(R.string.tip_quit_meet),
                     object :com.txt.conference.widget.CustomDialog.DialogClickListener{
                         override fun confirm() {
-                            clientPresenter.finishMeet()
+                            clientPresenter?.finishMeet()
                         }
                         override fun cancel() {
                         }

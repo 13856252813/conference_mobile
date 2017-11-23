@@ -20,6 +20,7 @@ import com.txt.conference.bean.RoomBean
 import com.txt.conference.model.ClientModel
 import com.txt.conference.model.IClientModel
 import com.txt.conference.view.IClientView
+import com.txt.conference.widget.CustomDialog
 import com.txt.conference_common.WoogeenSurfaceRenderer
 import org.webrtc.EglBase
 import org.webrtc.PeerConnection.IceServer
@@ -237,6 +238,34 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     override fun onServerDisconnected() {
         ULog.d(TAG, "onServerDisconnected")
+
+        currentRemoteStream = null
+        subscribedStreams.clear()
+        localStreamRenderer?.cleanFrame()
+        remoteStreamRenderer?.cleanFrame()
+        if (localStream != null) {
+            localStream?.close()
+            localStream = null
+        }
+        if (screenStream != null) {
+            screenStream?.close()
+            screenStream = null
+        }
+        //mContext?.finish()
+
+        mContext?.runOnUiThread {
+            CustomDialog.showConfirmDialog(mContext, mContext?.getString(R.string.tip_net_disconnect), mContext?.getString(R.string.tip_net_disconnect_message),
+                    object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                        override fun confirm() {
+                            mContext?.finish()
+                        }
+
+                        override fun cancel() {
+                        }
+
+                    })
+        }
+
     }
 
     override fun onMessageReceived(p0: String?, p1: String?, p2: Boolean) {
@@ -448,7 +477,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                 //localStream?.close()
                                 //localStream = null
                                 //localStreamRenderer?.cleanFrame()
-                                ULog.e(TAG, "unpublish Success ")
+                                ULog.i(TAG, "unpublish Success ")
                                 leave()
                             }
 
@@ -463,7 +492,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 MSG_ROOM_DISCONNECTED -> {
                     mRoom?.leave(object : ActionCallback<Void> {
                         override fun onSuccess(p0: Void?) {
-                            ULog.d(TAG, "leave success")
+                            ULog.i(TAG, "leave success")
                             localStream?.close()
                             localStream = null
                             statsTimer?.cancel()
