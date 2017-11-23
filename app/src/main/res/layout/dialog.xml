@@ -16,7 +16,16 @@
         android:textColor="#292929"
         android:textSize="16sp"
         android:textStyle="bold" />
-
+    <TextView
+        android:id="@+id/point_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:padding="12dp"
+        android:textColor="#292929"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/divider1"
