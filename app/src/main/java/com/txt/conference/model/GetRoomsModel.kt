@@ -31,7 +31,7 @@ class GetRoomsModel : IGetRoomsModel {
         var endTime = ""
         resultrooms = ArrayList<RoomBean>()
         for (i in 0..roomlist!!.size - 1){
-            durationTime = roomlist.get(i).duration * 1000L * 60L * 60L
+            durationTime = roomlist.get(i).duration * 1000L * 60L * 60L + roomlist.get(i).delaytime * 1000L * 60L
             endTime = DateUtils().format(roomlist.get(i).start + durationTime, DateUtils.yyyy_MM_dd__HH_mm_ss)
             ULog.i(TAG, "currentTime: " + currentTime + " endTime: " + endTime)
             if (endTime.compareTo(currentTime) > 0){
