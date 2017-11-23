@@ -412,6 +412,12 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
         }
         mConferenceAdapter?.bindToRecyclerView(home_rv)
         mConferenceAdapter?.setEmptyView(R.layout.layout_empty)
+
+        layout_swipe_refresh.setOnRefreshListener {
+            getRoomsPresenter?.getRooms(getToken())
+            layout_swipe_refresh.setRefreshing(false)
+        }
+
     }
 
     override fun onDestroy() {
