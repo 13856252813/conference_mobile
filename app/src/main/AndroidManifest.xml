@@ -59,7 +59,7 @@
 
         <activity
             android:name=".activity.RoomActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
 
         </activity>
