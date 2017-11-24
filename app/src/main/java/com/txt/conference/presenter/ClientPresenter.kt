@@ -1,5 +1,6 @@
 package com.txt.conference.presenter
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
@@ -68,6 +69,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     private var cameraID = 1
 
     private var mRoomBean: RoomBean? = null
+    private var showDialog: Dialog? = null
 
     constructor(context: Activity, view: IClientView, room: RoomBean?) {
         mContext = context
@@ -254,7 +256,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         //mContext?.finish()
 
         mContext?.runOnUiThread {
-            CustomDialog.showConfirmDialog(mContext, mContext?.getString(R.string.tip_net_disconnect), mContext?.getString(R.string.tip_net_disconnect_message),
+            showDialog = CustomDialog.showConfirmDialog(mContext, mContext?.getString(R.string.tip_net_disconnect), mContext?.getString(R.string.tip_net_disconnect_message),
                     object : com.txt.conference.widget.CustomDialog.DialogClickListener {
                         override fun confirm() {
                             mContext?.finish()
@@ -647,7 +649,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
     fun onStop() {
-
+        if (showDialog != null){
+            showDialog?.dismiss()
+        }
     }
 
     fun finishMeet(){

@@ -150,7 +150,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room)
         registerHeadsetPlugReceiver()
-
+        ULog.i(TAG, "onCreate")
         mContext = this
         room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
         if (room == null || intent.getStringExtra(KEY_CONNECT_TOKEN) == null) {
@@ -175,6 +175,11 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         super.onResume()
         startHideAllViewDelayed()
         clientPresenter!!.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        clientPresenter?.onStop()
     }
 
     override fun onPause() {
@@ -390,7 +395,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         }
     }
 
-    /*fun startSendSms(){
+    fun startSendSms(){
         ULog.i(TAG, "startSendSms" )
         var date= DateUtils()
         ULog.i(TAG, "startSendSms" )
@@ -400,7 +405,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 date.format(room?.start,DateUtils.HH_mm), room?.roomNo, Urls.HOST)
         intent.putExtra("sms_body", str_sms_Message)
         startActivity(intent)
-    }*/
+    }
 
     override fun initAddTypeViewData(listdata: ArrayList<AddTypeBean>) {
         ULog.i(TAG, listdata?.size!!.toString())
@@ -418,8 +423,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
                         }
                         2 -> {
-                            //startSendSms()
-                            CommonUtils.startSendSms(mContext!!, room!!)
+                            startSendSms()
+                            //CommonUtils.startSendSms(mContext!!, room!!)
                         }
                     }
                     mClickedItem = position
