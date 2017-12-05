@@ -168,6 +168,24 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
                 drawer_layout.openDrawer(Gravity.LEFT)
             }
         }
+
+        menu_facesetting_face_layout.setOnClickListener {
+            startFaceLoginSettings()
+        }
+
+        menu_about_layout.setOnClickListener {
+            startAbout()
+        }
+    }
+
+    fun startFaceLoginSettings() {
+        var i = Intent(this, FaceLoginSettingsActivity::class.java)
+        startActivity(i)
+    }
+
+    fun startAbout() {
+        var i = Intent(this, AboutActivity::class.java)
+        startActivity(i)
     }
 
     private fun initInfomation() {

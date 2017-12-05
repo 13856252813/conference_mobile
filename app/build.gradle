@@ -41,9 +41,9 @@ android {
     defaultConfig {
         applicationId "com.txt.conference"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 20
         versionCode computeVersionCode()
-        versionName mVersionName
+        versionName "2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "updatefun_provider_file_authorities", "com.txt.conference.fileprovider"
     }
@@ -80,6 +80,13 @@ android {
     }
 
     useLibrary 'org.apache.http.legacy'
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
 
 dependencies {
@@ -90,6 +97,7 @@ dependencies {
     implementation 'cn.hugeterry.updatefun:updatefun:2.0.6'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'pub.devrel:easypermissions:1.0.1'
+    implementation 'org.apache.httpcomponents:httpmime:4.3.6'
     implementation 'com.android.support:design:26.+'
     testImplementation 'junit:junit:4.12'
 //    testImplementation 'org.mockito:mockito-core:2.+'

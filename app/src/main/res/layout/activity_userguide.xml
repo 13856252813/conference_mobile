@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:layout_alignParentTop="true"
+        android:src="@mipmap/firstsetting_bg" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/no_color"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal" >
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"/>
+        <Button
+            android:id="@+id/firstsetting_bt_setting"
+            android:layout_centerHorizontal="true"
+            android:layout_width="0dp"
+            android:layout_height="43.5dp"
+            android:layout_weight="2"
+            android:textSize="14sp"
+            android:textColor="@color/deep_gray"
+            android:text="@string/firstsetting_setting"
+            android:background="@drawable/login_corners"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/login_bt_skip"
+            android:layout_centerHorizontal="true"
+            android:layout_width="0dp"
+            android:layout_height="43.5dp"
+            android:layout_weight="2"
+            android:textSize="14sp"
+            android:textColor="@color/skip_btn_border"
+            android:text="@string/firstsetting_skip"
+            android:background="@drawable/skip_corners"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"/>
+    </LinearLayout>
+</RelativeLayout>

@@ -21,6 +21,7 @@ public class CustomDialog {
 	public final static int SELECT_DIALOG = 1;
 	public final static int RADIO_DIALOG = 2;
 	public final static int CONFIRM_DIALOG = 3;
+	public final static int COMMON_DIALOG = 4;
 
 	/**
 	 * 创建�?个单选对话框
@@ -82,6 +83,89 @@ public class CustomDialog {
 				CONFIRM_DIALOG);
 	}
 
+	public static android.app.Dialog showCommonDialog(Context context,String title,String toast, String confirmStr, String cancelStr,
+													   final DialogClickListener dialogClickListener) {
+		return ShowCommonDialog(context, title, toast, confirmStr, cancelStr, dialogClickListener,
+				COMMON_DIALOG);
+	}
+
+	private static android.app.Dialog ShowCommonDialog(Context context, String title, String toast, String confirmStr, String cancelStr,
+												 final DialogClickListener dialogClickListener,
+												 int DialogType) {
+		final android.app.Dialog dialog = new android.app.Dialog(context,
+				R.style.DialogStyle);
+		dialog.setCancelable(false);
+		View view = LayoutInflater.from(context).inflate(R.layout.dialog, null);
+		dialog.setContentView(view);
+		((TextView) view.findViewById(R.id.point)).setText(title);
+//		((TextView) view.findViewById(R.id.toast)).setText(toast);
+		if (DialogType == RADIO_DIALOG) {
+		} else if (DialogType == SELECT_DIALOG) {
+			view.findViewById(R.id.ok).setVisibility(View.GONE);
+			view.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+		} else if (DialogType == CONFIRM_DIALOG) {
+			((TextView) view.findViewById(R.id.point_message)).setText(toast);
+			view.findViewById(R.id.ok).setVisibility(View.GONE);
+			view.findViewById(R.id.divider).setVisibility(View.GONE);
+			view.findViewById(R.id.cancel).setVisibility(View.GONE);
+		} else if (DialogType == COMMON_DIALOG){
+			view.findViewById(R.id.ok).setVisibility(View.GONE);
+			view.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+			((TextView) view.findViewById(R.id.point_message)).setText(toast);
+		}
+		((TextView) view.findViewById(R.id.confirm)).setText(confirmStr);
+		view.findViewById(R.id.confirm).setOnClickListener(
+				new OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						dialog.dismiss();
+						new Handler().postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								dialogClickListener.confirm();
+							}
+						}, 200);
+					}
+
+				});
+		((TextView) view.findViewById(R.id.cancel)).setText(cancelStr);
+		view.findViewById(R.id.cancel).setOnClickListener(
+				new OnClickListener() {
+					@Override
+					public void onClick(View arg0) {
+						dialog.dismiss();
+						new Handler().postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								dialogClickListener.cancel();
+							}
+						}, 200);
+					}
+				});
+		view.findViewById(R.id.ok).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				dialog.dismiss();
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						dialogClickListener.confirm();
+					}
+				}, 200);
+			}
+		});
+		Window mWindow = dialog.getWindow();
+		WindowManager.LayoutParams lp = mWindow.getAttributes();
+		if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {// 横屏
+			lp.width = getScreenHeight(context) / 10 * 8;
+		} else {
+			lp.width = getScreenWidth(context) / 10 * 8;
+		}
+		mWindow.setAttributes(lp);
+		dialog.show();
+
+		return dialog;
+	}
 	private static android.app.Dialog ShowDialog(Context context, String title,
                                                  String toast, final DialogClickListener dialogClickListener,
                                                  int DialogType) {

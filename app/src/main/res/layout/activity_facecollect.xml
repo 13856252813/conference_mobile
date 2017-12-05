@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true">
+
+
+    <FrameLayout
+        android:id="@+id/frame_camera_draw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true" >
+
+        <SurfaceView
+            android:id="@+id/surfaceview_camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </SurfaceView>
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            />
+    </FrameLayout>
+
+    <ImageView
+        android:layout_width="375dp"
+        android:layout_height="375dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/face_cover"
+        android:scaleType="fitXY"
+        />
+
+    <TextView
+        android:id="@+id/left_backup"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:clickable="true"
+        style="@style/back_view" />
+
+    <FrameLayout
+        android:id="@+id/frame_face_auto_circle"
+        android:layout_width="286dp"
+        android:layout_height="286dp"
+        android:layout_marginTop="45dp"
+        android:layout_centerHorizontal="true" >
+        <ImageView
+            android:id="@+id/face_auto_circle_big"
+            android:layout_width="286dp"
+            android:layout_height="286dp"
+            android:src="@mipmap/big_circle"
+            android:scaleType="fitXY"
+            />
+        <ImageView
+            android:id="@+id/face_auto_circle_small"
+            android:layout_width="286dp"
+            android:layout_height="286dp"
+            android:src="@mipmap/small_circle"
+            android:scaleType="fitXY"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/state_textview_big"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/face_bt_retry"
+        android:layout_marginBottom="120dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/account_facelogin"
+        android:textSize="17sp"
+        android:textColor="@color/orange"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/state_textview_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/face_bt_retry"
+        android:layout_marginBottom="100dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/account_face_box"
+        android:textSize="17sp"
+        android:textColor="@color/deep_gray" />
+    <Button
+        android:id="@+id/face_bt_retry"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="100dp"
+        android:layout_height="43.5dp"
+        android:layout_marginBottom="100dp"
+        android:textSize="14sp"
+        android:textColor="@color/orange"
+        android:text="@string/account_login"
+        android:background="@drawable/facelogin_corners"
+        android:visibility="invisible"/>
+</RelativeLayout>

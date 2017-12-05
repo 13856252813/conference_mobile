@@ -8,6 +8,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import cn.hugeterry.updatefun.UpdateFunGO
 import cn.hugeterry.updatefun.config.UpdateKey
+import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.application.TxApplication
 import com.txt.conference.data.TxSharedPreferencesFactory
@@ -18,6 +19,8 @@ import com.txt.conference.data.TxSharedPreferencesFactory
 class WelcomeActivity : BaseActivity() {
     val JUMP = 1
     val JUMP_TIME = 3000L
+
+    val TAG = WelcomeActivity::class.java.simpleName
 
     var mHandle = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -31,9 +34,21 @@ class WelcomeActivity : BaseActivity() {
 
     override fun jumpActivity() {
         var token = TxSharedPreferencesFactory(TxApplication.mInstance).getToken()
+        var isFaceLogin = TxSharedPreferencesFactory(TxApplication.mInstance).getFaceLogin()
         var i = Intent(this@WelcomeActivity, MainActivity::class.java)
         if (token == null || token.equals("")){
-            i = Intent(this@WelcomeActivity, LoginActivity::class.java)
+            if (isFaceLogin == null || isFaceLogin == false) {
+                i = Intent(this@WelcomeActivity, LoginActivity::class.java)
+            } else {
+                i = Intent(this@WelcomeActivity, FaceLoginActivity::class.java)
+            }
+        }
+        var isFirst = TxSharedPreferencesFactory(TxApplication.mInstance).getIsFirstRun()
+        ULog.i(TAG, "isFirst: " + isFirst)
+
+        if (isFirst == null || isFirst == true) {
+            TxSharedPreferencesFactory(TxApplication.mInstance).setFaceLogin(false)
+            i = Intent(this@WelcomeActivity, UserGuideActivity::class.java)
         }
         this@WelcomeActivity.startActivity(i)
         this@WelcomeActivity.finish()

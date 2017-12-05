@@ -6,20 +6,20 @@
     <TextView
         android:id="@+id/left_text"
         android:clickable="true"
-        style="@style/back_view" />
+        style="@style/title_bar_button" />
 
     <TextView
         android:id="@+id/title_bar_title"
         style="@style/title_text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_room"
+        android:text="@string/facesetting_login"
         android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/right_text"
         style="@style/title_bar_button"
         android:layout_alignParentRight="true"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

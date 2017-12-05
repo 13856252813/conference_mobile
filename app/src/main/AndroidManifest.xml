@@ -50,7 +50,24 @@
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"></activity>
-
+        <activity
+            android:name=".activity.UserGuideActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.FaceLoginActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.FaceCollectActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.FaceLoginSettingsActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.LoginFaceSettingsActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait">

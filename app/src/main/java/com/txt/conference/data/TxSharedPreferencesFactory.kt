@@ -20,6 +20,8 @@ class TxSharedPreferencesFactory(context: Context?) : SharedPreferencesFactory(c
     private val KEY_LOGIN = "login_type"
     private val KEY_ONEKEY_ROOMNO = "onekey_roomno"
     private val KEY_ONEKEY_NAME = "onekey_username"
+    private val KEY_FIRST = "first_run"
+    private val KEY_FACELOGIN = "facelogin"
 
     fun setPhoneNumber(phone: String?): Boolean {
         return setValue(KEY_PHONE, phone)
@@ -91,5 +93,21 @@ class TxSharedPreferencesFactory(context: Context?) : SharedPreferencesFactory(c
 
     fun getLogin(): String? {
         return getString(KEY_LOGIN)
+    }
+
+    fun setFirstRun(firstType: Boolean?): Boolean {
+        return setValue(KEY_FIRST, firstType!!)
+    }
+
+    fun getIsFirstRun(): Boolean? {
+        return getBoolean(KEY_FIRST, true)
+    }
+
+    fun setFaceLogin(firstType: Boolean?): Boolean {
+        return setValue(KEY_FACELOGIN, firstType!!)
+    }
+
+    fun getFaceLogin(): Boolean? {
+        return getBoolean(KEY_FACELOGIN, false)
     }
 }

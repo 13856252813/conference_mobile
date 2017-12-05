@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="true"
+    android:background="@color/grey200">
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        layout="@layout/title_bar" />
+
+    <EditText
+        android:id="@+id/login_et_account"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_edit"
+        android:hint="@string/hint_user"
+        android:gravity="center"
+        android:inputType="text"
+        android:paddingLeft="8dp"
+        android:textColorHint="@color/hint"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/login_et_password"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_below="@id/login_et_account"
+        android:layout_centerHorizontal="true"
+        android:hint="@string/hint_password"
+        android:gravity="center"
+        android:background="@drawable/bg_edit"
+        android:inputType="textPassword"
+        android:paddingLeft="8dp"
+        android:textColorHint="@color/hint"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/login_tv_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_et_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/login_error"
+        android:textColor="@color/orange"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/login_bt_login"
+        android:layout_width="250dp"
+        android:layout_height="43.5dp"
+        android:layout_below="@id/login_et_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="107dp"
+        android:background="@drawable/login_corners"
+        android:text="@string/login"
+        android:textColor="@color/gray"
+        android:textSize="14sp" />
+
+</RelativeLayout>

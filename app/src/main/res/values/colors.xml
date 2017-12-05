@@ -5,12 +5,14 @@
     <color name="colorAccent">#FF4081</color>
     <color name="welcome">#3c4061</color>
     <color name="blue10">#193c4061</color>
+    <color name="black70">#af000000</color>
     <color name="orange">#f89200</color>
     <color name="hint">#33333333</color>
     <color name="gray">#fefefe</color>
     <color name="blue80">#cc3c4061</color>
     <color name="grey200">#eeeeee</color>
     <color name="grey_room">#333333</color>
+    <color name="skip_btn_border">#333333</color>
     <color name="grey_attend">#33333333</color>
     <color name="grey_time">#999999</color>
     <color name="enter">#3c4061</color>
@@ -24,7 +26,7 @@
     <color name="sufer_bg">#46495a</color>
     <color name="item_add">#ccccd8</color>
     <color name="c_e8eaf1">#e8eaf1</color>
-
+    <color name="deep_gray">#d6d6d6</color>
     <color name="color_gray">#D6D6D6</color>
     <color name="color_007aff">#007aff</color>
 
