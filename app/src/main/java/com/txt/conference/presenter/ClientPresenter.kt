@@ -1,5 +1,6 @@
 package com.txt.conference.presenter
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.media.AudioManager
 import android.os.Handler
@@ -16,9 +17,11 @@ import com.intel.webrtc.base.*
 import com.intel.webrtc.conference.*
 import com.intel.webrtc.conference.PublishOptions
 import com.txt.conference.R
+import com.txt.conference.bean.RoomBean
 import com.txt.conference.model.ClientModel
 import com.txt.conference.model.IClientModel
 import com.txt.conference.view.IClientView
+import com.txt.conference.widget.CustomDialog
 import com.txt.conference_common.WoogeenSurfaceRenderer
 import org.webrtc.EglBase
 import org.webrtc.PeerConnection.IceServer
@@ -65,10 +68,19 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     private var statsTimer: Timer? = null
     private var cameraID = 1
 
-    constructor(context: Activity, view: IClientView) {
+    private var mRoomBean: RoomBean? = null
+    private var showDialog: Dialog? = null
+
+    constructor(context: Activity, view: IClientView, room: RoomBean?) {
         mContext = context
         clientView = view
+        mRoomBean = room
+        localStream = null
         clientModel = ClientModel()
+    }
+
+    fun updateRoomBean(rooBeam: RoomBean){
+        mRoomBean = rooBeam
     }
 
     fun init() {
@@ -144,8 +156,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 for (i in 0..users!!.size-1) {
                     ULog.d(TAG, "userName: " + users?.get(i).name + " role:" + users?.get(i).role)
                 }
+                clientView?.onJoined()
                 clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
-                clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
+                clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
             }
 
             override fun onFailure(p0: WoogeenException?) {
@@ -222,11 +235,39 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     override fun onUserJoined(p0: User?) {
         ULog.d(TAG, "onUserJoined")
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
-        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
+        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
     }
 
     override fun onServerDisconnected() {
         ULog.d(TAG, "onServerDisconnected")
+
+        currentRemoteStream = null
+        subscribedStreams.clear()
+        localStreamRenderer?.cleanFrame()
+        remoteStreamRenderer?.cleanFrame()
+        if (localStream != null) {
+            localStream?.close()
+            localStream = null
+        }
+        if (screenStream != null) {
+            screenStream?.close()
+            screenStream = null
+        }
+        //mContext?.finish()
+
+        mContext?.runOnUiThread {
+            showDialog = CustomDialog.showConfirmDialog(mContext, mContext?.getString(R.string.tip_net_disconnect), mContext?.getString(R.string.tip_net_disconnect_message),
+                    object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                        override fun confirm() {
+                            mContext?.finish()
+                        }
+
+                        override fun cancel() {
+                        }
+
+                    })
+        }
+
     }
 
     override fun onMessageReceived(p0: String?, p1: String?, p2: Boolean) {
@@ -273,7 +314,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     override fun onUserLeft(p0: User?) {
         ULog.d(TAG, "onUserLeft")
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
-        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>)!!)
+        clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
     }
 
     override fun onStreamError(p0: Stream?, p1: WoogeenException?) {
@@ -322,7 +363,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     option.videoCodec = MediaCodec.VideoCodec.H264
                     var remoteStream = msg.obj as RemoteStream
                     if (remoteStream is RemoteMixedStream) {
-                        option.setResolution(640, 480)
+                        //option.setResolution(640, 480)
 
                     }
                     mRoom!!.subscribe(remoteStream, option, object : ActionCallback<RemoteStream> {
@@ -435,13 +476,16 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     if (localStream != null) {
                         mRoom?.unpublish(localStream, object : ActionCallback<Void> {
                             override fun onSuccess(p0: Void?) {
-                                localStream?.close()
-                                localStream = null
-                                localStreamRenderer?.cleanFrame()
+                                //localStream?.close()
+                                //localStream = null
+                                //localStreamRenderer?.cleanFrame()
+                                ULog.i(TAG, "unpublish Success ")
+                                leave()
                             }
 
                             override fun onFailure(p0: WoogeenException?) {
-
+                                ULog.e(TAG, "unpublish failure ", p0)
+                                leave()
                             }
                         })
                     }
@@ -450,7 +494,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 MSG_ROOM_DISCONNECTED -> {
                     mRoom?.leave(object : ActionCallback<Void> {
                         override fun onSuccess(p0: Void?) {
-                            ULog.d(TAG, "leave success")
+                            ULog.i(TAG, "leave success")
                             localStream?.close()
                             localStream = null
                             statsTimer?.cancel()
@@ -605,12 +649,14 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
     fun onStop() {
-
+        if (showDialog != null){
+            showDialog?.dismiss()
+        }
     }
 
     fun finishMeet(){
         unPublish()
-        leave()
+        //leave()
     }
 
     fun onDestroy() {

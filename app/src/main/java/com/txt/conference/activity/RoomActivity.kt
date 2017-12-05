@@ -33,10 +33,14 @@ import kotlinx.android.synthetic.main.layout_control.*
 import pub.devrel.easypermissions.EasyPermissions
 import android.bluetooth.BluetoothHeadset
 import android.content.IntentFilter
+import android.media.AudioManager
 import android.net.Uri
+import com.common.utlis.DateUtils
 import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
+import com.txt.conference.http.Urls
 import com.txt.conference.presenter.*
+import com.txt.conference.utils.CommonUtils
 import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
@@ -47,9 +51,19 @@ import kotlinx.android.synthetic.main.layout_add_attendee_list.*
  * Created by jane on 2017/10/15.
  */
 class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
+    override fun onJoined() {
+        headsetType = isWiredHeadsetOn()//DeviceUtils.isHeadsetExists()
+        ULog.i(TAG, "headsetType:" + headsetType)
+        if (headsetType){
+            clientPresenter?.onOffLoud()
+        }
+    }
 
 
-
+    fun isWiredHeadsetOn() :Boolean {
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        return audioManager.isWiredHeadsetOn
+    }
 
     val TAG = RoomActivity::class.java.simpleName
     lateinit var gesture: GestureDetector
@@ -72,7 +86,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     }
 
     lateinit var roomPresenter: RoomPresenter
-    lateinit var clientPresenter: ClientPresenter
+    var clientPresenter: ClientPresenter? = null
     lateinit var getUsersPresenter: GetUsersPresenter
     lateinit var getUserDevicePresenter: GetUserDevicePresenter
     lateinit var inviteUsersPresenter: InviteUsersPresenter
@@ -82,6 +96,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     var inviteAdapter: InviteAdapter? = null
     var addTypeAdapter: AddTypeAdapter? = null
     var mClickedItem = 0
+    var headsetType = false
+
+    var mContext:Context? = null
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
@@ -96,7 +113,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                     if (intent.getIntExtra("state", 0) == 0) {
                         room_iv_loud.isEnabled=true;
                         //Toast.makeText(context, "headset not connected", Toast.LENGTH_LONG).show()
-                        if (clientPresenter.getIsSpeakerLoad()){
+                        if (clientPresenter!!.getIsSpeakerLoad()){
 
                         } else {
                             clientPresenter?.onOffLoud()
@@ -105,7 +122,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                     } else if (intent.getIntExtra("state", 0) == 1) {
                         //Toast.makeText(context, "headset connected", Toast.LENGTH_LONG).show()
                         room_iv_loud.isEnabled=false;
-                        if (clientPresenter.getIsSpeakerLoad()){
+                        if (clientPresenter!!.getIsSpeakerLoad()){
                             clientPresenter?.onOffLoud()
                         }
 
@@ -133,6 +150,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room)
         registerHeadsetPlugReceiver()
+        ULog.i(TAG, "onCreate")
+        mContext = this
         room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
         if (room == null || intent.getStringExtra(KEY_CONNECT_TOKEN) == null) {
             this.finish()
@@ -143,7 +162,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         initViewEvent()
         roomPresenter = RoomPresenter(this)
         roomPresenter.initRoomInfo(room!!)
-        clientPresenter = ClientPresenter(this, this)
+        clientPresenter = ClientPresenter(this, this, room)
         getUsersPresenter = GetUsersPresenter(this)
         getUserDevicePresenter = GetUserDevicePresenter(this)
         addTypePresenter = AddTypePresenter(this)
@@ -155,7 +174,12 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun onResume() {
         super.onResume()
         startHideAllViewDelayed()
-        clientPresenter.onResume()
+        clientPresenter!!.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        clientPresenter?.onStop()
     }
 
     override fun onPause() {
@@ -166,7 +190,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     override fun onDestroy() {
         roomPresenter?.cancelCountDown()
-        clientPresenter.onDestroy()
+        clientPresenter!!.onDestroy()
+        clientPresenter = null
         unregisterHeadsetPlugReceiver()
         ULog.d(TAG, "onDestroy")
         super.onDestroy()
@@ -175,14 +200,14 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     private fun methodRequiresTwoPermission() {
         var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (EasyPermissions.hasPermissions(this, *args)) {
-            clientPresenter.joinRoom(getConnectToken())
+            clientPresenter?.joinRoom(getConnectToken())
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.permission_camera), 100, *args)
         }
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) {
-        clientPresenter.joinRoom(getConnectToken())
+        clientPresenter?.joinRoom(getConnectToken())
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
@@ -216,6 +241,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun inviteComplete(room: RoomBean) {
         this.room = room
         roomPresenter.initRoomInfo(this.room!!)
+        clientPresenter?.updateRoomBean(room)
         showAttendees()
         showToast(R.string.tips_invite_success)
         startHideAllViewDelayed()
@@ -307,7 +333,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     override fun end() {
         showToast(R.string.conference_end)
-        clientPresenter.finishMeet()
+        clientPresenter?.finishMeet()
     }
     //for roomPresenter end
 
@@ -371,9 +397,12 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     fun startSendSms(){
         ULog.i(TAG, "startSendSms" )
+        var date= DateUtils()
+        ULog.i(TAG, "startSendSms" )
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
-        var str_sms_Message = String.format(getString(R.string.sms_message), room?.roomNo)
+        var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
+                date.format(room?.start,DateUtils.HH_mm), room?.roomNo, Urls.HOST)
         intent.putExtra("sms_body", str_sms_Message)
         startActivity(intent)
     }
@@ -395,6 +424,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                         }
                         2 -> {
                             startSendSms()
+                            //CommonUtils.startSendSms(mContext!!, room!!)
                         }
                     }
                     mClickedItem = position
@@ -459,7 +489,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     private fun initViewEvent() {
         room_iv_quit.setOnClickListener {
             ULog.d(TAG, "image click")
-            clientPresenter.finishMeet()
+            clientPresenter?.finishMeet()
         }
 
         room_iv_attendee.setOnClickListener(this)
@@ -572,7 +602,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
             CustomDialog.showSelectDialog(this,resources.getString(R.string.tip_quit_meet),
                     object :com.txt.conference.widget.CustomDialog.DialogClickListener{
                         override fun confirm() {
-                            clientPresenter.finishMeet()
+                            clientPresenter?.finishMeet()
                         }
                         override fun cancel() {
                         }

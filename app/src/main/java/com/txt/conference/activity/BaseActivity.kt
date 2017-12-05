@@ -43,9 +43,12 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
     }
 
     override fun hideLoading() {
-        if (mLoadingView != null) {
-            mLoadingView?.dismiss()
-        }
+        //runOnUiThread {
+
+            if (mLoadingView != null) {
+                mLoadingView?.dismiss()
+            }
+        //}
     }
 
     override fun onStop() {

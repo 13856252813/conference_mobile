@@ -22,4 +22,6 @@ interface IClientView : IBaseView{
     fun updateUsers(users: List<AttendeeBean>)
 
     fun onOffLoud(isOpenLoud: Boolean)
+
+    fun onJoined()
 }

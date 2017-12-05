@@ -9,7 +9,7 @@
         style="@style/back_view" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/title_bar_title"
         style="@style/title_text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:textSize="15sp"
+            android:textColor="@color/grey200"
             android:text="@string/create_room"/>
 
         <View
@@ -63,15 +64,18 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/home_rv"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/layout_swipe_refresh"
         android:layout_below="@id/home_iv_head"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:layout_marginTop="10dp">
-
-    </android.support.v7.widget.RecyclerView>
-
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/home_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:layout_marginTop="10dp">
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import com.common.utlis.ULog
 import com.txt.conference.R
+import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.JoinRoomPresenter
@@ -29,6 +30,8 @@ class OneKeyEnterActivity : BaseActivity(), IOneKeyEnterView, IJoinRoomView, Vie
         this.finish()
     }
 
+    var mPreference: TxSharedPreferencesFactory? = null
+
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
         i.putExtra(RoomActivity.KEY_ROOM, room)
@@ -36,8 +39,16 @@ class OneKeyEnterActivity : BaseActivity(), IOneKeyEnterView, IJoinRoomView, Vie
         startActivity(i)
     }
 
+    fun saveIsLogin(type: String?) {
+        if (mPreference == null) {
+            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
+        }
+        mPreference?.setLogin(type)
+    }
+
     fun enterConference(roomBean: RoomBean){
         if (roomBean != null) {
+            saveIsLogin("false")
             joinRoomPresenter?.joinRoom(roomBean!!, getToken())
             this.finish()
         }

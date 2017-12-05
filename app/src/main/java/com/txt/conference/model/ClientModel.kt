@@ -1,7 +1,9 @@
 package com.txt.conference.model
 
+import com.common.utlis.ULog
 import com.intel.webrtc.conference.User
 import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.RoomBean
 
 /**
  * Created by jane on 2017/10/20.
@@ -13,15 +15,38 @@ class ClientModel : IClientModel {
     override var loudIsOpen: Boolean = true
     override var status: Int = Status.FAILED
 
-    override fun getUsers(users: List<User>): List<AttendeeBean> {
+    override fun getUsers(users: List<User>, room: RoomBean): List<AttendeeBean> {
         var nUsers = ArrayList<AttendeeBean>()
         var user: User
         var attendee: AttendeeBean
 
+        var display: String
         for (i in 0..users.size - 1) {
             user = users.get(i)
+            display = user.name
+
+            if (room != null ) {
+                ULog.i("test", "user display:" + display)
+                ULog.i("test", "uid:" + room.creator!!.uid)
+                ULog.i("test", "display:" + room.creator!!.display)
+                if (display.endsWith(room.creator!!.uid!!)){
+                    display = room.creator!!.display!!
+                } else {
+
+                    if (room.participants?.size!! > 0) {
+                        for (j in 0..room.participants?.size!! - 1) {
+                            ULog.i("test", "participants uid:" + room.participants?.get(j)!!.id)
+                            ULog.i("test", "participants name:" + room.participants?.get(j)!!.name)
+                            if (display.endsWith(room.participants?.get(j)!!.id!!)) {
+                                display = room.participants?.get(j)!!.name!!
+                            }
+                        }
+                    }
+                }
+            }
+
             attendee = AttendeeBean()
-            attendee.display = user.name
+            attendee.display = display
             attendee.role = user.role
 
             nUsers.add(attendee)

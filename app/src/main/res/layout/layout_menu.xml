@@ -33,6 +33,49 @@
         android:visibility="invisible"
         android:textSize="14dp"/>
 
+    <LinearLayout
+        android:layout_width="180dp"
+        android:layout_height="28dp"
+        android:layout_below="@id/home_tv_phone"
+        android:layout_marginTop="36dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
+        android:id="@+id/menu_facesetting_face_layout"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/face_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:text="@string/facesetting_login"
+            android:textColor="@color/grey_time"
+            android:textSize="14sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="180dp"
+        android:layout_height="28dp"
+        android:layout_below="@id/home_tv_phone"
+        android:layout_marginTop="106dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/menu_about_layout"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@mipmap/about_icon" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:text="@string/menulayout_about"
+            android:textColor="@color/grey_time"
+            android:textSize="14sp" />
+    </LinearLayout>
     <Button
         android:id="@+id/home_ib_logoff"
         android:layout_width="208.5dp"

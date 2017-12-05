@@ -11,6 +11,7 @@ import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.RoomBean
+import com.txt.conference.widget.SwipeMenuView
 import java.util.*
 
 /**
@@ -21,10 +22,15 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
     var countDownMap: SparseArray<CountDownTimer>? = null
     var timeCallBack: TimeCallBack? = null
 
+    var userid: String? = ""
+
     init {
         countDownMap = SparseArray<CountDownTimer>()
     }
 
+    fun setUid(uid: String?){
+        userid  = uid
+    }
     override fun convert(helper: RoomViewHolder?, item: RoomBean?) {
         helper?.setText(R.id.item_tv_room_number, item?.topic)
         helper?.getView<TextView>(R.id.item_tv_room_number)?.isSelected=true
@@ -32,6 +38,16 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         helper?.addOnClickListener(R.id.item_bt_enter)
         helper?.addOnClickListener(R.id.add_attend)
         helper?.addOnClickListener(R.id.delete_button)
+
+        if (item?.creator!!.uid.equals(userid)){
+            helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)?.isSwipeEnable = true
+        } else {
+            helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)?.isSwipeEnable = false
+        }
+
+        //var swipeVi = helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)
+        //swipeVi?.isSwipeEnable = false
+
 //        var bgColor = 0
 //        when (item?.status) {
 //            RoomBean.STATUS_NORMAL -> bgColor = R.color.grey_time
