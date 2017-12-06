@@ -69,7 +69,6 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     }
 
-
     override fun showToast(msgRes: Int) {
         super.showToast(msgRes)
         state_textview_big.visibility = View.VISIBLE
@@ -145,7 +144,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 }
                 MSG_CHECK_FACE_OK -> {
                     ULog.i(TAG, "doTakePicture typeNo1")
-                    doTakePicture(1)
+                    //doTakePicture(1)
                 }
             }
         }
