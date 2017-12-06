@@ -26,11 +26,13 @@
     </FrameLayout>
 
     <ImageView
-        android:layout_width="375dp"
-        android:layout_height="375dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:scaleType="fitXY"
-        android:src="@mipmap/face_cover" />
+        android:src="@mipmap/face_cover3"
+        android:scaleType="centerCrop"
+        />
+
 
     <TextView
         android:id="@+id/left_backup"
@@ -44,9 +46,9 @@
         android:id="@+id/frame_face_auto_circle"
         android:layout_width="286dp"
         android:layout_height="286dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="45dp">
 
+        android:layout_marginTop="129dp"
+        android:layout_centerHorizontal="true" >
         <ImageView
             android:id="@+id/face_auto_circle_big"
             android:layout_width="286dp"
@@ -70,7 +72,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="120dp"
         android:gravity="center"
-        android:text="@string/account_facelogin"
+        android:text="@string/account_face_failed"
         android:textColor="@color/orange"
         android:textSize="17sp"
         android:visibility="invisible" />
@@ -91,12 +93,10 @@
         android:id="@+id/face_bt_retry"
         android:layout_width="100dp"
         android:layout_height="43.5dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
-        android:background="@drawable/facelogin_corners"
-        android:text="@string/account_login"
-        android:textColor="@color/orange"
+        android:layout_marginBottom="70dp"
         android:textSize="14sp"
-        android:visibility="invisible" />
+        android:textColor="@color/orange"
+        android:text="@string/account_face_retry"
+        android:background="@drawable/facelogin_retry_corners"
+        android:visibility="invisible"/>
 </RelativeLayout>

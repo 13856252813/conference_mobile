@@ -60,6 +60,9 @@
     <string name="permission_camera">是否允许添加摄像头和录音权限？</string>
     <string name="permission_phone_address">是否允许访问手机通讯录？</string>
     <string name="error_unknow">未知异常,请重新连接</string>
+    <string name="error_facelogin_error_retry">登录失败,请重试。</string>
+    <string name="error_unknow_retry">未知异常,请重试。</string>
+    <string name="error_face_collect_retry">验证失败,请重试。</string>
     <string name="error_unknow_getrooms">获取房间信息失败，请重试</string>
     <string name="conference_unknow">会议</string>
     <string name="error_enter_room">加入房间失败，请重试。</string>
@@ -93,9 +96,11 @@
     <string name="item_facesetting_face_smalltext">是否开启使用刷脸方式登录账号？</string>
     <string name="item_facesetting_face_auth_smalltext">通过验证后可开启刷脸登录</string>
     <string name="facesetting_not_confirm_text">未验证</string>
+    <string name="facesetting_already_confirm_text">已验证</string>
     <string name="login_facesetting_firstlogin">请先登录</string>
     <string name="facelogin_dialog_title">尚未开启</string>
     <string name="facelogin_dialog_message">您未开启刷脸登录，现在去设置？</string>
+    <string name="facelogin_should_face_collect_first">尚未刷脸认证，请先确认再开启</string>
     <string name="facelogin_dialog_confirm">去设置</string>
     <string name="facelogin_dialog_cancel">稍后设置</string>
     <string name="about_company_name">甜新科技</string>

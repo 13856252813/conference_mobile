@@ -37,7 +37,7 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
         } else {
             mLoadingView?.setMessage(msg)
         }
-        if (!mLoadingView?.isShowing!!) {
+        if (!mLoadingView?.isShowing!! && !isFinishing) {
             mLoadingView?.show()
         }
     }
@@ -45,7 +45,7 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
     override fun hideLoading() {
         //runOnUiThread {
 
-            if (mLoadingView != null) {
+            if (mLoadingView != null && !isFinishing) {
                 mLoadingView?.dismiss()
             }
         //}

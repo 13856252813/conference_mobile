@@ -274,7 +274,6 @@ public class SFHCameraCallback implements SurfaceHolder.Callback {
 		}*/
 		ULog.i(TAG, "doTakePicture");
 		if (mOpenCamera != null ){
-			ULog.i(TAG, "doTakePicture1");
 			mOpenCamera.takePicture(mShutterCallback, null, mJpegPictureCallback);
 		}
 
@@ -338,6 +337,7 @@ public class SFHCameraCallback implements SurfaceHolder.Callback {
 				//if (CheckFaceUtil.getInstance().isFaceBitMap(rotaBitmap)){
 					FileUtil.saveBitmap(rotaBitmap);
 				//}
+				ULog.d("thistest", "picture ok");
 
 			}
 			//再次进入预览
@@ -367,7 +367,9 @@ public class SFHCameraCallback implements SurfaceHolder.Callback {
 				//图片竟然不能旋转了，故这里要旋转下
 				Bitmap rotaBitmap = getRotateBitmap(b, 270.0f);
 				//if (CheckFaceUtil.getInstance().isFaceBitMap(rotaBitmap)){
-				FileUtil.saveBitmap(rotaBitmap, mTypeNo);
+					FileUtil.saveBitmap(rotaBitmap, mTypeNo);
+					ULog.d("thistest", "face picture ok");
+					apppictureListener.pictureFinished();
 				//}
 
 			}
@@ -376,4 +378,15 @@ public class SFHCameraCallback implements SurfaceHolder.Callback {
 			isPreviewing = true;
 		}
 	};
+
+	private ITakePicture apppictureListener;
+
+	public void setTakePictureListener(ITakePicture pictureListener) {
+		this.apppictureListener = pictureListener;
+	}
+	public interface ITakePicture {
+
+		public void pictureFinished();
+	}
+
 }
