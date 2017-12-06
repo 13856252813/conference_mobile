@@ -1,35 +1,15 @@
 package com.txt.conference.activity
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
 import android.widget.Toast
 import com.common.utlis.ULog
 import com.txt.conference.R
-import com.txt.conference.adapter.CreateRoomListAdapter
 import com.txt.conference.application.TxApplication
-import com.txt.conference.bean.CreateRoomListAdapterBean
-import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
-import com.txt.conference.presenter.CreateConferencePresenter
-import com.txt.conference.presenter.CreateConferenceRoomPresenter
-import com.txt.conference.utils.Constants
-import com.txt.conference.utils.CostTimePickDialogUtil
-import com.txt.conference.utils.DateTimePickDialogUtil
-import com.txt.conference.utils.StatusBarUtil
-import com.txt.conference.view.ICreateConferenceRoomView
-import com.txt.conference.view.ICreateConferenceView
-import kotlinx.android.synthetic.main.activity_createconferenceroom.*
 import kotlinx.android.synthetic.main.activity_faceloginsettings.*
 import kotlinx.android.synthetic.main.title_bar.*
-import org.json.JSONArray
-import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 /**
@@ -42,6 +22,7 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
 
     val TAG = FaceLoginSettingsActivity::class.java.simpleName
 
+    val COLLECTED = 1
     override fun jumpActivity() {
         onBackPressed()
     }
@@ -50,6 +31,9 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
 
     }
 
+    fun showSettingToast(strToask: String?){
+        Toast.makeText(applicationContext, strToask, Toast.LENGTH_SHORT).show()
+    }
 
     fun onFinished(){
         var i = Intent(this, MainActivity::class.java)
@@ -74,6 +58,10 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
         return false
     }
 
+    fun getIsFaceCollect(): Int?{
+        return  TxSharedPreferencesFactory(TxApplication.mInstance).getIsCollect()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_faceloginsettings)
@@ -91,9 +79,21 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
         var isFaceLogin = getIsFacelogin()
         switch_facelogin.isChecked = isFaceLogin!!
 
+        if (getIsFaceCollect() == COLLECTED  ){ // collected
+            face_collect_type.text = getString(R.string.facesetting_already_confirm_text)
+        } else {
+            face_collect_type.text = getString(R.string.facesetting_not_confirm_text)
+        }
+
+
         switch_facelogin.setOnCheckedChangeListener { button, checked ->
             if(checked){
                 ULog.i(TAG, "checked" + checked)
+                if (getIsFaceCollect() == COLLECTED  ){
+                    switch_facelogin.isChecked = false
+                } else {
+                    showSettingToast(getString(R.string.facelogin_should_face_collect_first))
+                }
             } else {
                 ULog.i(TAG, "checked" + checked)
             }

@@ -29,6 +29,7 @@ class FaceLoginPresenter {
     }
 
     fun doFaceLogin(account: String, strPath: String) {
+
         mContext?.runOnUiThread {
             mFaceLoginView?.showLoading(R.string.account_face_confirming)
         }
@@ -37,16 +38,20 @@ class FaceLoginPresenter {
                 mContext?.runOnUiThread {
                     mFaceLoginView?.hideLoading()
                 }
-                when (mFaceLoginModel!!.status) {
-                    Status.SUCCESS -> {
-                        mContext?.runOnUiThread {
-                            mFaceLoginView?.hideError()
-                            mFaceLoginView?.jumpActivity((mFaceLoginModel as IFaceLoginModel).mLoginBean)
+                if (!(mContext!!.isFinishing)) {
+                    when (mFaceLoginModel!!.status) {
+                        Status.SUCCESS -> {
+                            mContext?.runOnUiThread {
+                                mFaceLoginView?.hideError()
+                                //if (!(mContext!!.isFinishing)) {
+                                mFaceLoginView?.jumpActivity((mFaceLoginModel as IFaceLoginModel).mLoginBean)
+                                //}
+                            }
                         }
+                        Status.FAILED -> mContext?.runOnUiThread { mFaceLoginView?.showToast(mFaceLoginModel?.msg!!) }
+                        Status.FAILED_TOKEN_AUTH -> mContext?.runOnUiThread { mFaceLoginView?.showToast(mFaceLoginModel?.msg!!) }
+                        Status.FAILED_UNKNOW -> mContext?.runOnUiThread { mFaceLoginView?.showToast(R.string.error_facelogin_error_retry) }
                     }
-                    Status.FAILED ->  mContext?.runOnUiThread {mFaceLoginView?.showToast(mFaceLoginModel?.msg!!)}
-                    Status.FAILED_TOKEN_AUTH -> mContext?.runOnUiThread {mFaceLoginView?.showToast(mFaceLoginModel?.msg!!)}
-                    Status.FAILED_UNKNOW -> mContext?.runOnUiThread {mFaceLoginView?.showToast(R.string.error_unknow)}
                 }
             }
 

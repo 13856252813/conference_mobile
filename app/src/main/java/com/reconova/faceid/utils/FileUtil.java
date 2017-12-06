@@ -15,7 +15,7 @@ public class FileUtil {
     private static   String storagePath = "";  
     private static final String DST_FOLDER_NAME = "ConferenceCamera";
     private static final String DST_FILE_NAME = "phonecheck.jpg";
-    private static final String DST_FACE_ALIVE = "face";
+    private static final String DST_FACE_ALIVE = "face.jpg";
     public static final String picFullPathFileName = parentPath.getAbsolutePath()+"/" + DST_FOLDER_NAME + "/" + DST_FILE_NAME;
     public static final String picFullPathFaceFileName = parentPath.getAbsolutePath()+"/" + DST_FOLDER_NAME  + "/" + DST_FACE_ALIVE;
 
@@ -62,7 +62,7 @@ public class FileUtil {
         String path = initPath();
         long dataTake = System.currentTimeMillis();
         //String jpegName = path + "/" + dataTake +".jpg";
-        String jpegName = picFullPathFaceFileName + typeNo + ".jpg";
+        String jpegName = picFullPathFaceFileName;// + typeNo + ".jpg";
         File checkfile = new File(jpegName);
         if (checkfile.exists()){
             checkfile.delete();

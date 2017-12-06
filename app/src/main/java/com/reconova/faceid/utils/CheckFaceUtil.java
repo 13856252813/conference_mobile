@@ -6,6 +6,8 @@ import android.graphics.RectF;
 import android.media.FaceDetector;
 import android.util.Log;
 
+import com.common.utlis.ULog;
+
 import java.io.File;
 
 
@@ -44,11 +46,11 @@ public class CheckFaceUtil {
         RectF[] faceRects=new RectF[faceList.length];
         for (int i=0; i < faceList.length; i++) {
             FaceDetector.Face face = faceList[i];
-            Log.d("FaceDet", "Face ["+face+"]");
+            Log.d(TAG, "Face ["+face+"]");
             if (face != null) {
                 //confidence标识一个匹配度，在0~1区间，越接近1，表示匹配越高。如果需要可以加上这个判断条件
                 //这里不做判断
-                Log.d("FaceDet", "Face ["+i+"] - Confidence bitmap ["+face.confidence()+"]");
+                Log.d(TAG, "Face ["+i+"] - Confidence bitmap ["+face.confidence()+"]");
                 if (face.confidence() > FACE_THR){
                     return true;
                 }
@@ -61,10 +63,10 @@ public class CheckFaceUtil {
 
     public boolean isFaceFile(String strBitMap)
     {
-
+        ULog.d(TAG, "start check isFaceFile");
         File file = new File(strBitMap);
         if (!file.exists()){
-            Log.d("FaceDet", "file not exists");
+            Log.d(TAG, "file not exists");
             return false;
         }
 

@@ -1,5 +1,6 @@
 package com.txt.conference.presenter
 
+import android.app.Activity
 import com.txt.conference.R
 import com.txt.conference.model.*
 import com.txt.conference.view.IFaceAuthView
@@ -12,29 +13,41 @@ import com.txt.conference.view.ILoginView
 class FaceAuthPresenter {
     var mFaceAuthView: IFaceAuthView? = null
     var mFaceAuthModel: IFaceAuthModel? = null
-
+    var mContext: Activity? = null
     init {
 
     }
 
-    constructor(view: IFaceAuthView) {
+    constructor(context: Activity, view: IFaceAuthView) {
         this.mFaceAuthView = view
+        this.mContext = context
         mFaceAuthModel = FaceAuthModel()
     }
 
     fun doAuthCheck(token: String, strPath: String) {
-        mFaceAuthView?.showLoading(0)
+        mContext?.runOnUiThread { mFaceAuthView?.showLoading(0) }
         mFaceAuthModel?.authcheck(token, strPath, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
-                mFaceAuthView?.hideLoading()
-                when (mFaceAuthModel!!.status) {
-                    Status.SUCCESS -> {
-                        mFaceAuthView?.hideError()
-                        mFaceAuthView?.jumpActivity()
+                mContext?.runOnUiThread {
+                    mFaceAuthView?.hideLoading()
+                    when (mFaceAuthModel!!.status) {
+                        Status.SUCCESS -> {
+                            mFaceAuthView?.hideError()
+                            mFaceAuthView?.checkOK()
+                        }
+                        Status.FAILED -> {
+                            mFaceAuthView?.showToast(mFaceAuthModel?.msg!!)
+                            mFaceAuthView?.checkFailed()
+                        }
+                        Status.FAILED_TOKEN_AUTH -> {
+                            mFaceAuthView?.showToast(mFaceAuthModel?.msg!!)
+                            mFaceAuthView?.checkFailed()
+                        }
+                        Status.FAILED_UNKNOW -> {
+                            mFaceAuthView?.showToast(R.string.error_face_collect_retry)
+                            mFaceAuthView?.checkFailed()
+                        }
                     }
-                    Status.FAILED -> mFaceAuthView?.showToast(mFaceAuthModel?.msg!!)
-                    Status.FAILED_TOKEN_AUTH -> mFaceAuthView?.showToast(mFaceAuthModel?.msg!!)
-                    Status.FAILED_UNKNOW -> mFaceAuthView?.showToast(R.string.error_unknow)
                 }
             }
 
