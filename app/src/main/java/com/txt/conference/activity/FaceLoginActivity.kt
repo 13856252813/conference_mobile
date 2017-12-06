@@ -14,6 +14,7 @@ import android.view.WindowManager
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.reconova.processor.ImageHolder
 import android.os.Handler
+import android.widget.Toast
 import com.common.utlis.ULog
 import com.reconova.faceid.utils.*
 import com.txt.conference.application.TxApplication
@@ -69,6 +70,28 @@ class FaceLoginActivity : BaseActivity(), IFaceLoginView, View.OnClickListener, 
 
     }
 
+    fun deleteLastPhoto(){
+        var file = File(FileUtil.picFullPathFileName)
+        if (file.exists()){
+            file.delete()
+        }
+    }
+
+    override fun showToast(msgRes: Int) {
+        super.showToast(msgRes)
+        face_bt_retry.visibility = View.VISIBLE
+        state_textview_big.text = getString(R.string.account_face_failed)
+        state_textview_small.visibility = View.INVISIBLE
+
+    }
+
+    override fun showToast(msg: String) {
+        super.showToast(msg)
+        face_bt_retry.visibility = View.VISIBLE
+        state_textview_big.text = getString(R.string.account_face_failed)
+        state_textview_small.visibility = View.INVISIBLE
+    }
+
     fun initStartAnimation(){
         face_auto_circle_small.startAnimation(animation_clockwise)
         face_auto_circle_big.startAnimation(animation_anticlockwise)
@@ -98,12 +121,15 @@ class FaceLoginActivity : BaseActivity(), IFaceLoginView, View.OnClickListener, 
     var takedPicture = false
 
     var mFaceLoginPresenter: FaceLoginPresenter? = null
-
+    var handler: Handler? = null
     var runnable: Runnable = object : Runnable {
         override fun run() {
 
             if (startCheck()) {
 
+            } else {
+
+                handler!!.postDelayed(this, 3000)
             }
             //handler.postDelayed(this, 3000)
         }
@@ -127,8 +153,9 @@ class FaceLoginActivity : BaseActivity(), IFaceLoginView, View.OnClickListener, 
         initStartAnimation()
         initLayout()
 
-        var handler = Handler()
-        handler.postDelayed(runnable, 3000)
+        deleteLastPhoto()
+        handler = Handler()
+        handler!!.postDelayed(runnable, 3000)
 
         //UploadCheckFile()
     }
@@ -179,38 +206,18 @@ class FaceLoginActivity : BaseActivity(), IFaceLoginView, View.OnClickListener, 
         }
         mFaceLoginPresenter?.doFaceLogin(getAccount(), FileUtil.picFullPathFileName)
 
-        //val uploadUtil = UploadUtil.getInstance()
-
-        //val picPath = FileUtil.picFullPathFileName
-        //val requestURL = UploadUtil.requestURL
-        //uploadUtil.uploadFile(picPath, UploadUtil.faceImageKey, requestURL)
-        //var file: File = File(FileUtil.picFullPathFileName)
-       // val mapp = mapOf("key" to "uaccount","value" to "wsj")
-         //OKHttpUploadUtils.post_file(requestURL, mapp, file)
-
-       // Thread(Runnable
-       // {
-       //     UploadUtil.sendFilesPost(requestURL, picPath)
-       // }).start()
-
-
-
     }
 
     fun startCheck(): Boolean {
         ULog.i(TAG, "startCheck:" + takedPicture)
-        if (takedPicture === true) {
+        if (takedPicture == true) {
             return false
         }
         mCameraControlCallback?.doTakePicture()
+
         if (CheckFaceUtil.getInstance().isFaceFile(FileUtil.picFullPathFileName)) {
             takedPicture = true
-            try {
-                Thread.sleep(1000)
-                UploadCheckFile()
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
+            UploadCheckFile()
 
         } else {
             takedPicture = false
@@ -240,13 +247,25 @@ class FaceLoginActivity : BaseActivity(), IFaceLoginView, View.OnClickListener, 
         finish()
     }
 
+    fun retryLogin() {
+        face_bt_retry.visibility = View.INVISIBLE
+        state_textview_small.visibility = View.VISIBLE
+        state_textview_big.text = getString(R.string.facesetting_login)
+        state_textview_small.text = getString(R.string.account_face_box)
+        takedPicture = false
+        handler!!.postDelayed(runnable, 2000)
+        deleteLastPhoto()
+    }
     override fun onClick(p0: View?) {
         when (p0!!.id){
             R.id.face_bt_backto_login -> {
                 jumpLogin()
             }
-            R.id.face_bt_onekeyenter-> {
+            R.id.face_bt_onekeyenter -> {
                 jumpOneKeyEnter()
+            }
+            R.id.face_bt_retry -> {
+                retryLogin()
             }
         }
     }
