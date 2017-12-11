@@ -36,6 +36,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
 import com.common.utlis.DateUtils
+import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
 import com.txt.conference.http.Urls
@@ -534,7 +535,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 clientPresenter?.onOffMicrophone()
             }
             room_iv_share.id -> {
-
+               if(ScreenDialog.mInstance!=null && !(ScreenDialog.mInstance?.isShowing)!!){
+                   ScreenDialog.mInstance?.show()
+               }
             }
             room_iv_turn.id -> {
                 clientPresenter?.switchCamera()
@@ -559,6 +562,11 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 }
                 if (room_layout_control.visibility != View.VISIBLE) {
                     room_layout_control.visibility = View.VISIBLE
+                    if(clientPresenter?.getRemoteScreeenStream()!=null) {
+                        room_iv_share.visibility = View.VISIBLE
+                    }else{
+                        room_iv_share.visibility = View.GONE
+                    }
                     startHideAllViewDelayed()
                 } else {
                     room_layout_control.visibility = View.GONE
@@ -589,7 +597,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     fun startHideAllViewDelayed() {
         handler.removeMessages(MSG_HIDE_ALL)
-        handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 60)
+        handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 6)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {

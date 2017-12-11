@@ -16,6 +16,7 @@ import com.common.utlis.ULog
 import com.intel.webrtc.base.*
 import com.intel.webrtc.conference.*
 import com.intel.webrtc.conference.PublishOptions
+import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.R
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.model.ClientModel
@@ -43,16 +44,18 @@ import javax.net.ssl.X509TrustManager
 
 class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         View.OnClickListener, RemoteMixedStream.RemoteMixedStreamObserver {
-    private var mContext: Activity?
+    private lateinit var mContext: Activity
     private var clientView: IClientView?
     private var clientModel: IClientModel? = null
 
     private var remoteStreamRenderer: WoogeenSurfaceRenderer? = null
     private var localStreamRenderer: WoogeenSurfaceRenderer? = null
+    private var mScreenStreamRender: WoogeenSurfaceRenderer?=null
     private var localStream: LocalCameraStream? = null
     private var screenStream: LocalScreenStream? = null
 
     private var currentRemoteStream: RemoteStream? = null
+    private var currentRemoteScreenStream:RemoteStream?=null
     private val subscribedStreams = ArrayList<RemoteStream>()
 
 
@@ -70,6 +73,10 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     private var mRoomBean: RoomBean? = null
     private var showDialog: Dialog? = null
+    var mScreenDialog: ScreenDialog?=null
+    private var rScreenViewContainer: LinearLayout? = null
+
+
 
     constructor(context: Activity, view: IClientView, room: RoomBean?) {
         mContext = context
@@ -121,17 +128,25 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
 
-    fun initVideoStreamsViews() {
-//        remoteViewContainer = mView?.getRemoteViewContainer()
 
+    fun initVideoStreamsViews() {
+
+        mScreenDialog= ScreenDialog.getScreenDialog(mContext)
+        rScreenViewContainer= mScreenDialog?.screenContainer
+
+//        remoteViewContainer = mView?.getRemoteViewContainer()
         localStreamRenderer = WoogeenSurfaceRenderer(mContext)
         remoteStreamRenderer = WoogeenSurfaceRenderer(mContext)
-        localStreamRenderer?.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+        mScreenStreamRender=WoogeenSurfaceRenderer(mContext)
+
+        localStreamRenderer?.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
 
         clientView?.addRemoteView(remoteStreamRenderer!!)
+        rScreenViewContainer?.addView(mScreenStreamRender)
 
         localStreamRenderer?.init(rootEglBase?.eglBaseContext, null)
         remoteStreamRenderer?.init(rootEglBase?.eglBaseContext, null)
+        mScreenStreamRender?.init(rootEglBase?.eglBaseContext, null)
     }
 
 
@@ -238,6 +253,10 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
     }
 
+    fun getRemoteScreeenStream(): RemoteStream?{
+        return currentRemoteScreenStream
+    }
+
     override fun onServerDisconnected() {
         ULog.d(TAG, "onServerDisconnected")
 
@@ -284,6 +303,20 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             currentRemoteStream = null
             remoteStreamRenderer?.cleanFrame()
         }
+        if (currentRemoteScreenStream != null && currentRemoteScreenStream?.id.equals(remoteStream?.id)) {
+            ULog.d(TAG, "onStreamRemoved: isScreenStream" + remoteStream?.id)
+            val msg = Message()
+            msg.what = MSG_UNSUBSCRIBE
+            msg.obj = remoteStream
+            roomHandler?.sendMessage(msg)
+            currentRemoteScreenStream=null
+            if(mScreenDialog!=null){
+                mScreenDialog?.remoteScreenStream = null
+                mScreenDialog?.dismiss()
+            }
+            mScreenStreamRender?.cleanFrame()
+        }
+
         for (stream in subscribedStreams){
             if(stream?.id.equals(remoteStream?.id)){
                 subscribedStreams.remove(stream)
@@ -387,16 +420,31 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                     ULog.d(TAG, "Subscribed stream: " + remoteStream.id)
                                 }
                                 subscribedStreams.add(remoteStream)
-                                if (currentRemoteStream != null) {
-                                    if (currentRemoteStream is RemoteScreenStream) {
-                                        mRoom!!.pauseVideo(remoteStream, null)
-                                        return
+                                if(remoteStream !is RemoteScreenStream){
+                                    if (currentRemoteStream != null) {
+                                        if (currentRemoteStream is RemoteScreenStream) {
+                                            mRoom!!.pauseVideo(remoteStream, null)
+                                            return
+                                        }
+                                        mRoom!!.pauseVideo(currentRemoteStream, null)
+                                        currentRemoteStream!!.detach(remoteStreamRenderer!!)
                                     }
-                                    mRoom!!.pauseVideo(currentRemoteStream, null)
-                                    currentRemoteStream!!.detach(remoteStreamRenderer!!)
+                                    currentRemoteStream = remoteStream
+                                    currentRemoteStream!!.attach(remoteStreamRenderer!!)
+                                }else{
+                                    ULog.d(TAG, "Subscribed screenStream: " + remoteStream.id)
+                                    currentRemoteScreenStream=remoteStream
+                                    remoteStream.attach(mScreenStreamRender)
+                                    mContext?.runOnUiThread({
+                                        if(mScreenDialog!=null && !mScreenDialog?.isShowing!!){
+                                            mScreenDialog?.remoteScreenStream = currentRemoteScreenStream
+                                            if(!mContext!!.isFinishing){
+                                                mScreenDialog?.show()
+                                            }
+                                        }
+                                    })
+
                                 }
-                                currentRemoteStream = remoteStream
-                                currentRemoteStream!!.attach(remoteStreamRenderer!!)
                             } catch (e: WoogeenException) {
                                 e.printStackTrace()
                             }
@@ -604,11 +652,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 //        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
 
         setSpeakerphoneOn(clientModel?.loudIsOpen!!)
-        if (clientModel?.loudIsOpen!!) {
-            clientModel?.loudIsOpen = false
-        } else {
-            clientModel?.loudIsOpen = true
-        }
+        clientModel?.loudIsOpen = !clientModel?.loudIsOpen!!
         clientView?.onOffLoud(clientModel?.loudIsOpen!!)
     }
 
@@ -660,8 +704,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
     fun onDestroy() {
-        mContext = null
         clientView = null
+        if(ScreenDialog.mInstance !=null && ScreenDialog.mInstance!!.isShowing){
+            ScreenDialog.mInstance!!.dismiss()
+        }
+        ScreenDialog.mInstance =null
     }
 
 

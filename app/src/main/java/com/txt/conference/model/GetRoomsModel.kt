@@ -6,7 +6,6 @@ import com.common.utlis.ULog
 import com.txt.conference.bean.GetRoomBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.http.GetRoomsHttpFactory
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**

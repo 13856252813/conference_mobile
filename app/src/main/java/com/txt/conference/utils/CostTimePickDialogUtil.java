@@ -1,21 +1,12 @@
 package com.txt.conference.utils;
 
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.Toast;
 
 import com.txt.conference.R;
 

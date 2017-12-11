@@ -56,11 +56,11 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     }
 
-    fun initStartAnimation(){
+    private fun initStartAnimation(){
         face_auto_circle_small.startAnimation(animation_clockwise)
         face_auto_circle_big.startAnimation(animation_anticlockwise)
     }
-    fun stopAnimation(){
+    private fun stopAnimation(){
         face_auto_circle_small.clearAnimation()
         face_auto_circle_big.clearAnimation()
     }
