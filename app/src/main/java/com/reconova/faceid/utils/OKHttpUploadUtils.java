@@ -1,8 +1,6 @@
 package com.reconova.faceid.utils;
 
-import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;

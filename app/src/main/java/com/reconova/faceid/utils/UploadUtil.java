@@ -1,8 +1,7 @@
 package com.reconova.faceid.utils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;  
+import java.io.File;
 import java.io.FileInputStream;  
 import java.io.IOException;  
 import java.io.InputStream;
@@ -12,13 +11,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.UUID;
   
 import android.util.Log;
 
-import com.common.http.SSLSocketFactoryEx;
 import com.common.utlis.ULog;
 
 import org.apache.http.HttpEntity;
@@ -27,13 +24,11 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -41,8 +36,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import javax.security.cert.CertificateException;
-import javax.security.cert.X509Certificate;
 
 
 public class UploadUtil {  
@@ -157,7 +150,7 @@ public class UploadUtil {
         Log.i(TAG, " address URL=" + RequestURL);
         Log.i(TAG, "addressfileName=" + file.getName());
         Log.i(TAG, "addressfileKey=" + fileKey);
-        new Thread(new Runnable() {  //�����߳��ϴ��ļ�  
+        new Thread(new Runnable() {
             @Override  
             public void run() {  
                 toUploadFile(file, fileKey, RequestURL);
