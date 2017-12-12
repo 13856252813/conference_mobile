@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.ContactsContract
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
@@ -27,13 +28,15 @@ import kotlinx.android.synthetic.main.item_conference_new.*
 import kotlinx.android.synthetic.main.layout_menu.*
 import java.util.*
 import android.support.v4.widget.DrawerLayout
+import android.util.Log
 import android.view.View
 import com.common.utlis.DateUtils
+import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
 import com.txt.conference.utils.CommonUtils
 import com.txt.conference.utils.StatusBarUtil
-
-
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 
 class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomView, IDeleteRoomView, ILogoffView, IInviteUsersView, ConferenceAdapter.TimeCallBack {
@@ -61,6 +64,8 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
             return selectroom?.roomId
         }
     }
+
+
 
     val TAG = MainActivity::class.java.simpleName
     var getRoomsPresenter: GetRoomsPresenter? = null
@@ -176,7 +181,14 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
         menu_about_layout.setOnClickListener {
             startAbout()
         }
+        EventBus.getDefault().register(this)
     }
+
+    @Subscribe
+    fun onEventMainThread(event: MessageEvent) {
+        Log.e("fl","--content:"+event.msg)
+    }
+
 
     fun startFaceLoginSettings() {
         var i = Intent(this, FaceLoginSettingsActivity::class.java)
@@ -441,6 +453,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
     override fun onDestroy() {
         super.onDestroy()
         ULog.d(TAG, "onDestroy")
+        EventBus.getDefault().unregister(this)
     }
 
 

@@ -3,6 +3,7 @@ package com.txt.conference.widget;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -269,6 +270,10 @@ public class DialogWheelYearMonthDay extends Dialog {
         return mDays;
     }
 
+    private String[] getMinutes(){
+        return mMinutes;
+    }
+
     public String getSelectorYear() {
         return  getYears()[getYearView().getCurrentItem()];
     }
@@ -283,8 +288,9 @@ public class DialogWheelYearMonthDay extends Dialog {
     public String getSelectorHour() {
         return getDays()[getHourView().getCurrentItem()];
     }
+
     public String getSelectorMinute() {
-        return getDays()[getMinuteView().getCurrentItem()];
+        return getMinutes()[getMinuteView().getCurrentItem()];
     }
 
     /**
@@ -298,10 +304,6 @@ public class DialogWheelYearMonthDay extends Dialog {
         day.setViewAdapter(new DateNumericAdapter(mContext, 1, maxDays, mCalendar.get(Calendar.DAY_OF_MONTH) - 1));
         int curDay = Math.min(maxDays, day.getCurrentItem() + 1);
         day.setCurrentItem(curDay - 1, true);
-
-
-
-
     }
 
     /**

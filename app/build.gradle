@@ -46,6 +46,11 @@ android {
         versionName "2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "updatefun_provider_file_authorities", "com.txt.conference.fileprovider"
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
         manifestPlaceholders = [
                 JPUSH_PKGNAME : applicationId,
                 JPUSH_APPKEY : "cb46c97d26de5efb97357ecb", //JPush上注册的包名对应的appkey.
@@ -111,7 +116,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpmime:4.3.6'
     implementation 'com.android.support:design:26.+'
     testImplementation 'junit:junit:4.12'
-//    testImplementation 'org.mockito:mockito-core:2.+'
+    //    testImplementation 'org.mockito:mockito-core:2.+'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -119,7 +124,10 @@ dependencies {
     implementation project(':conference_common')
     implementation project(':common')
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
-    implementation 'cn.jiguang.sdk:jpush:3.0.9'  // 此处以JPush 3.0.9 版本为例。
-    implementation 'cn.jiguang.sdk:jcore:1.1.7'  // 此处以JCore 1.1.7 版本为例。
+    implementation 'cn.jiguang.sdk:jpush:3.0.9'
+    // 此处以JPush 3.0.9 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:1.1.7'
+    // 此处以JCore 1.1.7 版本为例。
     implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation files('libs/eventbus.jar')
 }

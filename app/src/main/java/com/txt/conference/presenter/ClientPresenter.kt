@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
@@ -166,6 +167,15 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     msg?.what = PUBLISH_STREAM
                     roomHandler?.sendMessage(msg)
                 }
+                statsTimer = Timer()
+                statsTimer!!.schedule(object : TimerTask() {
+                    override fun run() {
+                        val msg = roomHandler?.obtainMessage()
+                        msg?.what = STATUS_REMOTE
+                        roomHandler?.sendMessage(msg)
+                    }
+                }, 1000, 3000)
+
                 var users = mRoom?.users
                 ULog.d(TAG, "user size: " + users?.size)
                 for (i in 0..users!!.size-1) {
@@ -389,6 +399,36 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                         }
                     }
                     publish()
+                }
+                STATUS_REMOTE->{
+                    var statsCallback = object : ActionCallback<ConnectionStats> {
+
+                        override fun onSuccess(result: ConnectionStats?) {
+                            var trackStatsList =
+                                    result?.mediaTracksStatsList
+                            for (trackStats in trackStatsList!!){
+                                if(trackStats is ConnectionStats.VideoReceiverMediaTrackStats){
+                                    var videoStats = trackStats
+//                                    stsList.put("ReceiveCodeName", videoStats.codecName)
+//                                    stsList.put("PacketsReceived", videoStats.packetsReceived.toString())
+//                                    stsList.put("ReceivePacketLost", videoStats.packetsLost.toString())
+//                                    stsList.put("FrameRateReceived", videoStats.frameRateReceived.toString())
+//                                    stsList.put("frameResolutionReceived",
+//                                            videoStats.frameWidthReceived.toString() + "*"
+//                                                    + videoStats.frameHeightReceived)
+//                                    val byteRate = (
+//                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
+//                                    lastSubscribeByteReceived = videoStats.bytesReceived
+                                    Log.e("fl","----currentDelayMs:"+videoStats.currentDelayMs)
+                                }
+                            }
+                        }
+
+                        override fun onFailure(p0: WoogeenException?) {
+                        }
+
+                    }
+                    mRoom?.getConnectionStats(currentRemoteStream, statsCallback)
                 }
 
                 MSG_SUBSCRIBE -> {
