@@ -36,7 +36,6 @@ class ScreenDialog private constructor(private val mContext: Activity, themeResI
         screenContainer = view?.findViewById(R.id.stream_layout)!!
         mImageScale = view?.findViewById(R.id.finish_screen)!!
         mImageHide = view?.findViewById(R.id.hide_screen)!!
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +47,6 @@ class ScreenDialog private constructor(private val mContext: Activity, themeResI
         mImageScale!!.setOnClickListener(this)
         mImageHide!!.setOnClickListener(this)
         textArray = arrayOf(mImageScale, mImageHide)
-
     }
 
 

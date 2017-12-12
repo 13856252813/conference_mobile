@@ -1,12 +1,15 @@
 package com.txt.conference.activity
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import com.txt.conference.R
+import com.txt.conference.R.layout.dialog
 import com.txt.conference.adapter.CreateRoomListAdapter
 import com.txt.conference.bean.CreateRoomListAdapterBean
 import com.txt.conference.bean.RoomBean
@@ -19,6 +22,7 @@ import com.txt.conference.utils.DateTimePickDialogUtil
 import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.ICreateConferenceRoomView
 import com.txt.conference.view.ICreateConferenceView
+import com.txt.conference.widget.DialogWheelYearMonthDay
 import kotlinx.android.synthetic.main.activity_createconferenceroom.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -32,6 +36,9 @@ import java.util.*
 
 
 class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,*/ DateTimePickDialogUtil.ITimePickDialogClick, CostTimePickDialogUtil.ICostTimePickDialogClick, ICreateConferenceView, BaseActivity() {
+
+
+    private var mDateDialog:DialogWheelYearMonthDay?=null
 
     override fun jumpActivity(roomBean: RoomBean) {
         //onBackPressed()
@@ -140,11 +147,11 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         var namearray: JSONArray = JSONArray()
         jsonObj.put("topic", title)     // title
         jsonObj.put("duration", mCostTime)  // time
-        jsonTime.put("year", Constants.TimeStrGetYear(mStartTime))
-        jsonTime.put("month", Constants.TimeStrGetMonth(mStartTime))
-        jsonTime.put("day", Constants.TimeStrGetDay(mStartTime))
-        jsonTime.put("hour",Constants.TimeStrGetHour(mStartTime))
-        jsonTime.put("min",Constants.TimeStrGetMin(mStartTime))
+        jsonTime.put("year", mDateDialog?.selectorYear)
+        jsonTime.put("month", mDateDialog?.selectorMonth)
+        jsonTime.put("day", mDateDialog?.selectorDay)
+        jsonTime.put("hour",mDateDialog?.selectorHour)
+        jsonTime.put("min",mDateDialog?.selectorMinute)
         jsonObj.put("start", jsonTime) // start time
         if (namelist != null ) {
             val num = namelist?.size!!
@@ -175,6 +182,18 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         var titlebar_back: TextView = this.findViewById<TextView>(R.id.left_text)
         //var titlebar_title: TextView = this.findViewById<TextView>(R.id.title)
         var btn_create: Button = this.findViewById<Button>(R.id.bt_createroom)
+        mDateDialog=DialogWheelYearMonthDay(this@CreateConferenceRoomActivity)
+        mDateDialog?.sureView?.setOnClickListener(object:View.OnClickListener{
+            override fun onClick(v: View?) {
+               var time=mDateDialog?.selectorYear.toString()+"-"+mDateDialog?.selectorMonth+"-"+mDateDialog?.selectorDay+
+                       " "+mDateDialog?.selectorHour+":"+mDateDialog?.selectorMinute
+                textinfo_create_conference_starttime.text = time
+                mDateDialog?.dismiss()
+            }
+
+        })
+
+
         titlebar_back.setClickable(true)
 
         val nowformatter = SimpleDateFormat("MM-dd HH:mm")
@@ -202,7 +221,9 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
         create_addman.setOnClickListener({ this.startChooseAttand()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
         create_adddevice.setOnClickListener({ this.startChooseDeviceAttand()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
-        create_conference_starttime.setOnClickListener({ this.startDateTimer()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
+        create_conference_starttime.setOnClickListener({
+            mDateDialog?.show()
+        })
         create_conference_costtime.setOnClickListener({ this.startCostTime()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
 
         /*listview= this.findViewById<ListView>(R.id.listCreateRoomView)

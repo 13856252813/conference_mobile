@@ -46,6 +46,11 @@ android {
         versionName "2.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "updatefun_provider_file_authorities", "com.txt.conference.fileprovider"
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "cb46c97d26de5efb97357ecb", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
     }
     signingConfigs {
         config_pivos_debug {
@@ -75,10 +80,16 @@ android {
 
             if(variant.buildType.name.equals('beta')){}
 
-            if(variant.buildType.name.equals('debug')){}
+            if(variant.buildType.name.equals('debug')){
+
+            }
         }
     }
-
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     useLibrary 'org.apache.http.legacy'
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -108,4 +119,7 @@ dependencies {
     implementation project(':conference_common')
     implementation project(':common')
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    implementation 'cn.jiguang.sdk:jpush:3.0.9'  // 此处以JPush 3.0.9 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:1.1.7'  // 此处以JCore 1.1.7 版本为例。
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }
