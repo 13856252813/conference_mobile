@@ -452,6 +452,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 initProcessor()
             } else {
                 RecoAliveProcessor.getInstance().finalize()
+                ULog.i(TAG, "init error")
                 Toast.makeText(applicationContext, "初始化失败,请检查网络或重试",
                         Toast.LENGTH_LONG).show()
             }
