@@ -472,8 +472,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 MSG_PUBLISH -> {
                     try {
                         val msp = LocalCameraStreamParameters(true, true, true)
-                        msp.setResolution(640, 480)
-                        msp.setCameraId(cameraID)
+                        LocalCameraStreamParameters.setResolution(640, 480)
+                        LocalCameraStreamParameters.setCameraId(cameraID)
                         //To set the video frame filter.
                         //WoogeenBrightenFilter is a simple filter for brightening the image.
                         //LocalCameraStream.setFilter(WoogeenBrightenFilter.create(rootEglBase
@@ -560,7 +560,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     if (localStream == null) {
                         return
                     }
-                    localStream?.switchCamera(object : ActionCallback<Boolean> {
+                    LocalCameraStream.switchCamera(object : ActionCallback<Boolean> {
                         override fun onSuccess(isFrontCamera: Boolean?) {
                             ULog.d(TAG, "switchCamera onSuccess isFrontCamera $isFrontCamera")
                             clientView?.switchCamera(isFrontCamera!!)
