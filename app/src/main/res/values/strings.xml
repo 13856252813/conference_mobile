@@ -41,6 +41,7 @@
     <string name="enter_room">进入会议</string>
     <string name="conference_end">会议已结束</string>
     <string name="entering_room">正在进入会议...</string>
+    <string name="deleteing_room">正在删除会议...</string>
     <string name="enter_room_failed">获取房间token失败，请重试~</string>
     <string name="not_start">未开始</string>
     <string name="add_attendee">添加参会人</string>
@@ -110,4 +111,14 @@
     <string name="about_company_version">版本号</string>
     <string name="about_default_version">1.0</string>
     <string name="network_poor">当前网络不佳，已切为语音模式</string>
+    <string name="metting_end_confirm_title">会议即将结束，是否尝试顺延？</string>
+    <string name="metting_end_confirm_ok">尝试顺延</string>
+    <string name="metting_end_confirm_skip">忽略</string>
+    <string name="metting_extend_failed_title">抱歉，顺延时间冲突</string>
+    <string name="metting_extend_failed_message">您可选择其他时间段进行尝试</string>
+    <string name="metting_extend_failed_retry">重新尝试</string>
+    <string name="metting_extend_10m">10分钟</string>
+    <string name="metting_extend_30m">30分钟</string>
+    <string name="metting_extend_60m">1个小时</string>
+    <string name="metting_extend_success">顺延成功</string>
 </resources>
