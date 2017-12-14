@@ -1,9 +1,7 @@
 package com.txt.conference.model
 
-import android.util.Log
 import cn.jpush.android.api.JPushInterface
 import com.common.http.HttpEventHandler
-import com.common.utlis.ULog
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.GetLoginBean
 import com.txt.conference.bean.LoginBean
@@ -120,7 +118,7 @@ class LoginModel : ILoginModel {
         }
         mLoginHttp?.account = nAccount
         mLoginHttp?.password = nPassword
-        mLoginHttp?.device= "{\"deviceUdid\":\"$mRegisterId\",\"deviceClient\": \"android\"}"
+        mLoginHttp?.deviceInfo= "{\"deviceUdid\":\"$mRegisterId\",\"deviceClient\": \"android\"}"
         mLoginHttp?.DownloaDatas()
     }
 }

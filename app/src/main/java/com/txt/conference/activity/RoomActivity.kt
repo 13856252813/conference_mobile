@@ -35,10 +35,12 @@ import android.bluetooth.BluetoothHeadset
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
+import android.util.Log
 import com.common.utlis.DateUtils
 import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
+import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
 import com.txt.conference.presenter.*
 import com.txt.conference.utils.CommonUtils
@@ -46,6 +48,8 @@ import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
 import kotlinx.android.synthetic.main.layout_add_attendee_list.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 
 /**
@@ -168,8 +172,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         getUserDevicePresenter = GetUserDevicePresenter(this)
         addTypePresenter = AddTypePresenter(this)
         inviteUsersPresenter = InviteUsersPresenter(this)
-
         methodRequiresTwoPermission()
+
+        EventBus.getDefault().register(this)
     }
 
     override fun onResume() {
@@ -195,8 +200,14 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         clientPresenter = null
         unregisterHeadsetPlugReceiver()
         ULog.d(TAG, "onDestroy")
+        EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
+
+    @Subscribe
+    fun onEventMainThread(event: MessageEvent) {
+    }
+
 
     private fun methodRequiresTwoPermission() {
         var args = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)

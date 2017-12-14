@@ -13,15 +13,20 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.common.http.HttpEventHandler
 import com.common.utlis.ULog
 import com.intel.webrtc.base.*
 import com.intel.webrtc.conference.*
 import com.intel.webrtc.conference.PublishOptions
 import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.R
+import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.RoomBean
+import com.txt.conference.data.TxSharedPreferencesFactory
+import com.txt.conference.http.ControlMediaFactory
 import com.txt.conference.model.ClientModel
 import com.txt.conference.model.IClientModel
+import com.txt.conference.model.MediaModel
 import com.txt.conference.view.IClientView
 import com.txt.conference.widget.CustomDialog
 import com.txt.conference_common.WoogeenSurfaceRenderer
@@ -37,6 +42,7 @@ import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import kotlin.collections.HashMap
 
 
 /**
@@ -285,7 +291,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         //mContext?.finish()
 
         mContext?.runOnUiThread {
-            showDialog = CustomDialog.showConfirmDialog(mContext, mContext?.getString(R.string.tip_net_disconnect), mContext?.getString(R.string.tip_net_disconnect_message),
+            showDialog = CustomDialog.showConfirmDialog(mContext, mContext?.getString(R.string.tip_net_disconnect),
+                    mContext?.getString(R.string.tip_net_disconnect_message),
                     object : com.txt.conference.widget.CustomDialog.DialogClickListener {
                         override fun confirm() {
                             mContext?.finish()
@@ -409,17 +416,18 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             for (trackStats in trackStatsList!!){
                                 if(trackStats is ConnectionStats.VideoReceiverMediaTrackStats){
                                     var videoStats = trackStats
-//                                    stsList.put("ReceiveCodeName", videoStats.codecName)
-//                                    stsList.put("PacketsReceived", videoStats.packetsReceived.toString())
-//                                    stsList.put("ReceivePacketLost", videoStats.packetsLost.toString())
-//                                    stsList.put("FrameRateReceived", videoStats.frameRateReceived.toString())
-//                                    stsList.put("frameResolutionReceived",
-//                                            videoStats.frameWidthReceived.toString() + "*"
-//                                                    + videoStats.frameHeightReceived)
 //                                    val byteRate = (
 //                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
 //                                    lastSubscribeByteReceived = videoStats.bytesReceived
-                                    Log.e("fl","----currentDelayMs:"+videoStats.currentDelayMs)
+                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
+                                    if(packetsLostRate>0.5 || videoStats.currentDelayMs >500){
+                                        Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
+                                                , Toast.LENGTH_SHORT).show()
+                                        localStream?.disableVideo()
+                                        sendMediaStatus(mRoomBean?.roomId,
+                                                TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
+                                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"0")
+                                    }
                                 }
                             }
                         }
@@ -437,7 +445,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     var remoteStream = msg.obj as RemoteStream
                     if (remoteStream is RemoteMixedStream) {
                         //option.setResolution(640, 480)
-
                     }
                     mRoom!!.subscribe(remoteStream, option, object : ActionCallback<RemoteStream> {
                         override fun onSuccess(remoteStream: RemoteStream) {
@@ -617,6 +624,22 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     }
 
+    fun sendMediaStatus(roomId:String?,account:String?,token:String?,muteDes:String){
+        var map=HashMap<String,String>()
+        map.put("muteType","videoMute")
+        map.put("muteDes",muteDes)
+        map.put("action","self")
+        var controlMediaFactory=ControlMediaFactory(map)
+        controlMediaFactory.setHttpEventHandler(object :HttpEventHandler<MediaModel>(){
+            override fun HttpSucessHandler(result: MediaModel?) {
+
+            }
+            override fun HttpFailHandler() {
+            }
+        })
+        controlMediaFactory.DownloaDatas(roomId,account,token)
+    }
+
 
     fun onResume() {
         if (localStream != null) {
@@ -679,10 +702,16 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         if (clientModel?.cameraIsOpen!!) {
             if (localStream?.disableVideo()!!) {
                 clientModel?.cameraIsOpen = false
+                sendMediaStatus(mRoomBean?.roomId,
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
+                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"0")
             }
         } else {
             if (localStream?.enableVideo()!!) {
                 clientModel?.cameraIsOpen = true
+                sendMediaStatus(mRoomBean?.roomId,
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
+                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"1")
             }
         }
         clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
