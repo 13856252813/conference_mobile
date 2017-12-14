@@ -1,6 +1,7 @@
 package com.txt.conference.application
 
 import android.content.Context
+import cn.jpush.android.api.JPushInterface
 import com.common.application.BaseApplication
 
 /**
@@ -15,5 +16,7 @@ class TxApplication : BaseApplication() {
     override fun onCreate() {
         super.onCreate()
         mInstance = applicationContext
+        JPushInterface.setDebugMode(true)
+        JPushInterface.init(this)
     }
 }

@@ -104,4 +104,5 @@
     <string name="about_company_phone_number">021-31184308</string>
     <string name="about_company_version">版本号</string>
     <string name="about_default_version">1.0</string>
+    <string name="network_poor">当前网络不佳，已切为语音模式</string>
 </resources>

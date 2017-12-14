@@ -6,12 +6,12 @@ import android.view.View
 import com.txt.conference.R
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.LoginBean
-import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.LoginPresenter
 import com.txt.conference.view.ILoginView
 import com.txt.conference.widget.CustomDialog
 import kotlinx.android.synthetic.main.activity_login.*
+
 
 /**
  * Created by jane on 2017/10/9.
@@ -49,7 +49,6 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
     }
 
     fun jumpFaceLogin() {
-
         if (isFaceLogin == true) {
             var i = Intent(this, FaceLoginActivity::class.java)
             startActivity(i)

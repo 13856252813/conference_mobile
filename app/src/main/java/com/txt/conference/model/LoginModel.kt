@@ -1,7 +1,7 @@
 package com.txt.conference.model
 
+import cn.jpush.android.api.JPushInterface
 import com.common.http.HttpEventHandler
-import com.common.utlis.ULog
 import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.GetLoginBean
 import com.txt.conference.bean.LoginBean
@@ -20,6 +20,7 @@ class LoginModel : ILoginModel {
 
     var nAccount = ""
     var nPassword = ""
+    var mRegisterId=""
     var mPreference: TxSharedPreferencesFactory? = null
     var mLoginHttp: LoginHttpFactory? = null
 
@@ -83,6 +84,7 @@ class LoginModel : ILoginModel {
     override fun login(account: String, password: String, loginCallBack: IBaseModel.IModelCallBack) {
         nAccount = account
         nPassword = password
+        mRegisterId=JPushInterface.getRegistrationID(TxApplication.mInstance)
         if (mLoginHttp == null) {
             mLoginHttp = LoginHttpFactory()
             mLoginHttp?.setHttpEventHandler(object : HttpEventHandler<GetLoginBean>() {
@@ -116,6 +118,7 @@ class LoginModel : ILoginModel {
         }
         mLoginHttp?.account = nAccount
         mLoginHttp?.password = nPassword
+        mLoginHttp?.deviceInfo= "{\"deviceUdid\":\"$mRegisterId\",\"deviceClient\": \"android\"}"
         mLoginHttp?.DownloaDatas()
     }
 }

@@ -186,6 +186,7 @@ public class CustomDialog {
 			view.findViewById(R.id.divider).setVisibility(View.GONE);
 			view.findViewById(R.id.cancel).setVisibility(View.GONE);
 		}
+		((TextView) view.findViewById(R.id.point_message)).setVisibility(View.GONE);
 		view.findViewById(R.id.confirm).setOnClickListener(
 				new OnClickListener() {
 					@Override
