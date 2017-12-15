@@ -18,9 +18,9 @@ class CreateConferenceRoomMode : ICreateConferenceRoomMode {
     override var mCreateRoomBean: CreateConferenceRoomBean? = null
 
     override fun createroom(strJson: String?, token: String?, createCallBack: IBaseModel.IModelCallBack) {
-        Log.i("mytest", "CreateConferenceRoomMode: create Room")
+        //Log.i("mytest", "CreateConferenceRoomMode: create Room")
         if (mCreateRoomHttp == null) {
-            Log.i("mytest", "CreateConferenceRoomMode: new CreateConferenceRoomHttpFactory")
+            //Log.i("mytest", "CreateConferenceRoomMode: new CreateConferenceRoomHttpFactory")
             mCreateRoomHttp = CreateConferenceRoomHttpFactory()
             mCreateRoomHttp?.setHttpEventHandler(object : HttpEventHandler<CreateConferenceRoomBean>() {
                 override fun HttpSucessHandler(result: CreateConferenceRoomBean?) {

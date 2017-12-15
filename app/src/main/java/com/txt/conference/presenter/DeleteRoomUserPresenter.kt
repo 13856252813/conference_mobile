@@ -5,19 +5,20 @@ import com.txt.conference.R
 import com.txt.conference.bean.DeleteRoomBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.model.*
+import com.txt.conference.view.IDeleteRoomUserView
 import com.txt.conference.view.IDeleteRoomView
 
 /**
- * Created by pc on 2017/11/02.
+ * Created by pc on 2017/12/13.
  */
-class DeleteRoomPresenter {
-    var TAG = DeleteRoomPresenter::class.java.simpleName
-    var deleteModel: IDeleteRoomModel? = null
-    var deleteView: IDeleteRoomView? = null
+class DeleteRoomUserPresenter {
+    var TAG = DeleteRoomUserPresenter::class.java.simpleName
+    var deleteModel: IDeleteRoomUserModel? = null
+    var deleteView: IDeleteRoomUserView? = null
 
-    constructor(view: IDeleteRoomView) {
+    constructor(view: IDeleteRoomUserView) {
         deleteView = view
-        deleteModel = DeleteRoomModel()
+        deleteModel = DeleteRoomUserModel()
     }
 
     fun deleteRoom(room: RoomBean, token: String?) {
@@ -25,10 +26,10 @@ class DeleteRoomPresenter {
             deleteView?.jumpToLogin()
             return
         }
-        deleteView?.showLoading(R.string.deleteing_room)
-        deleteModel?.deleteRoom(room, token, object : IBaseModel.IModelCallBack {
+        //deleteView?.showLoading(R.string.deleteing_room)
+        deleteModel?.deleteRoomUser(room, token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
-                deleteView?.hideLoading()
+                //deleteView?.hideLoading()
                 when (deleteModel!!.status) {
                     Status.SUCCESS -> deleteView?.deleteFinished()
                     Status.FAILED -> deleteView?.showToast(deleteModel?.msg!!)

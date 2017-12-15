@@ -20,8 +20,8 @@ class InviteUsersPresenter {
         inviteUsersModel = InviteUsersModel()
     }
 
-    fun changeInviteList(attendee: AttendeeBean) {
-        inviteUsersModel?.changeInviteList(attendee)
+    fun changeInviteList(attendtype: Int, attendee: AttendeeBean) {
+        inviteUsersModel?.changeInviteList(attendtype, attendee)
         inviteUsersView?.setAttendeeNumber(inviteUsersModel?.getInviteSize()!!)
     }
 

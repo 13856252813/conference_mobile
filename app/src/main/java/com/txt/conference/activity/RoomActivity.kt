@@ -59,6 +59,10 @@ import org.greenrobot.eventbus.Subscribe
  * Created by jane on 2017/10/15.
  */
 class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
+    override fun showExtendConfirm() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onJoined() {
         headsetType = isWiredHeadsetOn()//DeviceUtils.isHeadsetExists()
         ULog.i(TAG, "headsetType:" + headsetType)
@@ -479,7 +483,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                         return
                     }
                     inviteBean.invited = !inviteBean.invited
-                    inviteUsersPresenter?.changeInviteList(inviteBean)
+                    //inviteUsersPresenter?.changeInviteList(inviteBean)
                     adapter?.notifyItemChanged(position)
                     startHideAllViewDelayed()
                 }
