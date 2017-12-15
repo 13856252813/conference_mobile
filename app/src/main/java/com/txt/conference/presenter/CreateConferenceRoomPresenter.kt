@@ -37,13 +37,13 @@ class CreateConferenceRoomPresenter {
                 if (mCreateRoomModel?.status == Status.SUCCESS) {
                     //mCreateRoomView?.jumpActivity()
                     mCreateRoomView?.jumpActivity(mCreateRoomModel?.mCreateRoomBean?.data!!)
-                } else {
-                    mCreateRoomView?.showError("创建房间失败")
+                } else if (mCreateRoomModel?.status == Status.FAILED_TOKEN_AUTH ) {
+                    mCreateRoomView?.showToast(R.string.error_re_login)
+                    mCreateRoomView?.jumpToLogin()
+                }else {
+                    mCreateRoomView?.showToast(R.string.createing_room_failed)
                 }
             }
-
         })
-
-
     }
 }
