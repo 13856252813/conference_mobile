@@ -10,6 +10,6 @@ interface IInviteUsersModel: IBaseModel {
     var room: RoomBean?
 
     fun getInviteSize(): Int
-    fun changeInviteList(attendee: AttendeeBean)
+    fun changeInviteList(attendtype: Int, attendee: AttendeeBean)
     fun invite(roomId: String, token: String, callBack: IBaseModel.IModelCallBack)
 }

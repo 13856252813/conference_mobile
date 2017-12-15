@@ -6,7 +6,7 @@ import com.txt.conference.view.IGetRoomInfoView
 import com.txt.conference.view.IGetRoomsView
 
 /**
- * Created by jane on 2017/11/17.
+ * Created by pc on 2017/11/17.
  */
 class GetRoomInfoPresenter {
     var getRoomInfoView: IGetRoomInfoView? = null

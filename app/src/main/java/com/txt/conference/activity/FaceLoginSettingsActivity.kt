@@ -89,11 +89,11 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
         switch_facelogin.setOnCheckedChangeListener { button, checked ->
             if(checked){
                 ULog.i(TAG, "checked" + checked)
-                /*if (getIsFaceCollect() == COLLECTED  ){
+                if (getIsFaceCollect() == COLLECTED  ){
                     switch_facelogin.isChecked = false
                 } else {
                     showSettingToast(getString(R.string.facelogin_should_face_collect_first))
-                }*/
+                }
             } else {
                 ULog.i(TAG, "checked" + checked)
             }

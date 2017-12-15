@@ -32,6 +32,7 @@ import android.util.Log
 import android.view.View
 import com.common.utlis.DateUtils
 import com.txt.conference.event.MessageEvent
+import com.txt.conference.bean.AttendeeListBean
 import com.txt.conference.http.Urls
 import com.txt.conference.utils.CommonUtils
 import com.txt.conference.utils.StatusBarUtil
@@ -122,7 +123,11 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
     companion object {
         val KEY_USER = "key_user"
         val REQUEST_ATTEND = 101
-        val REQUEST_PHONE = 102
+        val REQUEST_DEVICEATTEND = 102
+        val REQUEST_PHONE = 103
+
+        val ATTEND_TYPE_ACCOUNT = 0
+        val ATTEND_TYPE_DEVICE = 1
     }
 
     override fun jumpActivity() {
@@ -257,19 +262,24 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
 
         if (REQUEST_ATTEND == requestCode ) {
             if (data != null) {
-                var namelist: ArrayList<String>? = null
-                var displaylist: ArrayList<String>? = null
-                namelist  = data?.getStringArrayListExtra("nameattandList")
-                displaylist = data?.getStringArrayListExtra("displayattandList")
-                if (namelist != null){
-                    for (i in namelist.indices){
+                //var namelist: ArrayList<String>? = null
+                //var displaylist: ArrayList<String>? = null
+                //namelist  = data?.getStringArrayListExtra("nameattandList")
+                //displaylist = data?.getStringArrayListExtra("displayattandList")
+
+                 var manattendlist = data?.getSerializableExtra(CreateConferenceRoomActivity.KEY_ATTANDLIST) as AttendeeListBean
+
+                if (manattendlist != null){
+                    for (i in manattendlist?.datalist!!.indices){
                         val inviteBean: AttendeeBean = AttendeeBean()
-                        inviteBean!!.display = displaylist[i]
-                        inviteBean!!.uid = namelist[i]
-                        ULog.i(TAG, "namelist:" + inviteBean!!.uid)
+                        inviteBean!!.display = manattendlist?.datalist!![i].display
+                        inviteBean!!.id = manattendlist?.datalist!![i].id
+                        inviteBean!!.email = manattendlist?.datalist!![i].email
+                        inviteBean!!.mobile = manattendlist?.datalist!![i].mobile
+                        ULog.i(TAG, "name:" + inviteBean!!.id)
                         ULog.i(TAG, "displaylist:" + inviteBean!!.display)
                         inviteBean!!.invited = true
-                        inviteUsersPresenter.changeInviteList(inviteBean)
+                        inviteUsersPresenter.changeInviteList(ATTEND_TYPE_ACCOUNT, inviteBean)
                     }
                 }
                 inviteUsersPresenter.invite(getRoomId(), getToken())
@@ -277,7 +287,36 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
             }
             return
         }
-        if (requestCode == REQUEST_PHONE) {
+
+        if (REQUEST_DEVICEATTEND == requestCode ) {
+            if (data != null) {
+                //var namelist: ArrayList<String>? = null
+                //var displaylist: ArrayList<String>? = null
+                //namelist  = data?.getStringArrayListExtra("nameattandList")
+                //displaylist = data?.getStringArrayListExtra("displayattandList")
+
+                var manattendlist = data?.getSerializableExtra(CreateConferenceRoomActivity.KEY_ATTANDDEVICELIST) as AttendeeListBean
+
+                if (manattendlist != null){
+                    for (i in manattendlist?.datalist!!.indices){
+                        val inviteBean: AttendeeBean = AttendeeBean()
+                        inviteBean!!.display = manattendlist?.datalist!![i].display
+                        inviteBean!!.id = manattendlist?.datalist!![i].id
+                        //inviteBean!!.email = manattendlist?.datalist!![i].email
+                        //inviteBean!!.mobile = manattendlist?.datalist!![i].mobile
+                        ULog.i(TAG, "name:" + inviteBean!!.id)
+                        ULog.i(TAG, "displaylist:" + inviteBean!!.display)
+                        inviteBean!!.invited = true
+                        inviteUsersPresenter.changeInviteList(ATTEND_TYPE_DEVICE, inviteBean)
+                    }
+                }
+                inviteUsersPresenter.invite(getRoomId(), getToken())
+
+            }
+            return
+        }
+
+        /*if (requestCode == REQUEST_PHONE) {
             if (data != null) {
                 val uri: Uri = data.getData()
                 val contacts = getPhoneContacts(uri, this)
@@ -286,32 +325,14 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
 
                 val inviteBean: AttendeeBean = AttendeeBean()
                 inviteBean!!.display = contacts?.get(0)
-                inviteBean!!.uid = contacts?.get(1)
+                inviteBean!!.id = contacts?.get(1)
                 inviteBean!!.invited = true
                 ULog.i(TAG, "inviteBean:")
                 ULog.i(TAG, contacts?.get(1))
                 inviteUsersPresenter.changeInviteList(inviteBean)
                 inviteUsersPresenter.invite(getRoomId(), getToken())
-                /*val cursorLoader = CursorLoader(this, uri, null, null, null, null);
-                val cursor = cursorLoader.loadInBackground()
-                if (cursor != null) {
-                    cursor.moveToFirst()
-                    val contactId = cursor?.getString(cursor
-                            .getColumnIndex(ContactsContract.Contacts._ID))
-                    ULog.i(TAG, contactId)
-                    val cr = this.contentResolver
-                    val phone = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = "
-                                    + contactId, null, null)
-
-                    while (phone.moveToNext()) {
-                        val usernumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        ULog.i(TAG, usernumber)
-                    }
-                }*/
             }
-        }
+        }*/
 
 
     }
@@ -368,7 +389,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
         var i = Intent(this, ChooseDeviceActivity::class.java)
         i.putExtra(ChooseDeviceActivity.KEY_ROOM, room)
         //var requestCode: Int = 101
-        startActivityForResult(i, REQUEST_ATTEND)
+        startActivityForResult(i, REQUEST_DEVICEATTEND)
         //startActivity(i)
     }
 

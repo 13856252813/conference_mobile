@@ -15,6 +15,7 @@ class InviteUsersModel : IInviteUsersModel {
     override var room: RoomBean? = null
     private var inviteUsersHttp: InviteUsersHttpFactory? = null
     var inviteMap: HashMap<String, AttendeeBean>? = null
+    var attendType: Int = 0
 
     init {
         inviteMap = HashMap<String, AttendeeBean>()
@@ -24,11 +25,12 @@ class InviteUsersModel : IInviteUsersModel {
         if (inviteMap == null) return 0 else return inviteMap?.size!!
     }
 
-    override fun changeInviteList(attendee: AttendeeBean) {
+    override fun changeInviteList(attendtype: Int, attendee: AttendeeBean) {
+        attendType = attendtype
         if (attendee.invited) {
-            inviteMap?.put(attendee.uid!!, attendee)
+            inviteMap?.put(attendee.id!!, attendee)
         } else {
-            inviteMap?.remove(attendee.uid)
+            inviteMap?.remove(attendee.id)
         }
     }
 
@@ -53,6 +55,7 @@ class InviteUsersModel : IInviteUsersModel {
                 }
             })
         }
+        inviteUsersHttp?.attendType = attendType
         inviteUsersHttp?.attendeeList = ArrayList(inviteMap?.values)
         inviteUsersHttp?.DownloaDatas(roomId, token)
     }

@@ -12,5 +12,6 @@ interface IRoomView {
     fun getInviteAttendees(): List<ParticipantBean>
     fun setInviteAbility(ability: Boolean)
     fun getCurrentUid(): String
+    fun showExtendConfirm()
     fun end()
 }
