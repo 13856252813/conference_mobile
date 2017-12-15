@@ -59,7 +59,6 @@ import org.greenrobot.eventbus.Subscribe
 /**
  * Created by jane on 2017/10/15.
  */
-<<<<<<< a13481ee55a864c27e0ac86581aa6f6af64c1787
 class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExtendView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
 
     override fun extendFailed() {
@@ -78,13 +77,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     }
 
 
-=======
-class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
-    override fun showExtendConfirm() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
->>>>>>>  * modify for 3.5 new interface.
     override fun onJoined() {
         headsetType = isWiredHeadsetOn()//DeviceUtils.isHeadsetExists()
         ULog.i(TAG, "headsetType:" + headsetType)
@@ -589,11 +581,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                         return
                     }
                     inviteBean.invited = !inviteBean.invited
-<<<<<<< a13481ee55a864c27e0ac86581aa6f6af64c1787
-                    inviteUsersPresenter?.changeInviteList(attendType, inviteBean)
-=======
+
                     //inviteUsersPresenter?.changeInviteList(inviteBean)
->>>>>>>  * modify for 3.5 new interface.
+
+                    inviteUsersPresenter?.changeInviteList(attendType, inviteBean)
                     adapter?.notifyItemChanged(position)
                     startHideAllViewDelayed()
                 }
