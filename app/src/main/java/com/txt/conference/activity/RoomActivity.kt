@@ -45,6 +45,8 @@ import com.txt.conference.http.Urls
 import com.txt.conference.model.MutToRoomBean
 import com.txt.conference.presenter.*
 import com.txt.conference.utils.CommonUtils
+import kotlinx.android.synthetic.main.item_attendee.*
+
 import com.txt.conference.utils.Constants
 import com.txt.conference.utils.CustomExtendDialog
 import com.txt.conference.utils.StatusBarUtil
