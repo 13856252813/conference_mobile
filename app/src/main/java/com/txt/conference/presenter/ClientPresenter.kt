@@ -419,6 +419,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 //                                    val byteRate = (
 //                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
 //                                    lastSubscribeByteReceived = videoStats.bytesReceived
+                                    ULog.i(TAG, "videoStats.packetsLost:" + videoStats.packetsLost)
+                                    ULog.i(TAG, "videoStats.packetsReceived:" + videoStats.packetsReceived)
+                                    if (videoStats.packetsReceived == 0L){
+                                        return
+                                    }
                                     var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
                                     if(packetsLostRate>0.5 || videoStats.currentDelayMs >500){
                                         Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)

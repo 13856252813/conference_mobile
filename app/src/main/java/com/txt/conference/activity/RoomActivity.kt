@@ -44,6 +44,7 @@ import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
 import com.txt.conference.presenter.*
 import com.txt.conference.utils.CommonUtils
+import com.txt.conference.utils.CustomExtendDialog
 import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
@@ -55,10 +56,23 @@ import org.greenrobot.eventbus.Subscribe
 /**
  * Created by jane on 2017/10/15.
  */
-class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
-    override fun showExtendConfirm() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExtendView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
+
+    override fun extendFailed() {
+        showExtendFailedDialog()
     }
+
+    override fun extendFinished(roomBean: RoomBean) {
+        room = roomBean
+        runOnUiThread {
+            roomPresenter?.cancelCountDown()
+            roomPresenter?.initRoomInfo(room!!)
+
+            showExtendConfirm = false
+        }
+
+    }
+
 
     override fun onJoined() {
         headsetType = isWiredHeadsetOn()//DeviceUtils.isHeadsetExists()
@@ -100,6 +114,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     lateinit var getUserDevicePresenter: GetUserDevicePresenter
     lateinit var inviteUsersPresenter: InviteUsersPresenter
     lateinit var addTypePresenter: AddTypePresenter
+    lateinit var roomExtendPresenter: RoomExtendPresenter  
     var room: RoomBean? = null
     var attendeeAdapter: AttendeeAdapter? = null
     var inviteAdapter: InviteAdapter? = null
@@ -115,6 +130,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
+        var MIN_10 = 10
+        var MIN_30 = 30
+        var MIN_60 = 60
     }
 
 
@@ -183,6 +201,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         methodRequiresTwoPermission()
 
         EventBus.getDefault().register(this)
+        roomExtendPresenter = RoomExtendPresenter(this)
+	    showExtendConfirm = false
+	    //showExtendConfirm()
     }
 
     override fun onResume() {
@@ -356,6 +377,77 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun end() {
         showToast(R.string.conference_end)
         clientPresenter?.finishMeet()
+    }
+    fun startExtend(min: Int){
+        roomExtendPresenter?.roomExtend(min, room!!, getToken())
+    }
+
+    fun showChoosExtendTimeDialog(){
+        val builder = CustomExtendDialog.Builder(this)
+        builder.set10mButton{
+            dialog, _ -> dialog.dismiss()
+            startExtend(MIN_10)
+        }
+        builder.set30mButton{
+            dialog, _ -> dialog.dismiss()
+            startExtend(MIN_30)
+        }
+        builder.set1HButton{
+            dialog, _ -> dialog.dismiss()
+            startExtend(MIN_60)
+        }
+        builder.setCancelButton(){
+            dialog, which -> dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    fun showExtendFailedDialog(){
+
+        CustomDialog.showCommonDialog(this,
+                resources.getString(R.string.metting_extend_failed_title),
+                resources.getString(R.string.metting_extend_failed_message),
+                resources.getString(R.string.metting_extend_failed_retry),
+                resources.getString(R.string.metting_end_confirm_skip),
+                object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                    override fun confirm() {
+                        //jumpFaceLogin()
+                        showChoosExtendTimeDialog()
+                    }
+
+                    override fun cancel() {
+
+                    }
+
+                }
+        )
+    }
+    override fun showExtendConfirm() {
+        if (showExtendConfirm){
+            return
+        }
+        var uid = TxSharedPreferencesFactory(applicationContext).getId()
+        if (!(room!!.creator!!.uid!!.equals(uid))){
+            return
+        }
+        showExtendConfirm = true
+        CustomDialog.showCommonDialog(this,
+                resources.getString(R.string.metting_end_confirm_title),
+                "",
+                resources.getString(R.string.metting_end_confirm_ok),
+                resources.getString(R.string.metting_end_confirm_skip),
+                object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                    override fun confirm() {
+                        //jumpFaceLogin()
+                        showChoosExtendTimeDialog()
+                    }
+
+                    override fun cancel() {
+
+                    }
+
+                }
+        )
     }
     //for roomPresenter end
 
