@@ -38,6 +38,10 @@ import java.util.*
 
 
 class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,*/ DateTimePickDialogUtil.ITimePickDialogClick, CostTimePickDialogUtil.ICostTimePickDialogClick, ICreateConferenceView, BaseActivity() {
+    override fun jumpToLogin() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        this.finish()
+    }
 
 
     private var mDateDialog:DialogWheelYearMonthDay?=null
