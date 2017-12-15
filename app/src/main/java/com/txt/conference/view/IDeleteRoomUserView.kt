@@ -8,6 +8,6 @@ import com.txt.conference.bean.RoomBean
 interface IDeleteRoomUserView : IBaseView {
     fun getToken(): String?
     fun jumpToLogin()
-    fun deleteFinished()
+    fun deleteUserFinished()
     fun showError(errorRes: Int)
 }

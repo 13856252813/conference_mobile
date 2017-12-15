@@ -21,7 +21,7 @@ class DeleteRoomUserPresenter {
         deleteModel = DeleteRoomUserModel()
     }
 
-    fun deleteRoom(room: RoomBean, token: String?) {
+    fun deleteRoomUser(room: RoomBean, token: String?) {
         if (token == null || token.equals("")) {
             deleteView?.jumpToLogin()
             return
@@ -31,13 +31,13 @@ class DeleteRoomUserPresenter {
             override fun onStatus() {
                 //deleteView?.hideLoading()
                 when (deleteModel!!.status) {
-                    Status.SUCCESS -> deleteView?.deleteFinished()
+                    Status.SUCCESS -> deleteView?.deleteUserFinished()
                     Status.FAILED -> deleteView?.showToast(deleteModel?.msg!!)
                     Status.FAILED_TOKEN_AUTH -> {
                         deleteView?.showToast(R.string.error_re_login)
                         deleteView?.jumpToLogin()
                     }
-                    Status.FAILED_UNKNOW -> deleteView?.showToast(R.string.error_unknow)
+                    Status.FAILED_UNKNOW -> deleteView?.showToast(R.string.metting_delete_user_error_unknow)
                 }
             }
         })
