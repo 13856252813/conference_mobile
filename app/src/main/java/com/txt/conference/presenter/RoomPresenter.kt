@@ -3,7 +3,13 @@ package com.txt.conference.presenter
 import android.os.CountDownTimer
 import com.common.utlis.DateUtils
 import com.common.utlis.ULog
+import com.txt.conference.R
 import com.txt.conference.bean.RoomBean
+import com.txt.conference.model.DeleteRoomUserModel
+import com.txt.conference.model.IBaseModel
+import com.txt.conference.model.IDeleteRoomUserModel
+import com.txt.conference.model.Status
+import com.txt.conference.view.IDeleteRoomUserView
 import com.txt.conference.view.IRoomView
 import java.util.*
 
@@ -58,5 +64,34 @@ class RoomPresenter {
     fun cancelCountDown() {
         countDownTimer?.cancel()
         countDownTimer=null
+    }
+
+
+    var deleteModel: IDeleteRoomUserModel? = null
+
+    fun InitModel() {
+        deleteModel = DeleteRoomUserModel()
+    }
+
+    fun deleteRoomUser(room: RoomBean, uid: String, token: String?) {
+        if (token == null || token.equals("")) {
+            //roomView?.jumpToLogin()
+            return
+        }
+        //deleteView?.showLoading(R.string.deleteing_room)
+        deleteModel?.deleteRoomUser(room, uid, token, object : IBaseModel.IModelCallBack {
+            override fun onStatus() {
+                //deleteView?.hideLoading()
+                when (deleteModel!!.status) {
+                    Status.SUCCESS -> {}
+                    Status.FAILED -> {}
+                    Status.FAILED_TOKEN_AUTH -> {
+                        //roomView?.showToast(R.string.error_re_login)
+                        //roomView?.jumpToLogin()
+                    }
+                    //Status.FAILED_UNKNOW -> deleteView?.showToast(R.string.metting_delete_user_error_unknow)
+                }
+            }
+        })
     }
 }
