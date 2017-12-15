@@ -51,6 +51,7 @@ import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.utils.ToastUtils
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
+import kotlinx.android.synthetic.main.item_attendee.*
 import kotlinx.android.synthetic.main.layout_add_attendee_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -336,6 +337,21 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 attendeeAdapter?.creatorName = room?.creator?.display
                 initRecyclerView()
                 room_attendee_recyclerView.adapter = attendeeAdapter
+
+                attendeeAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
+                    var userBean = adapter?.data?.get(position) as AttendeeBean
+                    when(view?.id) {
+                        item_attendee_iv_vedio.id -> {
+                            ULog.d(TAG, "onItemChildClick $position vedio:" + userBean.id)
+                        }
+                        item_attendee_iv_sound.id -> {
+                            ULog.d(TAG, "onItemChildClick $position sound:" + userBean.id)
+                        }
+                        item_attendee_iv_more.id -> {
+                            ULog.d(TAG, "onItemChildClick $position more:" + userBean.id)
+                        }
+                    }
+                }
             } else {
                 attendeeAdapter?.setNewData(users)
             }
@@ -524,7 +540,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     fun startSendSms(){
         ULog.i(TAG, "startSendSms" )
         var date= DateUtils()
-        ULog.i(TAG, "startSendSms" )
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
         var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
