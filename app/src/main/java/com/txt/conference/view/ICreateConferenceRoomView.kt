@@ -9,5 +9,6 @@ import com.txt.conference.bean.RoomBean
 interface ICreateConferenceRoomView : IBaseView {
     fun jumpActivity(roomBean: RoomBean)
     fun showError(error: String)
+    fun jumpToLogin()
     fun hideError()
 }
