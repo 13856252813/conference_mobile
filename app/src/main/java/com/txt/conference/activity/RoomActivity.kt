@@ -42,9 +42,12 @@ import com.txt.conference.adapter.AddTypeAdapter
 import com.txt.conference.bean.AddTypeBean
 import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
+import com.txt.conference.model.MutToRoomBean
 import com.txt.conference.presenter.*
 import com.txt.conference.utils.CommonUtils
+import com.txt.conference.utils.Constants
 import com.txt.conference.utils.StatusBarUtil
+import com.txt.conference.utils.ToastUtils
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
 import kotlinx.android.synthetic.main.layout_add_attendee_list.*
@@ -206,6 +209,15 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     @Subscribe
     fun onEventMainThread(event: MessageEvent) {
+        if(event.eventCode == MessageEvent.MUTETOUSERS){
+            var mMutRoomBean=event.getDataObject(MutToRoomBean::class.java)
+            var list=mMutRoomBean.room.participants
+            for (bean in list){
+                if(bean.id==mMutRoomBean.uid){
+                    ToastUtils.topShow("${bean.name}摄像头被关闭")
+                }
+            }
+        }
     }
 
 

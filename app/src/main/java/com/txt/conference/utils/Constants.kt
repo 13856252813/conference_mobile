@@ -46,4 +46,8 @@ class Constants {
             return min
         }
     }
+
+    object EVENTTYPE {
+        var MUTEUSER = "muteUser"
+    }
 }
