@@ -69,6 +69,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     }
 
+
     override fun showToast(msgRes: Int) {
         super.showToast(msgRes)
         state_textview_big.visibility = View.VISIBLE
@@ -144,7 +145,11 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 }
                 MSG_CHECK_FACE_OK -> {
                     ULog.i(TAG, "doTakePicture typeNo1")
+<<<<<<< a13481ee55a864c27e0ac86581aa6f6af64c1787
                     //doTakePicture(1)
+=======
+                    doTakePicture(1)
+>>>>>>>  * modify for 3.5 new interface.
                 }
             }
         }
@@ -458,7 +463,6 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 initProcessor()
             } else {
                 RecoAliveProcessor.getInstance().finalize()
-                ULog.i(TAG, "init error")
                 Toast.makeText(applicationContext, "初始化失败,请检查网络或重试",
                         Toast.LENGTH_LONG).show()
             }
