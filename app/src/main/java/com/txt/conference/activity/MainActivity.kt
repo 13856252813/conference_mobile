@@ -186,6 +186,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
 
     @Subscribe
     fun onEventMainThread(event: MessageEvent) {
+
     }
 
 

@@ -40,7 +40,9 @@ public class MyReceiver extends BroadcastReceiver {
             } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
                 Log.e("fl", "[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
                 JSONObject json = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
-                MessageEvent event=new Gson().fromJson(json.toString(),MessageEvent.class);
+                Log.e("fanglin","eventCode:"+json.toString());
+                MessageEvent event=new MessageEvent();
+                event.setContent(json.toString());
                 EventBus.getDefault().post(event);
 //                processCustomMessage(context, bundle);
             } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {

@@ -140,7 +140,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
         mScreenDialog= ScreenDialog.getScreenDialog(mContext)
         rScreenViewContainer= mScreenDialog?.screenContainer
-
 //        remoteViewContainer = mView?.getRemoteViewContainer()
         localStreamRenderer = WoogeenSurfaceRenderer(mContext)
         remoteStreamRenderer = WoogeenSurfaceRenderer(mContext)
@@ -181,7 +180,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                         roomHandler?.sendMessage(msg)
                     }
                 }, 1000, 3000)
-
                 var users = mRoom?.users
                 ULog.d(TAG, "user size: " + users?.size)
                 for (i in 0..users!!.size-1) {
@@ -380,6 +378,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     }
 
+    private var isSlowNet:Boolean=false
 
     inner class RoomHandler : Handler {
 
@@ -409,7 +408,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 }
                 STATUS_REMOTE->{
                     var statsCallback = object : ActionCallback<ConnectionStats> {
-
                         override fun onSuccess(result: ConnectionStats?) {
                             var trackStatsList =
                                     result?.mediaTracksStatsList
@@ -419,22 +417,28 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 //                                    val byteRate = (
 //                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
 //                                    lastSubscribeByteReceived = videoStats.bytesReceived
-                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
-                                    if(packetsLostRate>0.5 || videoStats.currentDelayMs >500){
-                                        Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
-                                                , Toast.LENGTH_SHORT).show()
-                                        localStream?.disableVideo()
-                                        sendMediaStatus(mRoomBean?.roomId,
-                                                TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
-                                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"0")
+//                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
+                                    if (!isSlowNet) {
+                                        if (videoStats.currentDelayMs > 500) {
+                                            mContext.runOnUiThread {
+                                                isSlowNet = true
+                                                Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
+                                                        , Toast.LENGTH_SHORT).show()
+                                                localStream?.disableVideo()
+                                                sendMediaStatus(mRoomBean?.roomId,
+                                                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
+                                                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"0")
+                                            }
+                                        }else{
+                                            isSlowNet = false
+                                        }
                                     }
+
                                 }
                             }
                         }
-
                         override fun onFailure(p0: WoogeenException?) {
                         }
-
                     }
                     mRoom?.getConnectionStats(currentRemoteStream, statsCallback)
                 }
