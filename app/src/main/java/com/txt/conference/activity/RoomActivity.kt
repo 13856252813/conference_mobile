@@ -108,6 +108,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     var headsetType = false
 
     var mContext:Context? = null
+    var attendType = 0
+    var showExtendConfirm = false
+    var deleteUserId = ""
+
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
@@ -233,8 +237,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun setAttendeeNumber(number: Int) {
         ULog.d(TAG, "setAttendeeNumber $number")
         if (mClickedItem == 0) {
+            attendType = MainActivity.ATTEND_TYPE_ACCOUNT
             room_add_attendee_tv_number.text = (getUsersPresenter?.getInvitedUserSize() + number).toString()
         } else if (mClickedItem == 1) {
+            attendType = MainActivity.ATTEND_TYPE_DEVICE
             room_add_attendee_tv_number.text = (getUserDevicePresenter?.getInvitedUserSize() + number).toString()
         }
     }
@@ -471,7 +477,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                         return
                     }
                     inviteBean.invited = !inviteBean.invited
-                    //inviteUsersPresenter?.changeInviteList(inviteBean)
+                    inviteUsersPresenter?.changeInviteList(attendType, inviteBean)
                     adapter?.notifyItemChanged(position)
                     startHideAllViewDelayed()
                 }
