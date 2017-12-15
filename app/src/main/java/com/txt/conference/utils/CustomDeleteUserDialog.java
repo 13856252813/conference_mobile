@@ -56,14 +56,14 @@ public class CustomDeleteUserDialog extends Dialog {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);  
             // instantiate the dialog with the custom Theme  
             final CustomAttendDialog dialog = new CustomAttendDialog(context,R.style.Dialog);
-            View layout = inflater.inflate(R.layout.dialog_other_extend_layout, null);
+            View layout = inflater.inflate(R.layout.dialog_other_deleteuser_layout, null);
             dialog.addContentView(layout, new LayoutParams(  
                     LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
             dialog.setContentView(layout);
 
             if (deleteUserButtonClickListener != null) {
-                ((Button) layout.findViewById(R.id.attend_bt_phone_address))
+                ((Button) layout.findViewById(R.id.attend_bt_room_delete_user))
                         .setOnClickListener(new View.OnClickListener() {
                             public void onClick(View v) {
                                 deleteUserButtonClickListener.onClick(dialog,

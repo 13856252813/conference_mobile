@@ -123,4 +123,5 @@
     <string name="metting_extend_60m">1个小时</string>
     <string name="metting_extend_success">顺延成功</string>
     <string name="metting_delete_user_error_unknow">移除参会人失败请重试</string>
+    <string name="metting_room_delete_user">断开连接</string>
 </resources>

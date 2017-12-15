@@ -1,11 +1,10 @@
 package com.txt.conference.model
 
 import com.common.http.HttpEventHandler
-import com.txt.conference.bean.DeleteRoomBean
-import com.txt.conference.bean.JoinRoomBean
-import com.txt.conference.bean.RoomBean
-import com.txt.conference.bean.TokenBean
+import com.common.utlis.ULog
+import com.txt.conference.bean.*
 import com.txt.conference.http.DeleteRoomHttpFactory
+import com.txt.conference.http.DeleteRoomUserHttpFactory
 import com.txt.conference.http.JoinRoomHttpFactory
 
 /**
@@ -17,15 +16,16 @@ class DeleteRoomUserModel : IDeleteRoomUserModel {
     override var status: Int = Status.FAILED
     override var msg: String? = null
 
-    var deleteRoomHttp: DeleteRoomHttpFactory? = null
+    var deleteRoomHttp: DeleteRoomUserHttpFactory? = null
 
-    override fun deleteRoomUser(room: RoomBean, token: String, callBack: IBaseModel.IModelCallBack) {
+    override fun deleteRoomUser(room: RoomBean, uid: String, token: String, callBack: IBaseModel.IModelCallBack) {
         this.room = room
         if (deleteRoomHttp == null) {
-            deleteRoomHttp = DeleteRoomHttpFactory()
-            deleteRoomHttp?.setHttpEventHandler(object : HttpEventHandler<DeleteRoomBean>() {
-                override fun HttpSucessHandler(result: DeleteRoomBean?) {
+            deleteRoomHttp = DeleteRoomUserHttpFactory()
+            deleteRoomHttp?.setHttpEventHandler(object : HttpEventHandler<CreateConferenceRoomBean>() {
+                override fun HttpSucessHandler(result: CreateConferenceRoomBean?) {
                     status = result?.code!!
+                    ULog.i("tttt:", "code:" + result?.code!!)
                     if (status == Status.SUCCESS) {
 
                     } else {
@@ -35,12 +35,13 @@ class DeleteRoomUserModel : IDeleteRoomUserModel {
                 }
 
                 override fun HttpFailHandler() {
+                    ULog.i("tttt:", " error")
                     status = Status.FAILED_UNKNOW
                     callBack.onStatus()
                 }
 
             })
         }
-        deleteRoomHttp?.DownloaDatas(room.roomId, token)
+        deleteRoomHttp?.DownloaDatas(room.roomId, uid, token)
     }
 }

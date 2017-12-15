@@ -44,13 +44,9 @@ import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
 import com.txt.conference.model.MutToRoomBean
 import com.txt.conference.presenter.*
-import com.txt.conference.utils.CommonUtils
+import com.txt.conference.utils.*
 import kotlinx.android.synthetic.main.item_attendee.*
 
-import com.txt.conference.utils.Constants
-import com.txt.conference.utils.CustomExtendDialog
-import com.txt.conference.utils.StatusBarUtil
-import com.txt.conference.utils.ToastUtils
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
 import kotlinx.android.synthetic.main.item_attendee.*
@@ -199,6 +195,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
         initViewEvent()
         roomPresenter = RoomPresenter(this)
         roomPresenter.initRoomInfo(room!!)
+        roomPresenter?.InitModel()
         clientPresenter = ClientPresenter(this, this, room)
         getUsersPresenter = GetUsersPresenter(this)
         getUserDevicePresenter = GetUserDevicePresenter(this)
@@ -342,6 +339,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
                 attendeeAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
                     var userBean = adapter?.data?.get(position) as AttendeeBean
+                    deleteUserId = userBean.id!!
                     when(view?.id) {
                         item_attendee_iv_vedio.id -> {
                             ULog.d(TAG, "onItemChildClick $position vedio:" + userBean.id)
@@ -351,6 +349,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                         }
                         item_attendee_iv_more.id -> {
                             ULog.d(TAG, "onItemChildClick $position more:" + userBean.id)
+                            showDeleteUserDialog()
                         }
                     }
                 }
@@ -408,6 +407,25 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
         showToast(R.string.conference_end)
         clientPresenter?.finishMeet()
     }
+
+    fun StartDeleteUser(strId: String ){
+        //deleteRoomUserPresenter.deleteRoomUser(room!!, )
+        roomPresenter?.deleteRoomUser(room!!, strId, getToken())
+    }
+
+
+    fun showDeleteUserDialog(){
+        val builder = CustomDeleteUserDialog.Builder(this)
+        builder.setDeleteUserButton(){
+            dialog, _ -> dialog.dismiss()
+            StartDeleteUser(deleteUserId)
+        }
+        builder.setCancelButton(){
+            dialog, which -> dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
     fun startExtend(min: Int){
         roomExtendPresenter?.roomExtend(min, room!!, getToken())
     }

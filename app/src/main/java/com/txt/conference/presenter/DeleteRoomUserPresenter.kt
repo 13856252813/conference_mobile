@@ -22,7 +22,7 @@ class DeleteRoomUserPresenter {
     }
 
     fun deleteRoomUser(room: RoomBean, token: String?) {
-        if (token == null || token.equals("")) {
+        /*if (token == null || token.equals("")) {
             deleteView?.jumpToLogin()
             return
         }
@@ -40,6 +40,6 @@ class DeleteRoomUserPresenter {
                     Status.FAILED_UNKNOW -> deleteView?.showToast(R.string.metting_delete_user_error_unknow)
                 }
             }
-        })
+        })*/
     }
 }
