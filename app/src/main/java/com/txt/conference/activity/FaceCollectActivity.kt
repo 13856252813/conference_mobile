@@ -43,6 +43,8 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         face_bt_retry.visibility = View.INVISIBLE
         state_textview_small.text = getString(R.string.account_face_ok)
         saveIsCollect(1)
+        handler.sendEmptyMessage(MSG_CHECK_FACE_OK)
+
     }
 
     override fun checkFailed() {
@@ -66,6 +68,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
     override fun back() {
 
     }
+
 
     override fun showToast(msgRes: Int) {
         super.showToast(msgRes)
@@ -131,12 +134,16 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     var mFaceAuthPresenter: FaceAuthPresenter? = null
     val MSG_DOTAKE_PICTURE = 10
-
+    val MSG_CHECK_FACE_OK = 11
 
     var handler = object : Handler(){
         override fun handleMessage(msg: Message?) {
             when (msg?.what) {
                 MSG_DOTAKE_PICTURE -> {
+                    ULog.i(TAG, "doTakePicture typeNo1")
+                    doTakePicture(1)
+                }
+                MSG_CHECK_FACE_OK -> {
                     ULog.i(TAG, "doTakePicture typeNo1")
                     doTakePicture(1)
                 }
@@ -452,7 +459,6 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 initProcessor()
             } else {
                 RecoAliveProcessor.getInstance().finalize()
-                ULog.i(TAG, "init error")
                 Toast.makeText(applicationContext, "初始化失败,请检查网络或重试",
                         Toast.LENGTH_LONG).show()
             }

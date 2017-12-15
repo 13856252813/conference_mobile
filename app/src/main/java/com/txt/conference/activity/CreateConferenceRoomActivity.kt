@@ -11,6 +11,8 @@ import android.widget.Toast
 import com.txt.conference.R
 import com.txt.conference.R.layout.dialog
 import com.txt.conference.adapter.CreateRoomListAdapter
+import com.txt.conference.bean.AttendeeListBean
+import com.txt.conference.bean.ConferenceUserBean
 import com.txt.conference.bean.CreateRoomListAdapterBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
@@ -73,6 +75,18 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         var ITEM_DEVICE = 2
         var ITEM_STARTTIME = 3
         var ITEM_COSTTIME = 4
+
+        var KEY_ATTANDLIST = "attandlist"
+        var KEY_ATTANDDEVICELIST = "attanddevicelist"
+
+        var TOPIC = "topic"
+        var DURATION = "duration"
+        var YEAR = "year"
+        var MONTH = "month"
+        var DAY = "day"
+        var HOUR = "hour"
+        var MIN = "min"
+        var START = "start"
     }
 
     //var mPresenter: CreateConferencePresenter()
@@ -89,6 +103,10 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     var namedevicelist: ArrayList<String>? = null
     var displaydevicelist: ArrayList<String>? = null
+    var userlistbean: ArrayList<ConferenceUserBean>? = null
+
+    var manattendlist: AttendeeListBean? = null
+    var deviceattendlist: AttendeeListBean? = null
 
     var mCostTime: String? = "1"
     var mStartTime: String? = ""
@@ -145,35 +163,51 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         var jsonObj: JSONObject = JSONObject()
         var pararray: JSONArray = JSONArray()
         var namearray: JSONArray = JSONArray()
-        jsonObj.put("topic", title)     // title
-        jsonObj.put("duration", mCostTime)  // time
-        jsonTime.put("year", mDateDialog?.selectorYear)
-        jsonTime.put("month", mDateDialog?.selectorMonth)
-        jsonTime.put("day", mDateDialog?.selectorDay)
-        jsonTime.put("hour",mDateDialog?.selectorHour)
-        jsonTime.put("min",mDateDialog?.selectorMinute)
-        jsonObj.put("start", jsonTime) // start time
-        if (namelist != null ) {
-            val num = namelist?.size!!
+        var paritinarray: JSONArray = JSONArray()
+        jsonObj.put(TOPIC, title)     // title
+        jsonObj.put(DURATION, mCostTime)  // time
+        jsonTime.put(YEAR, Constants.TimeStrGetYear(mStartTime))
+        jsonTime.put(MONTH, Constants.TimeStrGetMonth(mStartTime))
+        jsonTime.put(DAY, Constants.TimeStrGetDay(mStartTime))
+        jsonTime.put(HOUR,Constants.TimeStrGetHour(mStartTime))
+        jsonTime.put(MIN,Constants.TimeStrGetMin(mStartTime))
+        jsonObj.put(START, jsonTime) // start time
+        //var userjsonObj: JSONObject = JSONObject()
+        if (manattendlist != null ) {
+            val num = manattendlist?.datalist!!.size!!
             var i = 0
             while (i < num){
-                namearray.put(displaylist?.get(i))
-                pararray.put(namelist?.get(i))
+                var userjsonObj: JSONObject = JSONObject()
+                userjsonObj.put("id", manattendlist?.datalist!!.get(i).id)
+                userjsonObj.put("name", manattendlist?.datalist!!.get(i).display)
+                userjsonObj.put("mobile", manattendlist?.datalist!!.get(i).mobile)
+                userjsonObj.put("email", manattendlist?.datalist!!.get(i).email)
+                userjsonObj.put("group", "account")
+                paritinarray.put(userjsonObj)
+                //namearray.put(displaylist?.get(i))
+                //pararray.put(namelist?.get(i))
                 i++
             }
         }
 
-        if (namedevicelist != null ) {
-            val num = namedevicelist?.size!!
+        if (deviceattendlist != null ) {
+            val num = deviceattendlist?.datalist!!.size!!
             var i = 0
             while (i < num){
-                namearray.put(displaydevicelist?.get(i))
-                pararray.put(namedevicelist?.get(i))
+                var userjsonObj: JSONObject = JSONObject()
+                userjsonObj.put("id", deviceattendlist?.datalist!!.get(i).id)
+                userjsonObj.put("name", deviceattendlist?.datalist!!.get(i).display)
+                userjsonObj.put("mobile", deviceattendlist?.datalist!!.get(i).mobile)
+                userjsonObj.put("email", deviceattendlist?.datalist!!.get(i).email)
+                userjsonObj.put("group", "device")
+                paritinarray.put(userjsonObj)
+                //namearray.put(displaylist?.get(i))
+                //pararray.put(namelist?.get(i))
                 i++
             }
         }
-        jsonObj.put("names", namearray)
-        jsonObj.put("participants", pararray)
+
+        jsonObj.put("participants", paritinarray)
 
         return jsonObj?.toString()
     }
@@ -246,18 +280,12 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         val curDate = Date(System.currentTimeMillis())//获取当前时间
 
         mStartTime = formatter.format(curDate)
-
+        userlistbean = ArrayList<ConferenceUserBean>()
 
 
     }
 
     override fun onConfirm(str: String?) {
-
-        /*if (listadapter != null) {
-            mStartTime = str
-            listadapter!!.updateItemStr(ITEM_STARTTIME, str?.substring(5, str.length))
-            listadapter!!.notifyDataSetChanged()
-        }*/
 
         mStartTime = str
         //Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
@@ -305,24 +333,19 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        //Log.i("mytest3", requestCode.toString() + ":" + resultCode.toString())
-
         if (resultCode != 0) {
             return
         }
 
         if (data != null) {
             if (requestCode == REQUEST_CODE_CHOOSE_ATTEND) {
-                namelist = data?.getStringArrayListExtra("nameattandList")
-                displaylist = data?.getStringArrayListExtra("displayattandList")
-                onAttandManUpdate(namelist?.size.toString())
+                manattendlist = data?.getSerializableExtra(KEY_ATTANDLIST) as AttendeeListBean
+                onAttandManUpdate(manattendlist?.datalist!!.size.toString())
             } else if (requestCode == REQUEST_CODE_CHOOSE_DEVICE){
-                namedevicelist = data?.getStringArrayListExtra("nameattandList")
-                displaydevicelist = data?.getStringArrayListExtra("displayattandList")
-                onDeviceManUpdate(namedevicelist?.size.toString())
+                deviceattendlist = data?.getSerializableExtra(KEY_ATTANDDEVICELIST) as AttendeeListBean
+                onDeviceManUpdate(deviceattendlist?.datalist!!.size.toString())
             }
         }
-
 
     }
 }

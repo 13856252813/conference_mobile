@@ -4,9 +4,11 @@ package com.txt.conference.bean
  * Created by pc on 2017/10/18.
  */
 open class ConferenceUserBean{
-    var uid: String = ""
-    var display: String = ""
-
+    var id: String = ""
+    var name: String = ""
+    var mobile: String = ""
+    var email: String = ""
+    var group: String = ""
     init {
     }
 
@@ -14,9 +16,13 @@ open class ConferenceUserBean{
 
     }
 
-    constructor (uid: String, displayName: String){
-        this.uid = uid
-        this.display = displayName
+    constructor (uid: String, displayName: String, mobileNo: String, emailAddress: String,
+                 groupType: String){
+        this.id = uid
+        this.name = displayName
+        this.mobile = mobileNo
+        this.email = emailAddress
+        this.group = groupType
     }
 
 

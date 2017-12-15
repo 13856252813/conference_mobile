@@ -2,6 +2,7 @@ package com.txt.conference.presenter
 
 import android.os.CountDownTimer
 import com.common.utlis.DateUtils
+import com.common.utlis.ULog
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.view.IRoomView
 import java.util.*
@@ -12,12 +13,16 @@ import java.util.*
 class RoomPresenter {
     lateinit var roomView: IRoomView
     var countDownTimer: CountDownTimer? = null
+    val TAG = "RoomPresenter"
+
+    var showedConfirmDialog: Boolean? = null
 
     constructor(view: IRoomView) {
         roomView = view
     }
 
     fun initRoomInfo(room: RoomBean) {
+        showedConfirmDialog = false
         roomView.setRoomNumber(room.roomNo!!)
         roomView.setAllAttendees((room.participants?.size!! + 1).toString())
         roomView.setInviteAbility(room.creator?.uid.equals(roomView?.getCurrentUid()))
@@ -28,11 +33,20 @@ class RoomPresenter {
         countDownTimer = object : CountDownTimer(coutDownTime, 1000){
             override fun onFinish() {
                 roomView.end()
+                showedConfirmDialog = false
             }
 
             override fun onTick(p0: Long) {
                 var time = DateUtils().format(Date().time - room.start - TimeZone.getDefault().rawOffset, DateUtils.HH_mm_ss)
+                ULog.i(TAG, "" + coutDownTime.toString())
+                ULog.i(TAG, "" + p0)
+                ULog.i(TAG, "" + DateUtils().format(room.start + room.getDurationMillis() + room.getDelaytimeMillis() - Date().time - TimeZone.getDefault().rawOffset - 20000, DateUtils.HH_mm_ss))
+                ULog.i(TAG, "" + DateUtils().format(room.start + room.getDurationMillis() + room.getDelaytimeMillis() - Date().time - TimeZone.getDefault().rawOffset, DateUtils.HH_mm_ss))
                 roomView.setDurationTime(time)
+                /*if (p0 < 20000 && !(showedConfirmDialog!!)){
+                    showedConfirmDialog = true
+                    roomView.showExtendConfirm()
+                }*/
             }
         }.start()
     }
