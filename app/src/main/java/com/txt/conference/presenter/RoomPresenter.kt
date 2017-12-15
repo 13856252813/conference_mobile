@@ -14,11 +14,9 @@ class RoomPresenter {
     lateinit var roomView: IRoomView
     var countDownTimer: CountDownTimer? = null
     val TAG = "RoomPresenter"
-<<<<<<< a13481ee55a864c27e0ac86581aa6f6af64c1787
-    val showConfirmTime = 20000   // 20 min
-=======
 
->>>>>>>  * modify for 3.5 new interface.
+    val showConfirmTime = 20000   // 20 min
+
     var showedConfirmDialog: Boolean? = null
 
     constructor(view: IRoomView) {
@@ -47,17 +45,12 @@ class RoomPresenter {
                 ULog.i(TAG, "" + DateUtils().format(room.start + room.getDurationMillis() + room.getDelaytimeMillis() - Date().time - TimeZone.getDefault().rawOffset - 20000, DateUtils.HH_mm_ss))
                 ULog.i(TAG, "" + DateUtils().format(room.start + room.getDurationMillis() + room.getDelaytimeMillis() - Date().time - TimeZone.getDefault().rawOffset, DateUtils.HH_mm_ss))
                 roomView.setDurationTime(time)
-<<<<<<< a13481ee55a864c27e0ac86581aa6f6af64c1787
+
                 if (p0 < showConfirmTime && !(showedConfirmDialog!!)){
                     showedConfirmDialog = true
                     roomView.showExtendConfirm()
                 }
-=======
-                /*if (p0 < 20000 && !(showedConfirmDialog!!)){
-                    showedConfirmDialog = true
-                    roomView.showExtendConfirm()
-                }*/
->>>>>>>  * modify for 3.5 new interface.
+
             }
         }.start()
     }
