@@ -13,7 +13,11 @@ public class MessageEvent {
 
     public static final String MUTETOUSERS="muteToUsers";
     public static final String EVENTCODE="eventCode";
-
+    public static final String DELAYENDTIME="delayEndTime";
+    public static final String ROOMATTACHED="roomAttached";
+    public static final String DELETEROOMUSER="deleteRoomUser";
+    public static final String MUTEUSER="muteUser";
+    public static final String ROOMDETACHED="roomDetached";
 
     private String content;
 

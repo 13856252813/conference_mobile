@@ -79,7 +79,7 @@ class RoomPresenter {
             return
         }
         //deleteView?.showLoading(R.string.deleteing_room)
-        deleteModel?.deleteRoomUser(room, uid, token, object : IBaseModel.IModelCallBack {
+        deleteModel?.deleteRoomUser(room, uid,token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
                 //deleteView?.hideLoading()
                 when (deleteModel!!.status) {

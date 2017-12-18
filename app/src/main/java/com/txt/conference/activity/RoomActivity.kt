@@ -21,9 +21,6 @@ import com.txt.conference.R
 import com.txt.conference.adapter.AttendeeAdapter
 import com.txt.conference.adapter.InviteAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
-import com.txt.conference.bean.AttendeeBean
-import com.txt.conference.bean.ParticipantBean
-import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference_common.WoogeenSurfaceRenderer
 import kotlinx.android.synthetic.main.activity_room.*
@@ -39,7 +36,7 @@ import android.util.Log
 import com.common.utlis.DateUtils
 import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.adapter.AddTypeAdapter
-import com.txt.conference.bean.AddTypeBean
+import com.txt.conference.bean.*
 import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
 import com.txt.conference.model.MutToRoomBean
@@ -242,6 +239,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
     @Subscribe
     fun onEventMainThread(event: MessageEvent) {
+        ULog.d(TAG, "onEventMainThread")
         if(event.eventCode == MessageEvent.MUTETOUSERS){
             var mMutRoomBean=event.getDataObject(MutToRoomBean::class.java)
             var list=mMutRoomBean.room.participants
@@ -250,6 +248,30 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                     ToastUtils.topShow("${bean.name}摄像头被关闭")
                 }
             }
+        } else if(event.eventCode == MessageEvent.MUTEUSER){
+            var mMutRoomBean=event.getDataObject(CreateConferenceRoomBean::class.java)
+            var list=mMutRoomBean.data!!.participants
+            for (bean in list!!){
+                if(bean.id == getCurrentUid()){
+                    if (bean.audioMute == 0){
+                        ToastUtils.topShow("${bean.name}audioMute 0")
+                    } else {
+                        ToastUtils.topShow("${bean.name}audioMute 1")
+                    }
+                    if (bean.videoMute == 0){
+                        ToastUtils.topShow("${bean.name}videoMute 0")
+                    } else {
+                        ToastUtils.topShow("${bean.name}videoMute 1")
+                    }
+                    ToastUtils.topShow("${bean.name}摄像头被关闭")
+                }
+            }
+        } else if(event.eventCode == MessageEvent.DELETEROOMUSER){
+            var mDeleteRoomBean=event.getDataObject(DeleteRoomUserBean::class.java)
+            if (mDeleteRoomBean.deleteuid.equals(getCurrentUid())){
+                clientPresenter?.finishMeet()
+            }
+            ToastUtils.topShow(getString(R.string.metting_room_delete_useruser_message))
         }
     }
 
