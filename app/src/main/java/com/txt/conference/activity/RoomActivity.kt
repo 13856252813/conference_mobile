@@ -66,6 +66,21 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
     override fun updateRoomBean(roomBean: RoomBean) {
         room = roomBean
+        ULog.i(TAG, "roomBean:" + roomBean)
+        var nUsers = ArrayList<AttendeeBean>()
+        for (bean in attendusers!!){
+            for (beanuser in room!!.participants!!){
+                if (beanuser.id.equals(bean.id)){
+                    bean.videoMute = beanuser.videoMute.toString()
+                    bean.audioMute = beanuser.audioMute.toString()
+                }
+            }
+            if (!bean.id.equals(deleteUserId)){
+                nUsers.add(bean)
+            }
+        }
+        attendusers = nUsers
+        attendeeAdapter?.setNewData(attendusers)
     }
 
     override fun extendFailed() {
@@ -136,6 +151,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     var attendType = 0
     var showExtendConfirm = false
     var deleteUserId = ""
+
+    var attendusers: List<AttendeeBean>? = null
 
     companion object {
         var KEY_ROOM = "room"
@@ -404,6 +421,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
     override fun updateUsers(users: List<AttendeeBean>) {
         runOnUiThread {
+            attendusers = users
             if (attendeeAdapter == null) {
                 attendeeAdapter = AttendeeAdapter(R.layout.item_attendee, users)
                 attendeeAdapter?.selfName = TxSharedPreferencesFactory(applicationContext).getUserName()

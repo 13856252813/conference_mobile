@@ -83,7 +83,7 @@ class RoomPresenter {
             override fun onStatus() {
                 //deleteView?.hideLoading()
                 when (deleteModel!!.status) {
-                    Status.SUCCESS -> {}
+                    Status.SUCCESS -> {  roomView.updateRoomBean(room) }
                     Status.FAILED -> {}
                     Status.FAILED_TOKEN_AUTH -> {
                         //roomView?.showToast(R.string.error_re_login)
