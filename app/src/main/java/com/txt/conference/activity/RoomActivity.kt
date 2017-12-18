@@ -328,6 +328,36 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
         if (isMicrophoneMute) room_iv_mute.setImageResource(R.mipmap.muted) else room_iv_mute.setImageResource(R.mipmap.mute)
     }
 
+    fun GetMuteVideoType(uid: String): Int?{
+        for (i in 0..room!!.participants!!.size - 1) {
+            if (room!!.participants!![i].id!!.equals(uid)){
+                return room!!.participants!![i].videoMute
+            }
+        }
+        return 0
+    }
+
+    fun GetMuteVoiceType(uid: String): Int?{
+        for (i in 0..room!!.participants!!.size - 1) {
+            if (room!!.participants!![i].id!!.equals(uid)){
+                return room!!.participants!![i].audioMute
+            }
+        }
+        return 0
+    }
+
+    fun CompchangedVideo(uid: String){
+        var muteType = GetMuteVideoType(uid)
+        clientPresenter?.sendMediaStatus(getRoomId(), uid, ClientPresenter.VEDIO_MUTE, muteType.toString(), ClientPresenter.ACTION_COMP
+                , getToken())
+    }
+
+    fun CompchangedVoice(uid: String){
+        var muteType = GetMuteVoiceType(uid)
+        clientPresenter?.sendMediaStatus(getRoomId(), uid, ClientPresenter.VOICE_MUTE, muteType.toString(), ClientPresenter.ACTION_COMP
+                , getToken())
+    }
+
     override fun updateUsers(users: List<AttendeeBean>) {
         runOnUiThread {
             if (attendeeAdapter == null) {
@@ -343,9 +373,11 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                     when(view?.id) {
                         item_attendee_iv_vedio.id -> {
                             ULog.d(TAG, "onItemChildClick $position vedio:" + userBean.id)
+                            CompchangedVideo(deleteUserId)
                         }
                         item_attendee_iv_sound.id -> {
                             ULog.d(TAG, "onItemChildClick $position sound:" + userBean.id)
+                            CompchangedVoice(deleteUserId)
                         }
                         item_attendee_iv_more.id -> {
                             ULog.d(TAG, "onItemChildClick $position more:" + userBean.id)
