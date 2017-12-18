@@ -57,6 +57,10 @@ import org.greenrobot.eventbus.Subscribe
  */
 class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExtendView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
 
+    override fun updateRoomBean(roomBean: RoomBean) {
+        room = roomBean
+    }
+
     override fun extendFailed() {
         showExtendFailedDialog()
     }
@@ -370,12 +374,23 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
     fun CompchangedVideo(uid: String){
         var muteType = GetMuteVideoType(uid)
+        ULog.i(TAG, "muteType:" + muteType )
+        if (muteType == 0){
+            muteType = 1
+        } else {
+            muteType = 0
+        }
         clientPresenter?.sendMediaStatus(getRoomId(), uid, ClientPresenter.VEDIO_MUTE, muteType.toString(), ClientPresenter.ACTION_COMP
                 , getToken())
     }
 
     fun CompchangedVoice(uid: String){
         var muteType = GetMuteVoiceType(uid)
+        if (muteType == 0){
+            muteType = 1
+        } else {
+            muteType = 0
+        }
         clientPresenter?.sendMediaStatus(getRoomId(), uid, ClientPresenter.VOICE_MUTE, muteType.toString(), ClientPresenter.ACTION_COMP
                 , getToken())
     }

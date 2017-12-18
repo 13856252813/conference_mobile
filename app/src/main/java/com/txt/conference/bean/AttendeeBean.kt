@@ -14,6 +14,8 @@ class AttendeeBean : Serializable {
     var display: String? = null
     var mobile: String? = null
     var email: String? = null
+    var videoMute: String? = null
+    var audioMute: String? = null
     get() {
         if (field != null && field?.contains(":")!!) {
             var arr = field?.split(":")
