@@ -636,7 +636,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         var controlMediaFactory=ControlMediaFactory(map)
         controlMediaFactory.setHttpEventHandler(object :HttpEventHandler<MediaModel>(){
             override fun HttpSucessHandler(result: MediaModel?) {
-
+                if (result!!.code == 0){
+                    updateRoomBean(result!!.data!!)
+                }
             }
             override fun HttpFailHandler() {
             }

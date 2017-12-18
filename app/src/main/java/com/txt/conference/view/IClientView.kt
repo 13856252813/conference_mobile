@@ -1,6 +1,7 @@
 package com.txt.conference.view
 
 import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.RoomBean
 import com.txt.conference_common.WoogeenSurfaceRenderer
 
 /**
@@ -24,4 +25,6 @@ interface IClientView : IBaseView{
     fun onOffLoud(isOpenLoud: Boolean)
 
     fun onJoined()
+
+    fun updateRoomBean(room: RoomBean)
 }
