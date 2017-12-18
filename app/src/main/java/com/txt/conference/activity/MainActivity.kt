@@ -34,6 +34,8 @@ import com.common.utlis.DateUtils
 import com.txt.conference.event.MessageEvent
 import com.txt.conference.bean.AttendeeListBean
 import com.txt.conference.http.Urls
+import com.txt.conference.model.InviteEventBean
+import com.txt.conference.model.MutToRoomBean
 import com.txt.conference.utils.CommonUtils
 import com.txt.conference.utils.StatusBarUtil
 import org.greenrobot.eventbus.EventBus
@@ -191,7 +193,19 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
 
     @Subscribe
     fun onEventMainThread(event: MessageEvent) {
+        if(event.eventCode == MessageEvent.ROOMATTACHED){
+            getRoomsPresenter?.getRooms(getToken())
+            var mInviteEventBean=event.getDataObject(InviteEventBean::class.java)
+            CustomDialog.showSelectDialog(MainActivity@this,event.alert,object :CustomDialog.DialogClickListener{
+                override fun confirm() {
+                    joinRoomPresenter?.joinRoom(mInviteEventBean.room, getToken())
+                }
 
+                override fun cancel() {
+                }
+
+            })
+        }
     }
 
 

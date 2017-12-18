@@ -32,32 +32,37 @@ public class MyReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         try {
             Bundle bundle = intent.getExtras();
-            Log.e("fl", "[MyReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
+            Log.e(TAG, "[MyReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
             if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
                 String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
-                Log.e("fl", "[MyReceiver] 接收Registration Id : " + regId);
+                Log.e(TAG, "[MyReceiver] 接收Registration Id : " + regId);
                 //send the Registration Id to your server...
             } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
-                Log.e("fl", "[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
+                Log.e(TAG, "[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
                 JSONObject json = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
                 Log.e("fanglin","eventCode:"+json.toString());
                 MessageEvent event=new MessageEvent();
                 event.setContent(json.toString());
                 EventBus.getDefault().post(event);
-//                processCustomMessage(context, bundle);
             } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
-                Log.e("fl", "[MyReceiver] 接收到推送下来的通知");
+                Log.e(TAG, "[MyReceiver] 接收到推送下来的通知");
                 int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
-                Log.e("fl", "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
+                Log.e(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
+                JSONObject json = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
+                String alert=bundle.getString(JPushInterface.EXTRA_ALERT);
+                MessageEvent event=new MessageEvent();
+                event.setContent(json.toString());
+                event.setAlert(alert);
+                EventBus.getDefault().post(event);
             } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
-                Log.e("fl", "[MyReceiver] 用户点击打开了通知");
+                Log.e(TAG, "[MyReceiver] 用户点击打开了通知");
             } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
-                Log.e("fl", "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
+                Log.e(TAG, "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
                 //在这里根据 JPushInterface.EXTRA_EXTRA 的内容处理代码，比如打开新的Activity， 打开一个网页等..
             } else if(JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction())) {
                 boolean connected = intent.getBooleanExtra(JPushInterface.EXTRA_CONNECTION_CHANGE, false);
             } else {
-                Log.e("fl", "[MyReceiver] Unhandled intent - " + intent.getAction());
+                Log.e(TAG, "[MyReceiver] Unhandled intent - " + intent.getAction());
             }
         } catch (Exception e){
 
@@ -74,13 +79,12 @@ public class MyReceiver extends BroadcastReceiver {
                 sb.append("\nkey:" + key + ", value:" + bundle.getBoolean(key));
             } else if (key.equals(JPushInterface.EXTRA_EXTRA)) {
                 if (TextUtils.isEmpty(bundle.getString(JPushInterface.EXTRA_EXTRA))) {
-                    Log.e("fl", "This message has no Extra data");
+                    Log.e(TAG, "This message has no Extra data");
                     continue;
                 }
-
                 try {
                     JSONObject json = new JSONObject(bundle.getString(JPushInterface.EXTRA_EXTRA));
-                    Log.e("fl","----json:"+json.toString());
+                    Log.e(TAG,"----json:"+json.toString());
                     Iterator<String> it =  json.keys();
 
                     while (it.hasNext()) {
