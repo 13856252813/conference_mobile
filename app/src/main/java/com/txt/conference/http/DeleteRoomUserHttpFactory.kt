@@ -24,7 +24,7 @@ class DeleteRoomUserHttpFactory : HttpStringFactoryBase<CreateConferenceRoomBean
      * 1 token
      */
     override fun CreateUri(vararg args: Any?): String {
-        return String.format(Urls.DELETE_ROOM_USER, URLEncoderUtils.encode(args[0] as String), args[1], args[2])
+        return String.format(Urls.DELETE_ROOM_USER, URLEncoderUtils.encode(args[0] as String), URLEncoderUtils.encode(args[1] as String), args[2])
     }
 
     override fun IfDeleteRequest(): Boolean {

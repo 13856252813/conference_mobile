@@ -707,14 +707,14 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             if (localStream?.disableVideo()!!) {
                 clientModel?.cameraIsOpen = false
                 sendMediaStatus(mRoomBean?.roomId,
-                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
                         ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
             }
         } else {
             if (localStream?.enableVideo()!!) {
                 clientModel?.cameraIsOpen = true
                 sendMediaStatus(mRoomBean?.roomId,
-                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(), VEDIO_MUTE, MUTE_OFF, ACTION_SELF
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_OFF, ACTION_SELF
                         ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
             }
         }
