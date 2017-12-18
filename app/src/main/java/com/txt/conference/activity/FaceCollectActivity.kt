@@ -145,7 +145,6 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 }
                 MSG_CHECK_FACE_OK -> {
                     ULog.i(TAG, "doTakePicture typeNo1")
-                    doTakePicture(1)
                 }
             }
         }
