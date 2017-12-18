@@ -417,19 +417,21 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 //                                    val byteRate = (
 //                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
 //                                    lastSubscribeByteReceived = videoStats.bytesReceived
-                                    ULog.i(TAG, "videoStats.packetsLost:" + videoStats.packetsLost)
-                                    ULog.i(TAG, "videoStats.packetsReceived:" + videoStats.packetsReceived)
-                                    if (videoStats.packetsReceived == 0L){
-                                        return
-                                    }
-                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
-                                    if(packetsLostRate>0.5 || videoStats.currentDelayMs >500){
-                                        Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
-                                                , Toast.LENGTH_SHORT).show()
-                                        localStream?.disableVideo()
-                                        sendMediaStatus(mRoomBean?.roomId,
-                                                TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
-                                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"0")
+//                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
+                                    if (!isSlowNet) {
+                                        if (videoStats.currentDelayMs > 500) {
+                                            mContext.runOnUiThread {
+                                                isSlowNet = true
+                                                Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
+                                                        , Toast.LENGTH_SHORT).show()
+                                                localStream?.disableVideo()
+                                                sendMediaStatus(mRoomBean?.roomId,
+                                                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(),VEDIO_MUTE, MUTE_ON, ACTION_SELF
+                                                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
+                                            }
+                                        }else{
+                                            isSlowNet = false
+                                        }
                                     }
 
                                 }
@@ -626,11 +628,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     }
 
-    fun sendMediaStatus(roomId:String?,account:String?,token:String?,muteDes:String){
+    fun sendMediaStatus(roomId:String?, account:String?, muteType: String, muteDes:String, actionType:String, token:String?){
         var map=HashMap<String,String>()
-        map.put("muteType","videoMute")
-        map.put("muteDes",muteDes)
-        map.put("action","self")
+        map.put("muteType", muteType)
+        map.put("muteDes", muteDes)
+        map.put("action", actionType)
         var controlMediaFactory=ControlMediaFactory(map)
         controlMediaFactory.setHttpEventHandler(object :HttpEventHandler<MediaModel>(){
             override fun HttpSucessHandler(result: MediaModel?) {
@@ -705,15 +707,15 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             if (localStream?.disableVideo()!!) {
                 clientModel?.cameraIsOpen = false
                 sendMediaStatus(mRoomBean?.roomId,
-                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
-                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"0")
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
+                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
             }
         } else {
             if (localStream?.enableVideo()!!) {
                 clientModel?.cameraIsOpen = true
                 sendMediaStatus(mRoomBean?.roomId,
-                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount()
-                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken(),"1")
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(), VEDIO_MUTE, MUTE_OFF, ACTION_SELF
+                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
             }
         }
         clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
@@ -794,5 +796,15 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         val MSG_SUBSCRIBE = 116
         val MSG_UNSUBSCRIBE = 120
         val TAG: String = ClientPresenter::class.java.simpleName
+
+        val VEDIO_MUTE = "videoMute"
+        val VOICE_MUTE = "audioMute"
+
+        val MUTE_ON = "0"
+        val MUTE_OFF = "1"
+
+        val ACTION_SELF = "self"
+        val ACTION_COMP = "compere"
+        val ACTION_NETWORK = "network"
     }
 }
