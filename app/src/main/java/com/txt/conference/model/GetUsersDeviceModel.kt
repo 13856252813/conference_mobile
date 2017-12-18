@@ -57,7 +57,7 @@ class GetUsersDeviceModel : IGetUsersModel {
             invite = inviteUser?.get(i)
             for (j in 0..users!!.size-1) {
                 user = users?.get(j)
-                if (invite?.id.equals(user?.uid)) {
+                if (invite?.id.equals(user?.id)) {
                     user?.invited = true
                     user?.cantchange = true
                     checkinviteUser.add(inviteUser?.get(i)!!)
@@ -74,7 +74,7 @@ class GetUsersDeviceModel : IGetUsersModel {
         var user: AttendeeBean? = null
         for (i in 0..users?.size!!-1) {
             user = users?.get(i)
-            if (user?.uid.equals(uid)) {
+            if (user?.id.equals(uid)) {
                 index = i
                 break
             }

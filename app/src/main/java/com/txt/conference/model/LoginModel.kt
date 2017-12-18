@@ -60,6 +60,14 @@ class LoginModel : ILoginModel {
         mPreference?.setLogin(type)
     }
 
+    fun saveIsCollect(type: Int) {
+        if (mPreference == null) {
+            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
+        }
+        mPreference?.setIsCollect(type)
+    }
+
+
     override fun getAccount(): String {
         if (mPreference == null) {
             mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
@@ -96,6 +104,7 @@ class LoginModel : ILoginModel {
                         saveToken(mLoginBean.token)
                         saveUserName(mLoginBean.username)
                         saveId(mLoginBean.id)
+                        saveIsCollect(mLoginBean.faceiscollected)
                         saveIsLogin("true")
 //                        savePhoneNumber(result?.pho)
                     } else {
@@ -109,9 +118,10 @@ class LoginModel : ILoginModel {
                 override fun HttpFailHandler() {
                     mLoginBean = LoginBean()
                     status = Status.FAILED_UNKNOW
-                    saveUser(null, null)
+                    //saveUser(null, null)
                     saveToken(null)
                     saveId(null)
+                    saveIsLogin("false")
                     loginCallBack.onStatus()
                 }
             })

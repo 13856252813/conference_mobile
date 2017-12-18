@@ -39,8 +39,10 @@
     <string name="create_room">创建会议</string>
     <string name="createing_room">正在创建会议...</string>
     <string name="enter_room">进入会议</string>
+    <string name="createing_room_failed">创建房间失败</string>
     <string name="conference_end">会议已结束</string>
     <string name="entering_room">正在进入会议...</string>
+    <string name="deleteing_room">正在删除会议...</string>
     <string name="enter_room_failed">获取房间token失败，请重试~</string>
     <string name="not_start">未开始</string>
     <string name="add_attendee">添加参会人</string>
@@ -60,6 +62,9 @@
     <string name="permission_camera">是否允许添加摄像头和录音权限？</string>
     <string name="permission_phone_address">是否允许访问手机通讯录？</string>
     <string name="error_unknow">未知异常,请重新连接</string>
+    <string name="error_facelogin_error_retry">登录失败,请重试。</string>
+    <string name="error_unknow_retry">未知异常,请重试。</string>
+    <string name="error_face_collect_retry">验证失败,请重试。</string>
     <string name="error_unknow_getrooms">获取房间信息失败，请重试</string>
     <string name="conference_unknow">会议</string>
     <string name="error_enter_room">加入房间失败，请重试。</string>
@@ -93,9 +98,11 @@
     <string name="item_facesetting_face_smalltext">是否开启使用刷脸方式登录账号？</string>
     <string name="item_facesetting_face_auth_smalltext">通过验证后可开启刷脸登录</string>
     <string name="facesetting_not_confirm_text">未验证</string>
+    <string name="facesetting_already_confirm_text">已验证</string>
     <string name="login_facesetting_firstlogin">请先登录</string>
     <string name="facelogin_dialog_title">尚未开启</string>
     <string name="facelogin_dialog_message">您未开启刷脸登录，现在去设置？</string>
+    <string name="facelogin_should_face_collect_first">尚未刷脸认证，请先确认再开启</string>
     <string name="facelogin_dialog_confirm">去设置</string>
     <string name="facelogin_dialog_cancel">稍后设置</string>
     <string name="about_company_name">甜新科技</string>
@@ -105,4 +112,17 @@
     <string name="about_company_version">版本号</string>
     <string name="about_default_version">1.0</string>
     <string name="network_poor">当前网络不佳，已切为语音模式</string>
+    <string name="metting_end_confirm_title">会议即将结束，是否尝试顺延？</string>
+    <string name="metting_end_confirm_ok">尝试顺延</string>
+    <string name="metting_end_confirm_skip">忽略</string>
+    <string name="metting_extend_failed_title">抱歉，顺延时间冲突</string>
+    <string name="metting_extend_failed_message">您可选择其他时间段进行尝试</string>
+    <string name="metting_extend_failed_retry">重新尝试</string>
+    <string name="metting_extend_10m">10分钟</string>
+    <string name="metting_extend_30m">30分钟</string>
+    <string name="metting_extend_60m">1个小时</string>
+    <string name="metting_extend_success">顺延成功</string>
+    <string name="metting_delete_user_error_unknow">移除参会人失败请重试</string>
+    <string name="metting_room_delete_user">断开连接</string>
+    <string name="metting_room_delete_useruser_message">您已被移出会议室</string>
 </resources>

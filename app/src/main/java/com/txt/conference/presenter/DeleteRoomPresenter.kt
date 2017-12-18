@@ -25,7 +25,7 @@ class DeleteRoomPresenter {
             deleteView?.jumpToLogin()
             return
         }
-        deleteView?.showLoading(R.string.entering_room)
+        deleteView?.showLoading(R.string.deleteing_room)
         deleteModel?.deleteRoom(room, token, object : IBaseModel.IModelCallBack {
             override fun onStatus() {
                 deleteView?.hideLoading()

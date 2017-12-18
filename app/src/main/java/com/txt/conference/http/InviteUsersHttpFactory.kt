@@ -21,6 +21,7 @@ class InviteUsersHttpFactory : HttpStringFactoryBase<InviteUsersBean>() {
     val TAG = InviteUsersHttpFactory::class.java.simpleName
     var token: String? = null
     var attendeeList: List<AttendeeBean>? = null
+    var attendType = 0
 
     override fun AnalysisData(content: String?): InviteUsersBean {
         ULog.d(TAG, "content $content")
@@ -54,15 +55,39 @@ class InviteUsersHttpFactory : HttpStringFactoryBase<InviteUsersBean>() {
 
     override fun getPostArgsJsonStr(): String {
         var jsonObj: JSONObject = JSONObject()
+        var paritinarray = JSONArray()
 
-        var part = JSONArray()
+        /*var part = JSONArray()
         var names = JSONArray()
         for (i in 0..attendeeList?.size!!-1) {
-            part.put(attendeeList?.get(i)?.uid!!)
+            part.put(attendeeList?.get(i)?.id!!)
             names.put(attendeeList?.get(i)?.display!!)
         }
         jsonObj.put("part", part)
-        jsonObj.put("names", names)
+        jsonObj.put("names", names)*/
+
+
+        if (attendeeList != null ) {
+            val num = attendeeList!!.size!!
+            var i = 0
+            while (i < num){
+                var userjsonObj: JSONObject = JSONObject()
+                userjsonObj.put("id", attendeeList!!.get(i).id)
+                userjsonObj.put("name", attendeeList!!.get(i).display)
+                userjsonObj.put("mobile", attendeeList!!.get(i).mobile)
+                userjsonObj.put("email", attendeeList!!.get(i).email)
+                if (attendType == 0) {
+                    userjsonObj.put("group", "account")
+                } else {
+                    userjsonObj.put("group", "device")
+                }
+                paritinarray.put(userjsonObj)
+                //namearray.put(displaylist?.get(i))
+                //pararray.put(namelist?.get(i))
+                i++
+            }
+        }
+        jsonObj.put("part", paritinarray)
         ULog.d(TAG, "getPostArgsJsonStr:" + jsonObj.toString())
         return jsonObj.toString()
     }

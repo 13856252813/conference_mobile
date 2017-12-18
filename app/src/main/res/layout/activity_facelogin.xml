@@ -96,7 +96,7 @@
         android:textColor="@color/orange"
         android:text="@string/account_facelogin_retry"
         android:visibility="invisible"
-        android:background="@drawable/facelogin_corners"/>
+        android:background="@drawable/facelogin_retry_corners"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

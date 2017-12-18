@@ -10,6 +10,7 @@ import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceUserAdapter
 import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.AttendeeListBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.GetUserDevicePresenter
@@ -65,7 +66,7 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
         var i = 0
 
         while (i < conference?.size!!){
-            if (!(conference.get(i).uid.equals(getUserUid()))) {
+            if (!(conference.get(i).id.equals(getUserUid()))) {
                 conflist.add(conference?.get(i))
             }
             i++
@@ -75,7 +76,7 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
             bool_array[j] = false
             if (room != null) {
                 for (k in room?.participants!!.indices) {
-                    if (room?.participants!!.get(k).id!!.equals(conflist.get(j).uid)) {
+                    if (room?.participants!!.get(k).id!!.equals(conflist.get(j).id)) {
                         bool_array[j] = true
                         break
                     }
@@ -128,18 +129,11 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
             this.setResult(resultCode, mIntent)
         }
 
+        var attendlist: AttendeeListBean? = AttendeeListBean()
+        attendlist!!.datalist = listadapter?.getCheckedList()!!
 
-        var checkedlist: ArrayList<AttendeeBean> = listadapter?.getCheckedList()!!
+        mIntent.putExtra(CreateConferenceRoomActivity.KEY_ATTANDDEVICELIST, attendlist)
 
-        var i : Int = 0
-        while ( i < checkedlist.size){
-            nameattandlist?.add(checkedlist[i].uid!!)
-            displayattandlist?.add(checkedlist[i].display!!)
-            i++
-        }
-
-        mIntent.putStringArrayListExtra("nameattandList", nameattandlist);
-        mIntent.putStringArrayListExtra("displayattandList",displayattandlist);
         this.setResult(resultCode, mIntent)
 
         this.finish()
@@ -171,7 +165,7 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
 
             if (room != null) {
                 for (k in room?.participants!!.indices) {
-                    if (room?.participants!!.get(k).id!!.equals(listadapter!!.list?.get(i)?.uid)) {
+                    if (room?.participants!!.get(k).id!!.equals(listadapter!!.list?.get(i)?.id)) {
                         return@setOnItemClickListener
                     }
                 }

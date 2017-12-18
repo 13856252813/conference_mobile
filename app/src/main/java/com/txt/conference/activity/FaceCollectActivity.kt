@@ -2,7 +2,7 @@ package com.txt.conference.activity
 
 import android.content.Intent
 import android.hardware.Camera
-import android.os.Bundle
+import android.os.*
 import android.view.View
 import android.view.animation.Animation
 import com.txt.conference.R
@@ -21,22 +21,35 @@ import com.reconova.processor.RecoAliveProcessor
 import android.widget.Toast
 import com.reconova.processor.AliveParamConsts
 import com.reconova.utils.FileTool
-import android.os.AsyncTask
-import android.os.SystemClock
 import com.reconova.data.DataWrapper
 import com.reconova.faceid.processor.ProcessorManager
+import com.txt.conference.application.TxApplication
 import com.txt.conference.presenter.FaceAuthPresenter
-import com.txt.conference.presenter.FaceLoginPresenter
 import com.txt.conference.view.IFaceAuthView
 import kotlinx.android.synthetic.main.activity_facecollect.*
+import java.io.File
 
 
 /**
  * Created by pc on 2017/11/28.
  */
-class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener, Camera.PreviewCallback {
-    override fun checkFinished() {
-        finish()
+class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener, SFHCameraCallback.ITakePicture, Camera.PreviewCallback {
+
+    override fun pictureFinished() {
+        AliveCheckOK(1)
+    }
+
+    override fun checkOK() {
+        face_bt_retry.visibility = View.INVISIBLE
+        state_textview_small.text = getString(R.string.account_face_ok)
+        saveIsCollect(1)
+        handler.sendEmptyMessage(MSG_CHECK_FACE_OK)
+
+    }
+
+    override fun checkFailed() {
+        face_bt_retry.visibility = View.VISIBLE
+        state_textview_small.text = getString(R.string.account_face_failed)
     }
 
     override fun showError(error: String) {
@@ -56,7 +69,20 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     }
 
-    private fun initStartAnimation(){
+
+    override fun showToast(msgRes: Int) {
+        super.showToast(msgRes)
+        state_textview_big.visibility = View.VISIBLE
+        face_bt_retry.visibility = View.VISIBLE
+    }
+
+    override fun showToast(msg: String) {
+        super.showToast(msg)
+        state_textview_big.visibility = View.VISIBLE
+        face_bt_retry.visibility = View.VISIBLE
+    }
+
+    fun initStartAnimation(){
         face_auto_circle_small.startAnimation(animation_clockwise)
         face_auto_circle_big.startAnimation(animation_anticlockwise)
     }
@@ -70,6 +96,10 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         stopAnimation()
     }
 
+    fun saveIsCollect(type: Int) {
+        TxSharedPreferencesFactory(this)?.setIsCollect(type)
+    }
+
     val TAG = "FaceCollectActivity"
 
     var animation_clockwise: Animation? = null
@@ -77,7 +107,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     var mCameraSurfaceView: SurfaceView? = null    // 用来显示摄像头视频。
     var mCameraDrawFrameLayout: FrameLayout? = null // 上述两个View的父布局。
-    val mPreference: TxSharedPreferencesFactory? = null
+    //val mPreference: TxSharedPreferencesFactory? = null
 
     var mCameraControlCallback: SFHCameraCallback? = null    // 用来控制摄像头的 打开、预览、关闭及视频帧的回调。
     var mImageHolder: ImageHolder? = null    // 视频帧的数据。
@@ -103,14 +133,21 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
     var mInitNativeLibTask: InitNativeLibTask? = null
 
     var mFaceAuthPresenter: FaceAuthPresenter? = null
+    val MSG_DOTAKE_PICTURE = 10
+    val MSG_CHECK_FACE_OK = 11
 
-    var runnable: Runnable = object : Runnable {
-        override fun run() {
-
-            if (startCheck()) {
-
+    var handler = object : Handler(){
+        override fun handleMessage(msg: Message?) {
+            when (msg?.what) {
+                MSG_DOTAKE_PICTURE -> {
+                    ULog.i(TAG, "doTakePicture typeNo1")
+                    doTakePicture(1)
+                }
+                MSG_CHECK_FACE_OK -> {
+                    ULog.i(TAG, "doTakePicture typeNo1")
+                    doTakePicture(1)
+                }
             }
-            //handler.postDelayed(this, 3000)
         }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,6 +170,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         //var handler = Handler()
         //handler.postDelayed(runnable, 3000)
         state_textview_small.setText(R.string.account_face_box)
+        deleteLastPhoto()
     }
 
     fun noNeedToProcessImage(): Boolean {
@@ -175,6 +213,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 this, this)
         mCameraControlCallback?.setAdjustView(mCameraDrawFrameLayout)
         mCameraControlCallback?.setAdjustType(SFHCameraCallback.ADJUST_VIEW_HEIGHT)
+        mCameraControlCallback?.setTakePictureListener(this)
 
     }
 
@@ -184,9 +223,9 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     fun AuthCheck() {
         if (mFaceAuthPresenter == null){
-            mFaceAuthPresenter = FaceAuthPresenter(this)
+            mFaceAuthPresenter = FaceAuthPresenter(this,this)
         }
-        mFaceAuthPresenter?.doAuthCheck(getToken()!!, FileUtil.picFullPathFileName)
+        mFaceAuthPresenter?.doAuthCheck(getToken()!!, FileUtil.picFullPathFaceFileName)
     }
 
     fun startCheck(): Boolean {
@@ -195,7 +234,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
             return false
         }
         mCameraControlCallback?.doTakePicture()
-        if (CheckFaceUtil.getInstance().isFaceFile(FileUtil.picFullPathFileName)) {
+        if (CheckFaceUtil.getInstance().isFaceFile(FileUtil.picFullPathFaceFileName)) {
             takedPicture = true
             try {
                 Thread.sleep(2000)
@@ -226,10 +265,18 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         finish()
     }
 
+    fun retryCollect() {
+        deleteLastPhoto()
+        face_bt_retry.visibility = View.INVISIBLE
+        state_textview_small.text = getString(R.string.account_face_box)
+        StartCheckLive(HEADS)
+    }
+
     override fun onClick(p0: View?) {
         when (p0!!.id){
             R.id.face_bt_retry -> {
                 //onBackPressed()
+                retryCollect()
             }
             R.id.left_backup-> {
                 onBackPressed()
@@ -243,11 +290,16 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         when (type) {
             HEADS -> {
                 //mNoticeTextView.setText(getString(R.string.shake_head))
-                runOnUiThread { state_textview_small.setText(R.string.account_face_left_right) }
+                runOnUiThread { state_textview_small.setText(R.string.account_face_left_right)
+
+                }
                 mAliveType = RecoAliveProcessor.ALIVE_TYPE_HEAD_SHAKING
             }
             EYES -> {
-                runOnUiThread { state_textview_small.setText(R.string.account_face_eye) }
+                runOnUiThread {
+                    //doTakePicture(type)
+                    state_textview_small.setText(R.string.account_face_eye)
+                }
                 //mNoticeTextView.setText(getString(R.string.bling_eye))
                 mAliveType = RecoAliveProcessor.ALIVE_TYPE_EYE_BLINK
             }
@@ -275,14 +327,35 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     }
 
-    fun doTakePicture(picNo: Int) {
+    fun deleteLastPhoto(){
+        var file = File(FileUtil.picFullPathFaceFileName)
+        if (file.exists()){
+            file.delete()
+        }
+    }
 
+    fun doTakePicture(picNo: Int) {
+        ULog.i(TAG, "doTakePicture typeNo2")
         mCameraControlCallback?.doTakePicture(picNo)
 
     }
 
     fun AliveCheckOK(picNo: Int) {
-        doTakePicture(picNo)
+        //doTakePicture(picNo)
+
+        try {
+            Thread.sleep(2000)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+        if (CheckFaceUtil.getInstance().isFaceFile(FileUtil.picFullPathFaceFileName)) {
+            AuthCheck()
+
+        } else {
+            takedPicture = false
+
+        }
 
     }
 
@@ -323,12 +396,15 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 					when(currentCheckType){
                         HEADS -> {
                             currentCheckType++
+
+                            //runOnUiThread { doTakePicture(HEADS) }
                             StartCheckLive(currentCheckType)
                         }
                         EYES -> {
                             currentCheckType++
                             runOnUiThread { state_textview_small.setText(R.string.account_face_confirming) }
-                            AliveCheckOK(currentCheckType)
+                            handler.sendEmptyMessage(MSG_DOTAKE_PICTURE)
+                            //AliveCheckOK(currentCheckType)
                         }
 					}
 				} else {

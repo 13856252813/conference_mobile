@@ -21,9 +21,6 @@ import com.txt.conference.R
 import com.txt.conference.adapter.AttendeeAdapter
 import com.txt.conference.adapter.InviteAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
-import com.txt.conference.bean.AttendeeBean
-import com.txt.conference.bean.ParticipantBean
-import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference_common.WoogeenSurfaceRenderer
 import kotlinx.android.synthetic.main.activity_room.*
@@ -39,17 +36,17 @@ import android.util.Log
 import com.common.utlis.DateUtils
 import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.adapter.AddTypeAdapter
-import com.txt.conference.bean.AddTypeBean
+import com.txt.conference.bean.*
 import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
 import com.txt.conference.model.MutToRoomBean
 import com.txt.conference.presenter.*
-import com.txt.conference.utils.CommonUtils
-import com.txt.conference.utils.Constants
-import com.txt.conference.utils.StatusBarUtil
-import com.txt.conference.utils.ToastUtils
+import com.txt.conference.utils.*
+import kotlinx.android.synthetic.main.item_attendee.*
+
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
+import kotlinx.android.synthetic.main.item_attendee.*
 import kotlinx.android.synthetic.main.layout_add_attendee_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -58,7 +55,28 @@ import org.greenrobot.eventbus.Subscribe
 /**
  * Created by jane on 2017/10/15.
  */
-class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
+class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExtendView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
+
+    override fun updateRoomBean(roomBean: RoomBean) {
+        room = roomBean
+    }
+
+    override fun extendFailed() {
+        showExtendFailedDialog()
+    }
+
+    override fun extendFinished(roomBean: RoomBean) {
+        room = roomBean
+        runOnUiThread {
+            roomPresenter?.cancelCountDown()
+            roomPresenter?.initRoomInfo(room!!)
+
+            showExtendConfirm = false
+        }
+
+    }
+
+
     override fun onJoined() {
         headsetType = isWiredHeadsetOn()//DeviceUtils.isHeadsetExists()
         ULog.i(TAG, "headsetType:" + headsetType)
@@ -99,6 +117,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     lateinit var getUserDevicePresenter: GetUserDevicePresenter
     lateinit var inviteUsersPresenter: InviteUsersPresenter
     lateinit var addTypePresenter: AddTypePresenter
+    lateinit var roomExtendPresenter: RoomExtendPresenter  
     var room: RoomBean? = null
     var attendeeAdapter: AttendeeAdapter? = null
     var inviteAdapter: InviteAdapter? = null
@@ -107,9 +126,16 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     var headsetType = false
 
     var mContext:Context? = null
+    var attendType = 0
+    var showExtendConfirm = false
+    var deleteUserId = ""
+
     companion object {
         var KEY_ROOM = "room"
         var KEY_CONNECT_TOKEN = "connect_token"
+        var MIN_10 = 10
+        var MIN_30 = 30
+        var MIN_60 = 60
     }
 
 
@@ -170,6 +196,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         initViewEvent()
         roomPresenter = RoomPresenter(this)
         roomPresenter.initRoomInfo(room!!)
+        roomPresenter?.InitModel()
         clientPresenter = ClientPresenter(this, this, room)
         getUsersPresenter = GetUsersPresenter(this)
         getUserDevicePresenter = GetUserDevicePresenter(this)
@@ -178,6 +205,9 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         methodRequiresTwoPermission()
 
         EventBus.getDefault().register(this)
+        roomExtendPresenter = RoomExtendPresenter(this)
+	    showExtendConfirm = false
+	    //showExtendConfirm()
     }
 
     override fun onResume() {
@@ -209,6 +239,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
 
     @Subscribe
     fun onEventMainThread(event: MessageEvent) {
+        ULog.d(TAG, "onEventMainThread")
         if(event.eventCode == MessageEvent.MUTETOUSERS){
             var mMutRoomBean=event.getDataObject(MutToRoomBean::class.java)
             var list=mMutRoomBean.room.participants
@@ -217,6 +248,30 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                     ToastUtils.topShow("${bean.name}摄像头被关闭")
                 }
             }
+        } else if(event.eventCode == MessageEvent.MUTEUSER){
+            var mMutRoomBean=event.getDataObject(CreateConferenceRoomBean::class.java)
+            var list=mMutRoomBean.data!!.participants
+            for (bean in list!!){
+                if(bean.id == getCurrentUid()){
+                    if (bean.audioMute == 0){
+                        ToastUtils.topShow("${bean.name}audioMute 0")
+                    } else {
+                        ToastUtils.topShow("${bean.name}audioMute 1")
+                    }
+                    if (bean.videoMute == 0){
+                        ToastUtils.topShow("${bean.name}videoMute 0")
+                    } else {
+                        ToastUtils.topShow("${bean.name}videoMute 1")
+                    }
+                    ToastUtils.topShow("${bean.name}摄像头被关闭")
+                }
+            }
+        } else if(event.eventCode == MessageEvent.DELETEROOMUSER){
+            var mDeleteRoomBean=event.getDataObject(DeleteRoomUserBean::class.java)
+            if (mDeleteRoomBean.deleteuid.equals(getCurrentUid())){
+                clientPresenter?.finishMeet()
+            }
+            ToastUtils.topShow(getString(R.string.metting_room_delete_useruser_message))
         }
     }
 
@@ -241,8 +296,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun setAttendeeNumber(number: Int) {
         ULog.d(TAG, "setAttendeeNumber $number")
         if (mClickedItem == 0) {
+            attendType = MainActivity.ATTEND_TYPE_ACCOUNT
             room_add_attendee_tv_number.text = (getUsersPresenter?.getInvitedUserSize() + number).toString()
         } else if (mClickedItem == 1) {
+            attendType = MainActivity.ATTEND_TYPE_DEVICE
             room_add_attendee_tv_number.text = (getUserDevicePresenter?.getInvitedUserSize() + number).toString()
         }
     }
@@ -297,6 +354,47 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
         if (isMicrophoneMute) room_iv_mute.setImageResource(R.mipmap.muted) else room_iv_mute.setImageResource(R.mipmap.mute)
     }
 
+    fun GetMuteVideoType(uid: String): Int?{
+        for (i in 0..room!!.participants!!.size - 1) {
+            if (room!!.participants!![i].id!!.equals(uid)){
+                return room!!.participants!![i].videoMute
+            }
+        }
+        return 0
+    }
+
+    fun GetMuteVoiceType(uid: String): Int?{
+        for (i in 0..room!!.participants!!.size - 1) {
+            if (room!!.participants!![i].id!!.equals(uid)){
+                return room!!.participants!![i].audioMute
+            }
+        }
+        return 0
+    }
+
+    fun CompchangedVideo(uid: String){
+        var muteType = GetMuteVideoType(uid)
+        ULog.i(TAG, "muteType:" + muteType )
+        if (muteType == 0){
+            muteType = 1
+        } else {
+            muteType = 0
+        }
+        clientPresenter?.sendMediaStatus(getRoomId(), uid, ClientPresenter.VEDIO_MUTE, muteType.toString(), ClientPresenter.ACTION_COMP
+                , getToken())
+    }
+
+    fun CompchangedVoice(uid: String){
+        var muteType = GetMuteVoiceType(uid)
+        if (muteType == 0){
+            muteType = 1
+        } else {
+            muteType = 0
+        }
+        clientPresenter?.sendMediaStatus(getRoomId(), uid, ClientPresenter.VOICE_MUTE, muteType.toString(), ClientPresenter.ACTION_COMP
+                , getToken())
+    }
+
     override fun updateUsers(users: List<AttendeeBean>) {
         runOnUiThread {
             if (attendeeAdapter == null) {
@@ -305,6 +403,25 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                 attendeeAdapter?.creatorName = room?.creator?.display
                 initRecyclerView()
                 room_attendee_recyclerView.adapter = attendeeAdapter
+
+                attendeeAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
+                    var userBean = adapter?.data?.get(position) as AttendeeBean
+                    deleteUserId = userBean.id!!
+                    when(view?.id) {
+                        item_attendee_iv_vedio.id -> {
+                            ULog.d(TAG, "onItemChildClick $position vedio:" + userBean.id)
+                            CompchangedVideo(deleteUserId)
+                        }
+                        item_attendee_iv_sound.id -> {
+                            ULog.d(TAG, "onItemChildClick $position sound:" + userBean.id)
+                            CompchangedVoice(deleteUserId)
+                        }
+                        item_attendee_iv_more.id -> {
+                            ULog.d(TAG, "onItemChildClick $position more:" + userBean.id)
+                            showDeleteUserDialog()
+                        }
+                    }
+                }
             } else {
                 attendeeAdapter?.setNewData(users)
             }
@@ -358,6 +475,96 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     override fun end() {
         showToast(R.string.conference_end)
         clientPresenter?.finishMeet()
+    }
+
+    fun StartDeleteUser(strId: String ){
+        //deleteRoomUserPresenter.deleteRoomUser(room!!, )
+        roomPresenter?.deleteRoomUser(room!!, strId, getToken())
+    }
+
+
+    fun showDeleteUserDialog(){
+        val builder = CustomDeleteUserDialog.Builder(this)
+        builder.setDeleteUserButton(){
+            dialog, _ -> dialog.dismiss()
+            StartDeleteUser(deleteUserId)
+        }
+        builder.setCancelButton(){
+            dialog, which -> dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    fun startExtend(min: Int){
+        roomExtendPresenter?.roomExtend(min, room!!, getToken())
+    }
+
+    fun showChoosExtendTimeDialog(){
+        val builder = CustomExtendDialog.Builder(this)
+        builder.set10mButton{
+            dialog, _ -> dialog.dismiss()
+            startExtend(MIN_10)
+        }
+        builder.set30mButton{
+            dialog, _ -> dialog.dismiss()
+            startExtend(MIN_30)
+        }
+        builder.set1HButton{
+            dialog, _ -> dialog.dismiss()
+            startExtend(MIN_60)
+        }
+        builder.setCancelButton(){
+            dialog, which -> dialog.dismiss()
+        }
+        builder.create().show()
+    }
+
+    fun showExtendFailedDialog(){
+
+        CustomDialog.showCommonDialog(this,
+                resources.getString(R.string.metting_extend_failed_title),
+                resources.getString(R.string.metting_extend_failed_message),
+                resources.getString(R.string.metting_extend_failed_retry),
+                resources.getString(R.string.metting_end_confirm_skip),
+                object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                    override fun confirm() {
+                        //jumpFaceLogin()
+                        showChoosExtendTimeDialog()
+                    }
+
+                    override fun cancel() {
+
+                    }
+
+                }
+        )
+    }
+    override fun showExtendConfirm() {
+        if (showExtendConfirm){
+            return
+        }
+        var uid = TxSharedPreferencesFactory(applicationContext).getId()
+        if (!(room!!.creator!!.uid!!.equals(uid))){
+            return
+        }
+        showExtendConfirm = true
+        CustomDialog.showCommonDialog(this,
+                resources.getString(R.string.metting_end_confirm_title),
+                "",
+                resources.getString(R.string.metting_end_confirm_ok),
+                resources.getString(R.string.metting_end_confirm_skip),
+                object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                    override fun confirm() {
+                        //jumpFaceLogin()
+                        showChoosExtendTimeDialog()
+                    }
+
+                    override fun cancel() {
+
+                    }
+
+                }
+        )
     }
     //for roomPresenter end
 
@@ -422,7 +629,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
     fun startSendSms(){
         ULog.i(TAG, "startSendSms" )
         var date= DateUtils()
-        ULog.i(TAG, "startSendSms" )
         var smsToUri = Uri.parse("smsto:")
         var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
         var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
@@ -479,7 +685,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IClientVie
                         return
                     }
                     inviteBean.invited = !inviteBean.invited
-                    inviteUsersPresenter?.changeInviteList(inviteBean)
+                    inviteUsersPresenter?.changeInviteList(attendType, inviteBean)
                     adapter?.notifyItemChanged(position)
                     startHideAllViewDelayed()
                 }

@@ -19,26 +19,24 @@ class ClientModel : IClientModel {
         var nUsers = ArrayList<AttendeeBean>()
         var user: User
         var attendee: AttendeeBean
-
+        var muteVideo = 0
+        var muteAudio = 0
         var display: String
         for (i in 0..users.size - 1) {
             user = users.get(i)
             display = user.name
 
             if (room != null ) {
-                ULog.i("test", "user display:" + display)
-                ULog.i("test", "uid:" + room.creator!!.uid)
-                ULog.i("test", "display:" + room.creator!!.display)
                 if (display.endsWith(room.creator!!.uid!!)){
                     display = room.creator!!.display!!
                 } else {
 
                     if (room.participants?.size!! > 0) {
                         for (j in 0..room.participants?.size!! - 1) {
-                            ULog.i("test", "participants uid:" + room.participants?.get(j)!!.id)
-                            ULog.i("test", "participants name:" + room.participants?.get(j)!!.name)
                             if (display.endsWith(room.participants?.get(j)!!.id!!)) {
                                 display = room.participants?.get(j)!!.name!!
+                                muteVideo = room.participants?.get(j)!!.videoMute
+                                muteAudio = room.participants?.get(j)!!.audioMute
                             }
                         }
                     }
@@ -47,8 +45,10 @@ class ClientModel : IClientModel {
 
             attendee = AttendeeBean()
             attendee.display = display
+            attendee.id = user.name
             attendee.role = user.role
-
+            attendee.audioMute = muteAudio.toString()
+            attendee.videoMute = muteVideo.toString()
             nUsers.add(attendee)
         }
         return nUsers as List<AttendeeBean>
