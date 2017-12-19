@@ -27,9 +27,16 @@ class AttendeeAdapter(layoutResId: Int, data: List<AttendeeBean>?) : BaseQuickAd
             helper?.setTextColor(R.id.item_attendee_name, mContext.resources.getColor(R.color.white))
         }
 
-        //if (item?.audioMute.equals("0")){
-        //    helper?.setImageResource(R.id.item_attendee_iv_vedio, R.mipmap.atte)
-        //}
+        if (item?.videoMute.equals("0")){
+            helper?.setImageResource(R.id.item_attendee_iv_vedio, R.mipmap.addtend_vedio)
+        } else {
+            helper?.setImageResource(R.id.item_attendee_iv_vedio, R.mipmap.addtend_vedio_push)
+        }
+        if (item?.audioMute.equals("0")){
+            helper?.setImageResource(R.id.item_attendee_iv_sound, R.mipmap.addtend_voice)
+        } else {
+            helper?.setImageResource(R.id.item_attendee_iv_sound, R.mipmap.addtend_voice_push)
+        }
         helper?.addOnClickListener(R.id.item_attendee_iv_vedio)
         helper?.addOnClickListener(R.id.item_attendee_iv_sound)
         helper?.addOnClickListener(R.id.item_attendee_iv_more)
