@@ -21,12 +21,22 @@ public class MessageEvent {
 
     private String content;
 
+    private String alert;
+
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getAlert() {
+        return alert;
+    }
+
+    public void setAlert(String alert) {
+        this.alert = alert;
     }
 
     /**

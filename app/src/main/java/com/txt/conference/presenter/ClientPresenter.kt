@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
@@ -42,6 +41,7 @@ import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -64,6 +64,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     private var currentRemoteStream: RemoteStream? = null
     private var currentRemoteScreenStream:RemoteStream?=null
     private val subscribedStreams = ArrayList<RemoteStream>()
+    private val remoteMixArr = ArrayList<RemoteMixedStream>()
 
 
     private var sslContext: SSLContext? = null
@@ -163,7 +164,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         connectionOptions.sslContext = sslContext
         connectionOptions.hostnameVerifier = hostnameVerifier
         ULog.d(TAG, "use $token to join room" )
-        mRoom!!.join(token, connectionOptions, object : ActionCallback<User> {
+        mRoom?.join(token, connectionOptions, object : ActionCallback<User> {
 
             override fun onSuccess(p0: User?) {
                 mContext?.runOnUiThread {
@@ -193,7 +194,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             override fun onFailure(p0: WoogeenException?) {
                 mContext?.runOnUiThread {
                     Toast.makeText(mContext,
-                            "onFailure " + p0!!.message, Toast.LENGTH_SHORT).show()
+                            "onFailure " + p0?.message, Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -236,8 +237,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
 
     override fun onStreamAdded(remoteStream: RemoteStream?) {
-        ULog.d(TAG, "onStreamAdded: streamId = " + remoteStream?.getId()
-                + ", from " + remoteStream?.remoteUserId);
+        ULog.d(TAG, "onStreamAdded: streamId = " + remoteStream?.id
+                + ", from " + remoteStream?.remoteUserId)
         if (localStream != null && remoteStream?.id == localStream!!.id) {
             return
         }
@@ -245,14 +246,17 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         if (screenStream != null && remoteStream?.id == screenStream!!.id) {
             return
         }
-
         //We only subscribe the "common" mix stream and screen stream by default
-        if (remoteStream is RemoteMixedStream && remoteStream.viewport == "common") {
+        if (remoteStream is RemoteMixedStream ) {
 //            showResolutionSelect()
-            val msg = Message()
-            msg.what = MSG_SUBSCRIBE
-            msg.obj = remoteStream
-            roomHandler?.sendMessage(msg)
+            if(remoteStream.viewport == "common"){
+                val msg = Message()
+                msg.what = MSG_SUBSCRIBE
+                msg.obj = remoteStream
+                roomHandler?.sendMessage(msg)
+            }else{
+                remoteMixArr.add(remoteStream)
+            }
         } else if (remoteStream is RemoteScreenStream) {
             val msg = Message()
             msg.what = MSG_SUBSCRIBE
@@ -411,16 +415,16 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                         override fun onSuccess(result: ConnectionStats?) {
                             var trackStatsList =
                                     result?.mediaTracksStatsList
-                            for (trackStats in trackStatsList!!){
-                                if(trackStats is ConnectionStats.VideoReceiverMediaTrackStats){
+                            for (trackStats in trackStatsList!!) {
+                                if (trackStats is ConnectionStats.VideoReceiverMediaTrackStats) {
                                     var videoStats = trackStats
 //                                    val byteRate = (
 //                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
 //                                    lastSubscribeByteReceived = videoStats.bytesReceived
 //                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
-                                    if (!isSlowNet) {
-                                        if (videoStats.currentDelayMs > 500) {
-                                            mContext.runOnUiThread {
+                                    if (videoStats.currentDelayMs > 500) {
+                                        mContext.runOnUiThread {
+                                            if (!isSlowNet) {
                                                 isSlowNet = true
                                                 Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
                                                         , Toast.LENGTH_SHORT).show()
@@ -429,9 +433,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                                         TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(),VEDIO_MUTE, MUTE_ON, ACTION_SELF
                                                         ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
                                             }
-                                        }else{
-                                            isSlowNet = false
                                         }
+                                    } else {
+                                        isSlowNet = false
                                     }
 
                                 }
@@ -545,6 +549,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                 override fun onSuccess(result: Void?) {
                                     mContext?.runOnUiThread {
                                         clientView?.hideLoading()
+                                        mixStream()
                                     }
                                 }
 
@@ -570,7 +575,22 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     }
 
                 }
+                MIX_STREAM->{
+                    if(localStream!=null){
+                        mRoom?.mix(localStream,remoteMixArr,object :ActionCallback<Void>{
+                            override fun onSuccess(p0: Void?) {
+                                ULog.d(TAG, "mix onSuccess")
 
+                            }
+                            override fun onFailure(p0: WoogeenException?) {
+                                ULog.e(TAG, "mix onFailure")
+
+                            }
+
+                        })
+                    }
+
+                }
                 MSG_UNPUBLISH -> {
                     if (localStream != null) {
                         mRoom?.unpublish(localStream, object : ActionCallback<Void> {
@@ -694,6 +714,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     private fun publish() {
         roomHandler?.sendEmptyMessage(MSG_PUBLISH)
     }
+    private fun mixStream() {
+        roomHandler?.sendEmptyMessage(MIX_STREAM)
+    }
 
     private fun leave() {
         roomHandler?.sendEmptyMessage(MSG_ROOM_DISCONNECTED)
@@ -797,6 +820,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         val MSG_PUBLISH = 113
         val MSG_SUBSCRIBE = 116
         val MSG_UNSUBSCRIBE = 120
+        val MIX_STREAM = 126
         val TAG: String = ClientPresenter::class.java.simpleName
 
         val VEDIO_MUTE = "videoMute"
