@@ -170,7 +170,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
                         room_iv_loud.isEnabled=true;
-                        //Toast.makeText(context, "headset not connected", Toast.LENGTH_LONG).show()
                         if (clientPresenter!!.getIsSpeakerLoad()){
 
                         } else {
@@ -178,8 +177,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                         }
 
                     } else if (intent.getIntExtra("state", 0) == 1) {
-                        //Toast.makeText(context, "headset connected", Toast.LENGTH_LONG).show()
-                        room_iv_loud.isEnabled=false;
+                        room_iv_loud.isEnabled=false
                         if (clientPresenter!!.getIsSpeakerLoad()){
                             clientPresenter?.onOffLoud()
                         }
@@ -273,21 +271,15 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 }
             }
         } else if(event.eventCode == MessageEvent.MUTEUSER){
-            var mMutRoomBean=event.getDataObject(CreateConferenceRoomBean::class.java)
-            var list=mMutRoomBean.data!!.participants
+            var roomBean=event.getRoomBean(RoomBean::class.java)
+            var list=roomBean.participants
             for (bean in list!!){
-                if(bean.id == getCurrentUid()){
-                    if (bean.audioMute == 0){
-                        ToastUtils.topShow("${bean.name}audioMute 0")
-                    } else {
-                        ToastUtils.topShow("${bean.name}audioMute 1")
+                if(bean.id==getId()){
+                    if(bean.videoMute==1){
+                        ToastUtils.topShow("你的摄像头被管理员关闭")
+                    }else{
+                        ToastUtils.topShow("你的摄像头被管理员打开")
                     }
-                    if (bean.videoMute == 0){
-                        ToastUtils.topShow("${bean.name}videoMute 0")
-                    } else {
-                        ToastUtils.topShow("${bean.name}videoMute 1")
-                    }
-                    ToastUtils.topShow("${bean.name}摄像头被关闭")
                 }
             }
         } else if(event.eventCode == MessageEvent.DELETEROOMUSER){
@@ -601,6 +593,11 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     override fun getUid(): String? {
         return room?.creator?.uid
     }
+
+    fun getId(): String?{
+        return TxSharedPreferencesFactory(applicationContext).getId()
+    }
+
 
     override fun jumpActivity() {
 

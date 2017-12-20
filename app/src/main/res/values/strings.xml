@@ -28,6 +28,7 @@
     <string name="logoff">退出登录</string>
     <string name="roomno_empty">房间号没有输入</string>
     <string name="conference_tilte">会议主题</string>
+    <string name="hint_conference_tilte">请输入会议主题</string>
     <string name="conference_input">请填写</string>
     <string name="conference_add_device">会议室设备</string>
     <string name="conference_starttime">开始时间</string>

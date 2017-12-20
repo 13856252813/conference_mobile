@@ -64,18 +64,6 @@
             android:src="@mipmap/small_circle" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/state_textview_big"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/face_bt_retry"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="120dp"
-        android:gravity="center"
-        android:text="@string/account_face_failed"
-        android:textColor="@color/orange"
-        android:textSize="17sp"
-        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/state_textview_small"
@@ -83,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/face_bt_retry"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="50dp"
         android:gravity="center"
         android:text="@string/account_face_box"
         android:textColor="@color/deep_gray"
@@ -93,8 +81,10 @@
         android:id="@+id/face_bt_retry"
         android:layout_width="100dp"
         android:layout_height="43.5dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="70dp"
         android:textSize="14sp"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/orange"
         android:text="@string/account_face_retry"
         android:background="@drawable/facelogin_retry_corners"

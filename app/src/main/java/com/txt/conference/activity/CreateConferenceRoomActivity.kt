@@ -3,6 +3,7 @@ package com.txt.conference.activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ListView
@@ -35,14 +36,11 @@ import java.util.*
 /**
  * Created by pc on 2017/10/13.
  */
-
-
 class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,*/ DateTimePickDialogUtil.ITimePickDialogClick, CostTimePickDialogUtil.ICostTimePickDialogClick, ICreateConferenceView, BaseActivity() {
     override fun jumpToLogin() {
         startActivity(Intent(this, LoginActivity::class.java))
         this.finish()
     }
-
 
     private var mDateDialog:DialogWheelYearMonthDay?=null
 
@@ -96,9 +94,6 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     //var mPresenter: CreateConferencePresenter()
     var mPresenter: CreateConferencePresenter? = null
     var mCreateRoomPresenter: CreateConferenceRoomPresenter? = null
-    //var listview: ListView? = null
-    //var listadapter: CreateRoomListAdapter? = null
-    //var getuserPresenter: GetUsersPresenter? = null
     var userNum: String? = null
 
     //var mAttandList: Array<AttendeeBean>? = null
@@ -188,8 +183,6 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
                 userjsonObj.put("email", manattendlist?.datalist!!.get(i).email)
                 userjsonObj.put("group", "account")
                 paritinarray.put(userjsonObj)
-                //namearray.put(displaylist?.get(i))
-                //pararray.put(namelist?.get(i))
                 i++
             }
         }
@@ -210,9 +203,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
                 i++
             }
         }
-
         jsonObj.put("participants", paritinarray)
-
         return jsonObj?.toString()
     }
 
@@ -221,18 +212,16 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         //var titlebar_title: TextView = this.findViewById<TextView>(R.id.title)
         var btn_create: Button = this.findViewById<Button>(R.id.bt_createroom)
         mDateDialog=DialogWheelYearMonthDay(this@CreateConferenceRoomActivity)
-        mDateDialog?.sureView?.setOnClickListener(object:View.OnClickListener{
-            override fun onClick(v: View?) {
-               var time=mDateDialog?.selectorYear.toString()+"-"+mDateDialog?.selectorMonth+"-"+mDateDialog?.selectorDay+
-                       " "+mDateDialog?.selectorHour+":"+mDateDialog?.selectorMinute
-                textinfo_create_conference_starttime.text = time
-                mDateDialog?.dismiss()
-            }
-
-        })
+        mDateDialog?.sureView?.setOnClickListener {
+            var time=mDateDialog?.selectorYear.toString()+"-"+mDateDialog?.selectorMonth+"-"+mDateDialog?.selectorDay+
+                    " "+mDateDialog?.selectorHour+":"+mDateDialog?.selectorMinute
+            textinfo_create_conference_starttime.text = time
+            mStartTime=time
+            mDateDialog?.dismiss()
+        }
 
 
-        titlebar_back.setClickable(true)
+        titlebar_back.isClickable = true
 
         val nowformatter = SimpleDateFormat("MM-dd HH:mm")
         val nowcurDate = Date(System.currentTimeMillis())//获取当前时间
@@ -252,8 +241,6 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
             } else {
                 mCreateRoomPresenter?.doCreate(createRoomJsonString(), getToken())
             }
-
-
         }
         titlebar_back.setOnClickListener({ this.onBackPressed()/*Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show()*/ })
 
@@ -290,7 +277,6 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     override fun onConfirm(str: String?) {
-
         mStartTime = str
         //Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
         textinfo_create_conference_starttime.text = str
@@ -336,11 +322,9 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         if (resultCode != 0) {
             return
         }
-
         if (data != null) {
             if (requestCode == REQUEST_CODE_CHOOSE_ATTEND) {
                 manattendlist = data?.getSerializableExtra(KEY_ATTANDLIST) as AttendeeListBean

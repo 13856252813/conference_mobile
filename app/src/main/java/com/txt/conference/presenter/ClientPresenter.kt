@@ -552,7 +552,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                         mixStream()
                                     }
                                 }
-
                                 override fun onFailure(e: WoogeenException) {
                                     if (localStream != null) {
                                         localStream!!.close()

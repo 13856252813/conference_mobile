@@ -76,13 +76,9 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
     var joinRoomPresenter: JoinRoomPresenter? = null
     var logoffPresenter: LogoffPresenter? = null
     var deleteRoomPresenter: DeleteRoomPresenter? = null
-
     var getRoomInfoPresenter: GetRoomInfoPresenter? = null
-
     var selectroom: RoomBean? = null
-
     var mCurrentTime:Long = 0
-
     lateinit var inviteUsersPresenter: InviteUsersPresenter
 
     fun getUserId(): String? {
@@ -154,7 +150,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main2)
         super.onCreate(savedInstanceState)
-
         initView()
         initInfomation()
         getRoomsPresenter = GetRoomsPresenter(this)

@@ -151,17 +151,17 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
 
     fun initView() {
         var check: Boolean? = null
-        titlebar_back = this.findViewById<TextView>(R.id.left_attandback_text)
-        titlebar_finish = this.findViewById<TextView>(R.id.right_attandfinish_text)
-        titlebar_title = this.findViewById<TextView>(R.id.title_attand)
-        listview= this.findViewById<ListView>(R.id.listUserView)
+        titlebar_back = this.findViewById(R.id.left_attandback_text)
+        titlebar_finish = this.findViewById(R.id.right_attandfinish_text)
+        titlebar_title = this.findViewById(R.id.title_attand)
+        listview= this.findViewById(R.id.listUserView)
 
         if (intent.getSerializableExtra(KEY_ROOM) != null) {
             room = intent.getSerializableExtra(KEY_ROOM) as RoomBean
         }
         titlebar_back?.setOnClickListener(this)
         titlebar_finish?.setOnClickListener(this)
-        listview?.setOnItemClickListener { adapterView, view, i, l ->
+        listview?.setOnItemClickListener { _, _, i, _ ->
 
             if (room != null) {
                 for (k in room?.participants!!.indices) {
@@ -170,11 +170,7 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
                     }
                 }
             }
-            if (listadapter!!.getItemCheck(i) == true){
-                check = false
-            } else {
-                check = true
-            }
+            check = listadapter!!.getItemCheck(i) != true
             listadapter?.setItemCheck(i, check)
             listadapter!!.notifyDataSetChanged()
             updateTitleBar()

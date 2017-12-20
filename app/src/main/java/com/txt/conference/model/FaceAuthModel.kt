@@ -30,6 +30,11 @@ class FaceAuthModel : IFaceAuthModel {
         if (mFaceAuthHttp == null) {
             mFaceAuthHttp = FaceAuthHttpFactory()
             mFaceAuthHttp?.setHttpEventHandler(object : HttpEventHandler<GetFaceAuthBean>() {
+                override fun HttpFailHandler() {
+                    status = Status.FAILED_UNKNOW
+                    loginCallBack.onStatus()
+                }
+
                 override fun HttpSucessHandler(result: GetFaceAuthBean?) {
                     status = result?.code!!
                     if (status == Status.SUCCESS) {
@@ -37,11 +42,6 @@ class FaceAuthModel : IFaceAuthModel {
                     } else {
                         msg = result?.msg
                     }
-                    loginCallBack.onStatus()
-                }
-
-                override fun HttpFailHandler() {
-                    status = Status.FAILED_UNKNOW
                     loginCallBack.onStatus()
                 }
             })

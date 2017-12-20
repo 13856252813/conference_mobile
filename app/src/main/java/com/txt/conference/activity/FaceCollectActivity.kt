@@ -72,13 +72,11 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
 
     override fun showToast(msgRes: Int) {
         super.showToast(msgRes)
-        state_textview_big.visibility = View.VISIBLE
         face_bt_retry.visibility = View.VISIBLE
     }
 
     override fun showToast(msg: String) {
         super.showToast(msg)
-        state_textview_big.visibility = View.VISIBLE
         face_bt_retry.visibility = View.VISIBLE
     }
 
@@ -153,9 +151,9 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_facecollect)
 
-        this.getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
+        this.window.setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN ,
                 WindowManager.LayoutParams. FLAG_FULLSCREEN)
-        this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        this.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         face_bt_retry.setOnClickListener(this)
         left_backup.setOnClickListener(this)
@@ -172,7 +170,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         deleteLastPhoto()
     }
 
-    fun noNeedToProcessImage(): Boolean {
+    private fun noNeedToProcessImage(): Boolean {
         if (this.isFinishing) return true // Activity已经销毁
         return false
     }
@@ -196,7 +194,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
             mImageHolder?.setSize(SFHCameraCallback.sPreViewHeight,
                     SFHCameraCallback.sPreviewWidth)
         }
-        mImageHolder?.setImageData(rotateData)
+        mImageHolder?.imageData = rotateData
         mProcessorManager?.startProcessor(mFaceAliveProcessor)
     }
 

@@ -21,6 +21,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/chooseman_title_bar"
-        android:listSelector="#00ffffff"></ListView>
+        android:listSelector="#00ffffff"/>
 
 </RelativeLayout>
