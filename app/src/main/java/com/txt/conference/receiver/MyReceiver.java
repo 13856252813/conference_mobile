@@ -27,7 +27,6 @@ import cn.jpush.android.api.JPushInterface;
 public class MyReceiver extends BroadcastReceiver {
 
     private static final String TAG=MyReceiver.class.getSimpleName();
-
     @Override
     public void onReceive(Context context, Intent intent) {
         try {

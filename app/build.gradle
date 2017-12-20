@@ -43,7 +43,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 20
         versionCode computeVersionCode()
-        versionName "2.3.0"
+        versionName "2.3.0p2"
         testInstrumentationRunner "android.support.test.runner.AndMaroidJUnitRunner"
         resValue "string", "updatefun_provider_file_authorities", "com.txt.conference.fileprovider"
         ndk {

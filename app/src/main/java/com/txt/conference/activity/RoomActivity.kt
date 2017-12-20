@@ -36,6 +36,7 @@ import android.util.Log
 import com.common.utlis.DateUtils
 import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.adapter.AddTypeAdapter
+import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.*
 import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
@@ -288,6 +289,30 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 clientPresenter?.finishMeet()
             }
             ToastUtils.topShow(getString(R.string.metting_room_delete_useruser_message))
+        }else if(event.eventCode == MessageEvent.RELOGIN){
+            CustomDialog.showRadioDialog(MainActivity@this,resources.getString(R.string.account_login_other_devices),
+                    object :CustomDialog.DialogClickListener {
+                        override fun confirm() {
+                            TxSharedPreferencesFactory(TxApplication.mInstance).clearData()
+                            jumpToLogin()
+                            finish()
+                        }
+
+                        override fun cancel() {
+                        }
+                    })
+        }else if(event.eventCode == MessageEvent.ROOMDETACHED){
+            var roomBean=event.getRoomBean(RoomBean::class.java)
+            if(roomBean.roomId==getRoomId()){
+                CustomDialog.showRadioDialog(MainActivity@this,resources.getString(R.string.admin_finish_meet),
+                        object :CustomDialog.DialogClickListener {
+                            override fun confirm() {
+                                clientPresenter?.finishMeet()
+                            }
+                            override fun cancel() {
+                            }
+                        })
+            }
         }
     }
 

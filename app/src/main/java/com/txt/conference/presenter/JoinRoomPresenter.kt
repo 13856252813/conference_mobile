@@ -23,7 +23,7 @@ class JoinRoomPresenter {
     }
 
     fun joinRoom(room: RoomBean, token: String?) {
-        if (token == null || token.equals("")) {
+        if (token == null || token == "") {
             joinView?.jumpToLogin()
             return
         }

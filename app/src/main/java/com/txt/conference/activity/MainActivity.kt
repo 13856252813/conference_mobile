@@ -31,6 +31,7 @@ import android.support.v4.widget.DrawerLayout
 import android.util.Log
 import android.view.View
 import com.common.utlis.DateUtils
+import com.txt.conference.application.TxApplication
 import com.txt.conference.event.MessageEvent
 import com.txt.conference.bean.AttendeeListBean
 import com.txt.conference.http.Urls
@@ -198,7 +199,18 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
 
                 override fun cancel() {
                 }
+            })
+        }else if(event.eventCode == MessageEvent.RELOGIN){
+            CustomDialog.showRadioDialog(MainActivity@this,resources.getString(R.string.account_login_other_devices),
+                    object :CustomDialog.DialogClickListener {
+                override fun confirm() {
+                    TxSharedPreferencesFactory(TxApplication.mInstance).clearData()
+                    jumpToLogin()
+                    finish()
+                }
 
+                override fun cancel() {
+                }
             })
         }
     }
@@ -300,11 +312,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
 
         if (REQUEST_DEVICEATTEND == requestCode ) {
             if (data != null) {
-                //var namelist: ArrayList<String>? = null
-                //var displaylist: ArrayList<String>? = null
-                //namelist  = data?.getStringArrayListExtra("nameattandList")
-                //displaylist = data?.getStringArrayListExtra("displayattandList")
-
                 var manattendlist = data?.getSerializableExtra(CreateConferenceRoomActivity.KEY_ATTANDDEVICELIST) as AttendeeListBean
 
                 if (manattendlist != null){
@@ -343,8 +350,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
                 inviteUsersPresenter.invite(getRoomId(), getToken())
             }
         }*/
-
-
     }
 
     private fun getPhoneContacts(uri: Uri, context: Context): Array<String?>? {

@@ -119,4 +119,5 @@ class TxSharedPreferencesFactory(context: Context?) : SharedPreferencesFactory(c
     fun getFaceLogin(): Boolean? {
         return getBoolean(KEY_FACELOGIN, false)
     }
+
 }

@@ -18,6 +18,7 @@ public class MessageEvent {
     public static final String DELETEROOMUSER="deleteRoomUser";
     public static final String MUTEUSER="muteUser";
     public static final String ROOMDETACHED="roomDetached";
+    public static final String RELOGIN="reLogin";
 
     private String content;
 
