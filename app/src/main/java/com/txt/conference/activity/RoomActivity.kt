@@ -32,6 +32,7 @@ import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.event.MessageEvent
 import com.txt.conference.http.Urls
 import com.txt.conference.model.MutToRoomBean
+import com.txt.conference.model.MuteMediaBean
 import com.txt.conference.presenter.*
 import com.txt.conference.utils.CustomExtendDialog
 import com.txt.conference.utils.StatusBarUtil
@@ -57,7 +58,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
     override fun updateRoomBean(roomBean: RoomBean) {
         room = roomBean
-        ULog.i(TAG, "roomBean:" + roomBean)
+        ULog.i(TAG, "roomBean:" + roomBean.participants?.size)
         var nUsers = ArrayList<AttendeeBean>()
         for (bean in attendusers!!) {
             for (beanuser in room!!.participants!!) {
@@ -71,6 +72,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
         attendusers = nUsers
         attendeeAdapter?.setNewData(attendusers)
         attendeeAdapter?.notifyDataSetChanged()
+        getUsersPresenter?.getUsers(getToken())
     }
 
     override fun extendFailed() {
@@ -259,13 +261,20 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
             }
         } else if (event.eventCode == MessageEvent.MUTEUSER) {
             var roomBean = event.getRoomBean(RoomBean::class.java)
+            var mMutBean = event.getDataObject(MuteMediaBean::class.java)
             var list = roomBean.participants
             for (bean in list!!) {
-                if (bean.id == getId()) {
+                if (bean.id == getId() && mMutBean.muteType == "videoMute") {
                     if (bean.videoMute == 1) {
                         ToastUtils.topShow("你的摄像头被管理员关闭")
                     } else {
                         ToastUtils.topShow("你的摄像头被管理员打开")
+                    }
+                }else if(bean.id == getId()&& mMutBean.muteType == "audioMute"){
+                    if (bean.audioMute == 1) {
+                        ToastUtils.topShow("你的麦克风被管理员关闭")
+                    } else {
+                        ToastUtils.topShow("你的麦克风被管理员打开")
                     }
                 }
             }
@@ -455,7 +464,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 }
             } else {
                 attendeeAdapter?.setNewData(users)
-                attendeeAdapter?.notifyDataSetChanged()
             }
         }
     }

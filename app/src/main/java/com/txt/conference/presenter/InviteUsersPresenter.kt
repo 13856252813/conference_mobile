@@ -26,7 +26,7 @@ class InviteUsersPresenter {
     }
 
     fun invite(roomId: String?, token: String?) {
-        if (token == null || token.equals("")){
+        if (token == null || token == ""){
             inviteUsersView?.jumpToLogin()
         } else {
             inviteUsersView?.showLoading(R.string.loading_add_attendee)

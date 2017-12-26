@@ -40,7 +40,7 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/item_attendee_iv_sound"
             android:src="@mipmap/addtend_vedio"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/item_attendee_iv_sound"
@@ -50,7 +50,7 @@
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/item_attendee_iv_more"
             android:src="@mipmap/addtend_voice"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/item_attendee_iv_more"

@@ -1,9 +1,12 @@
 package com.txt.conference.presenter
 
+import com.common.utlis.ULog
 import com.txt.conference.R
-import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.ParticipantBean
-import com.txt.conference.model.*
+import com.txt.conference.model.GetUsersModel
+import com.txt.conference.model.IBaseModel
+import com.txt.conference.model.IGetUsersModel
+import com.txt.conference.model.Status
 import com.txt.conference.view.IGetUsersView
 
 /**
@@ -45,6 +48,7 @@ class GetUsersPresenter {
     }
 
     fun getUsers(token: String?, alreadyInvite: List<ParticipantBean>) {
+        ULog.d("GetUsersPresenter","---alreadyInviteSize:"+alreadyInvite.size)
         if (token == null || token.equals("")){
             getUsersView?.jumpToLogin()
         } else {

@@ -11,9 +11,9 @@ import com.txt.conference.bean.AttendeeBean
 class InviteAdapter(layoutResId: Int, data: List<AttendeeBean>?) : BaseQuickAdapter<AttendeeBean, BaseViewHolder>(layoutResId, data) {
     override fun convert(helper: BaseViewHolder?, item: AttendeeBean?) {
         if (item?.cantchange!!) {
-            helper?.setBackgroundRes(R.id.item_invite_bt_choose, R.drawable.item_corners_invited)
+            helper?.setImageResource(R.id.item_invite_bt_choose, R.drawable.item_corners_invited)
         } else {
-            helper?.setBackgroundRes(R.id.item_invite_bt_choose, if (item?.invited!!) R.drawable.item_corners_checked else R.drawable.item_corners_uninvite)
+            helper?.setImageResource(R.id.item_invite_bt_choose, if (item?.invited!!) R.drawable.item_corners_checked else R.drawable.item_corners_uninvite)
         }
         helper?.setText(R.id.item_invite_tv_name, item?.display)
         helper?.addOnClickListener(R.id.item_invite_ll)

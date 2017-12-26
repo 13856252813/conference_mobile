@@ -176,7 +176,7 @@ public class DialogWheelYearMonthDay extends Dialog {
         mHourView.setShadowColor(0xFFDADCDB, 0x88DADCDB, 0x00DADCDB);
         curHour = mCalendar.get(Calendar.HOUR_OF_DAY);
         mHourView.setViewAdapter(new DateArrayAdapter(mContext, mHours, curHour));
-        mHourView.setCurrentItem(curHour-1);
+        mHourView.setCurrentItem(curHour);
 
 
         // mMonthView
@@ -189,7 +189,7 @@ public class DialogWheelYearMonthDay extends Dialog {
         mMinuteView.setShadowColor(0xFFDADCDB, 0x88DADCDB, 0x00DADCDB);
         curMinute = mCalendar.get(Calendar.MINUTE);
         mMinuteView.setViewAdapter(new DateArrayAdapter(mContext, mMinutes, curMinute));
-        mMinuteView.setCurrentItem(curMinute-1);
+        mMinuteView.setCurrentItem(curMinute);
 
         mTvSure = (TextView) dialogView1.findViewById(R.id.tv_sure);
         mTvCancle = (TextView) dialogView1.findViewById(R.id.tv_cancel);

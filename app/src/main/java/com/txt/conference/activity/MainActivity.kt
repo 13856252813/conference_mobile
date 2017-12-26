@@ -313,7 +313,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
         if (REQUEST_DEVICEATTEND == requestCode ) {
             if (data != null) {
                 var manattendlist = data?.getSerializableExtra(CreateConferenceRoomActivity.KEY_ATTANDDEVICELIST) as AttendeeListBean
-
                 if (manattendlist != null){
                     for (i in manattendlist?.datalist!!.indices){
                         val inviteBean: AttendeeBean = AttendeeBean()

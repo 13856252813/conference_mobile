@@ -1,24 +1,20 @@
 package com.txt.conference.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.TextView
 import android.widget.ImageView
-import java.util.*
+import android.widget.TextView
 import com.txt.conference.R
 import com.txt.conference.bean.AttendeeBean
-
-import com.txt.conference.bean.CreateRoomListAdapterBean
+import java.util.*
 /**
  * Created by pc on 2017/10/15.
  */
 
 
-class ConferenceUserAdapter(val list: List<AttendeeBean>?, val bool_array: Array<Boolean?>, val context: Context) : BaseAdapter() {
+class ConferenceUserAdapter(val list: List<AttendeeBean>?, private val bool_array: Array<Boolean?>, val context: Context) : BaseAdapter() {
 
     override fun getCount(): Int {
         return list!!.size
@@ -38,9 +34,9 @@ class ConferenceUserAdapter(val list: List<AttendeeBean>?, val bool_array: Array
         holder.usertextinfo.text = list!![position].display
         if (bool_array != null && (bool_array.size > position)) {
             if (bool_array[position] == true) {
-                holder.item_bt_choose.setBackgroundResource(R.drawable.item_corners_checked)
+                holder.item_bt_choose.setImageResource(R.drawable.item_corners_checked)
             } else {
-                holder.item_bt_choose.setBackgroundResource(R.drawable.item_corners)
+                holder.item_bt_choose.setImageResource(R.drawable.item_corners)
             }
         }
         return v
@@ -75,16 +71,14 @@ class ConferenceUserAdapter(val list: List<AttendeeBean>?, val bool_array: Array
     }
 
     fun getCheckedList(): ArrayList<AttendeeBean>? {
-        var attendlist: ArrayList<AttendeeBean>
-        attendlist = ArrayList<AttendeeBean>()
+        var attendlist: ArrayList<AttendeeBean> = ArrayList()
         var i = 0
         while (i < bool_array.size){
             //Log.i("mytest", "i :" + i.toString())
 
             if (bool_array[i] == true){
                 //Log.i("mytest", "i : true" )
-                val attendone: AttendeeBean
-                attendone = list!!.get(i)
+                val attendone: AttendeeBean = list!!.get(i)
                 attendlist.add(attendone)
             }
             i++
@@ -96,5 +90,5 @@ class ConferenceUserAdapter(val list: List<AttendeeBean>?, val bool_array: Array
 
 class CreateUserListViewHolder(var viewItem: View) {
      var usertextinfo: TextView = viewItem.findViewById<TextView>(R.id.usertextinfo)
-     var item_bt_choose: Button = viewItem.findViewById<Button>(R.id.item_bt_choose)
+     var item_bt_choose: ImageView = viewItem.findViewById<ImageView>(R.id.item_bt_choose)
 }

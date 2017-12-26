@@ -1,13 +1,10 @@
 package com.txt.conference.activity
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
-import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceUserAdapter
 import com.txt.conference.bean.AttendeeBean
@@ -16,7 +13,6 @@ import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.GetUserDevicePresenter
 import com.txt.conference.view.IGetUsersView
-import com.txt.conference.presenter.GetUsersPresenter
 /**
  * Created by pc on 2017/11/07.
  */
@@ -161,7 +157,6 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
         titlebar_back?.setOnClickListener(this)
         titlebar_finish?.setOnClickListener(this)
         listview?.setOnItemClickListener { _, _, i, _ ->
-
             if (room != null) {
                 for (k in room?.participants!!.indices) {
                     if (room?.participants!!.get(k).id!!.equals(listadapter!!.list?.get(i)?.id)) {

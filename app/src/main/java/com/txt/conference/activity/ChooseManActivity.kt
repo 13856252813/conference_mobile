@@ -2,19 +2,17 @@ package com.txt.conference.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
-import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceUserAdapter
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.AttendeeListBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
-import com.txt.conference.view.IGetUsersView
 import com.txt.conference.presenter.GetUsersPresenter
+import com.txt.conference.view.IGetUsersView
 /**
  * Created by pc on 2017/10/15.
  */
@@ -132,7 +130,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
         }
 
         var attendlist: AttendeeListBean? = AttendeeListBean()
-        attendlist!!.datalist = listadapter?.getCheckedList()!!
+        attendlist?.datalist = listadapter?.getCheckedList()!!
 
         mIntent.putExtra(CreateConferenceRoomActivity.KEY_ATTANDLIST, attendlist)
 
@@ -172,11 +170,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
                     }
                 }
             }
-            if (listadapter!!.getItemCheck(i) == true){
-                check = false
-            } else {
-                check = true
-            }
+            check = listadapter!!.getItemCheck(i) != true
             listadapter?.setItemCheck(i, check)
             listadapter!!.notifyDataSetChanged()
             updateTitleBar()

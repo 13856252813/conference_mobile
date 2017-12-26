@@ -18,12 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
-    <Button
+    <ImageView
         android:id="@+id/item_invite_bt_choose"
         android:layout_width="14dp"
         android:layout_height="14dp"
         android:textColor="@color/gray"
         android:focusable="false"
-        android:text=""
-        android:background="@drawable/item_corners"/>
+        android:src="@drawable/item_corners"/>
 </LinearLayout>

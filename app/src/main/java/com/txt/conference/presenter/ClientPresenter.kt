@@ -81,6 +81,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     private var originAudioMode: Int = 0
     private var statsTimer: Timer? = null
     private var cameraID = 1
+    private var currentDelayIndex:Int=0
 
     private var mRoomBean: RoomBean? = null
     private var showDialog: Dialog? = null
@@ -390,9 +391,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         ULog.d(TAG, "onVideoLayoutChanged")
     }
 
-    private var isSlowNet: Boolean = false
-
     inner class RoomHandler : Handler {
+
 
         constructor(looper: Looper) : super(looper)
 
@@ -432,8 +432,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 //                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
                                     if (videoStats.currentDelayMs > 500) {
                                         mContext.runOnUiThread {
-                                            if (!isSlowNet) {
-                                                isSlowNet = true
+                                            currentDelayIndex++
+                                            if (currentDelayIndex==5) {
                                                 Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
                                                         , Toast.LENGTH_SHORT).show()
                                                 localStream?.disableVideo()
@@ -443,8 +443,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                             }
                                         }
                                     } else {
-//                                        localStream?.enableVideo()
-                                        isSlowNet = false
+                                        localStream?.enableVideo()
+                                        currentDelayIndex=0
                                     }
                                 }
                             }
@@ -739,7 +739,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 for (remoteStream in remoteUserStream) {
                     Log.e("fl","----remoteStreamid:"+remoteStream.remoteUserId)
                     if (remoteStream.remoteUserId == id) {
-                        remoteStream.disableVideo()
                     }
                 }
             }
