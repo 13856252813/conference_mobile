@@ -1,53 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="47.5dp">
+    android:layout_height="47.5dp"
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/item_attendee_name"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:layout_centerVertical="true"/>
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
 
-    <ImageView
-        android:id="@+id/item_attendee_iv_role"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/item_attendee_name"
-        android:src="@mipmap/role_presenter"
-        android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/item_attendee_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white" />
 
-    <ImageView
-        android:id="@+id/item_attendee_iv_vedio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/item_attendee_iv_sound"
-        android:layout_marginRight="10dp"
-        android:layout_centerVertical="true"
-        android:visibility="visible"
-        android:src="@mipmap/addtend_vedio"/>
+        <ImageView
+            android:id="@+id/item_attendee_iv_role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:src="@mipmap/role_presenter" />
+    </LinearLayout>
 
-    <ImageView
-        android:id="@+id/item_attendee_iv_sound"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/item_attendee_iv_more"
-        android:layout_marginRight="10dp"
-        android:layout_centerVertical="true"
-        android:visibility="visible"
-        android:src="@mipmap/addtend_voice"/>
 
-    <ImageView
-        android:id="@+id/item_attendee_iv_more"
+    <RelativeLayout
+        android:id="@+id/media_control"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:padding="10dp"
-        android:visibility="visible"
-        android:src="@mipmap/addtend_more" />
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true">
+
+
+        <ImageView
+            android:id="@+id/item_attendee_iv_vedio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/item_attendee_iv_sound"
+            android:src="@mipmap/addtend_vedio"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/item_attendee_iv_sound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/item_attendee_iv_more"
+            android:src="@mipmap/addtend_voice"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/item_attendee_iv_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/addtend_more"
+            android:visibility="visible" />
+    </RelativeLayout>
 
 </RelativeLayout>

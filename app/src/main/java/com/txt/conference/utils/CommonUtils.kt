@@ -20,7 +20,6 @@ class CommonUtils {
 
         companion object {
             var TAG = "CommonUtils"
-
             fun startSendSms(context: Context, room: RoomBean){
                 var date= DateUtils()
                 ULog.i(TAG, "startSendSms" )

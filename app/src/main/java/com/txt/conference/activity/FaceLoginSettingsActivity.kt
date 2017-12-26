@@ -20,9 +20,9 @@ import kotlinx.android.synthetic.main.title_bar.*
 class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
 
 
-    val TAG = FaceLoginSettingsActivity::class.java.simpleName
+    private val COLLECTED = 1
 
-    val COLLECTED = 1
+    val TAG = FaceLoginSettingsActivity::class.java.simpleName!!
     override fun jumpActivity() {
         onBackPressed()
     }
@@ -31,22 +31,22 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
 
     }
 
-    fun showSettingToast(strToask: String?){
+    private fun showSettingToast(strToask: String?){
         Toast.makeText(applicationContext, strToask, Toast.LENGTH_SHORT).show()
     }
 
-    fun onFinished(){
+    private fun onFinished(){
         var i = Intent(this, MainActivity::class.java)
         startActivity(i)
         this.finish()
     }
 
-    fun onStartFaceAuth(){
+    private fun onStartFaceAuth(){
         var i = Intent(this, FaceCollectActivity::class.java)
         startActivity(i)
     }
 
-    fun getIsFacelogin(): Boolean? {
+    private fun getIsFacelogin(): Boolean? {
         return TxSharedPreferencesFactory(TxApplication.mInstance).getFaceLogin()
     }
 
@@ -78,25 +78,27 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
         var isFaceLogin = getIsFacelogin()
         switch_facelogin.isChecked = isFaceLogin!!
 
-        if (getIsFaceCollect() == COLLECTED  ){ // collected
-            face_collect_type.text = getString(R.string.facesetting_already_confirm_text)
-        } else {
-            face_collect_type.text = getString(R.string.facesetting_not_confirm_text)
-        }
-
-
-        switch_facelogin.setOnCheckedChangeListener { button, checked ->
+        switch_facelogin.setOnCheckedChangeListener { _, checked ->
             if(checked){
                 ULog.i(TAG, "checked" + checked)
                 if (getIsFaceCollect() == COLLECTED  ){
-                    switch_facelogin.isChecked = false
                 } else {
+                    switch_facelogin.isChecked=false
                     showSettingToast(getString(R.string.facelogin_should_face_collect_first))
                 }
             } else {
                 ULog.i(TAG, "checked" + checked)
             }
             setFaceLogin(checked)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (getIsFaceCollect() == COLLECTED  ){ // collected
+            face_collect_type.text = getString(R.string.facesetting_already_confirm_text)
+        } else {
+            face_collect_type.text = getString(R.string.facesetting_not_confirm_text)
         }
     }
 

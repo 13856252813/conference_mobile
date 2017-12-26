@@ -29,7 +29,6 @@
         android:layout_below="@id/home_tv_name"
         android:layout_marginTop="13dp"
         android:layout_centerHorizontal="true"
-        android:text="18521564288"
         android:visibility="invisible"
         android:textSize="14dp"/>
 

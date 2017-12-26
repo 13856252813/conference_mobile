@@ -1,40 +1,14 @@
 package com.txt.conference.activity
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
-import com.common.utlis.ULog
 import com.txt.conference.R
-import com.txt.conference.adapter.CreateRoomListAdapter
-import com.txt.conference.application.TxApplication
-import com.txt.conference.bean.CreateRoomListAdapterBean
 import com.txt.conference.bean.LoginBean
-import com.txt.conference.bean.RoomBean
-import com.txt.conference.data.TxSharedPreferencesFactory
-import com.txt.conference.presenter.CreateConferencePresenter
-import com.txt.conference.presenter.CreateConferenceRoomPresenter
 import com.txt.conference.presenter.LoginPresenter
-import com.txt.conference.utils.Constants
-import com.txt.conference.utils.CostTimePickDialogUtil
-import com.txt.conference.utils.DateTimePickDialogUtil
-import com.txt.conference.utils.StatusBarUtil
-import com.txt.conference.view.ICreateConferenceRoomView
-import com.txt.conference.view.ICreateConferenceView
 import com.txt.conference.view.ILoginView
-import com.txt.conference.widget.CustomDialog
-import kotlinx.android.synthetic.main.activity_createconferenceroom.*
-import kotlinx.android.synthetic.main.activity_faceloginsettings.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.title_bar.*
-import org.json.JSONArray
-import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 /**

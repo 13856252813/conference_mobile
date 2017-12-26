@@ -4,43 +4,38 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.ContactsContract
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Gravity
 import android.view.KeyEvent
+import android.view.View
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.common.utlis.ULog
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceAdapter
 import com.txt.conference.adapter.RecyclerViewDivider
+import com.txt.conference.application.TxApplication
 import com.txt.conference.bean.AttendeeBean
+import com.txt.conference.bean.AttendeeListBean
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.data.TxSharedPreferencesFactory
+import com.txt.conference.event.MessageEvent
+import com.txt.conference.model.InviteEventBean
 import com.txt.conference.presenter.*
+import com.txt.conference.utils.CommonUtils
 import com.txt.conference.utils.CustomAttendDialog
+import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.*
 import com.txt.conference.widget.CustomDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main2.*
 import kotlinx.android.synthetic.main.item_conference_new.*
 import kotlinx.android.synthetic.main.layout_menu.*
-import java.util.*
-import android.support.v4.widget.DrawerLayout
-import android.util.Log
-import android.view.View
-import com.common.utlis.DateUtils
-import com.txt.conference.application.TxApplication
-import com.txt.conference.event.MessageEvent
-import com.txt.conference.bean.AttendeeListBean
-import com.txt.conference.http.Urls
-import com.txt.conference.model.InviteEventBean
-import com.txt.conference.model.MutToRoomBean
-import com.txt.conference.utils.CommonUtils
-import com.txt.conference.utils.StatusBarUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.util.*
 
 
 class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomView, IDeleteRoomView, ILogoffView, IInviteUsersView, ConferenceAdapter.TimeCallBack {
@@ -82,7 +77,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
     var mCurrentTime:Long = 0
     lateinit var inviteUsersPresenter: InviteUsersPresenter
 
-    fun getUserId(): String? {
+    private fun getUserId(): String? {
         return TxSharedPreferencesFactory(applicationContext).getId()
     }
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
@@ -142,7 +137,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
         home_ll_create.setOnClickListener {
             var i = Intent(this, CreateConferenceRoomActivity::class.java)
             startActivity(i)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         }
         initRecyclerView()
     }
@@ -194,7 +188,13 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
             var mInviteEventBean=event.getDataObject(InviteEventBean::class.java)
             CustomDialog.showSelectDialog(MainActivity@this,event.alert,object :CustomDialog.DialogClickListener{
                 override fun confirm() {
-                    joinRoomPresenter?.joinRoom(mInviteEventBean.room, getToken())
+                   var offsetTime = mInviteEventBean.room.start - Date().time
+                    if(offsetTime>0){
+
+                    }else{
+                        joinRoomPresenter?.joinRoom(mInviteEventBean.room, getToken())
+                    }
+
                 }
 
                 override fun cancel() {
@@ -204,7 +204,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
             CustomDialog.showRadioDialog(MainActivity@this,resources.getString(R.string.account_login_other_devices),
                     object :CustomDialog.DialogClickListener {
                 override fun confirm() {
-                    TxSharedPreferencesFactory(TxApplication.mInstance).clearData()
+                    TxSharedPreferencesFactory(TxApplication.mInstance).setToken(null)
                     jumpToLogin()
                     finish()
                 }

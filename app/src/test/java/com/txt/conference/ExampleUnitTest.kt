@@ -2,7 +2,6 @@ package com.txt.conference
 import org.junit.Test
 
 import org.junit.Assert.*
-import org.mockito.Mockito.*
 
 
 /**

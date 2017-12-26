@@ -1,5 +1,6 @@
 package com.txt.conference.activity
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -59,8 +60,6 @@ class ChooseDeviceActivity : IGetUsersView, View.OnClickListener, BaseActivity()
     override fun addAttendees(conference: List<AttendeeBean>?) {
 
         var num: Int = conference?.size!!
-
-
         val bool_array = arrayOfNulls<Boolean>(num)
         val conflist  = java.util.ArrayList<AttendeeBean>()
         var i = 0

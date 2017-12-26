@@ -39,11 +39,7 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
         helper?.addOnClickListener(R.id.add_attend)
         helper?.addOnClickListener(R.id.delete_button)
 
-        if (item?.creator!!.uid.equals(userid)){
-            helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)?.isSwipeEnable = true
-        } else {
-            helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)?.isSwipeEnable = false
-        }
+        helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)?.isSwipeEnable = item?.creator!!.uid.equals(userid)
 
         //var swipeVi = helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)
         //swipeVi?.isSwipeEnable = false

@@ -2,32 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:background="@color/grey200"
     android:clipToPadding="true"
-    android:background="@color/grey200">
+    android:fitsSystemWindows="true">
 
     <include
+        layout="@layout/title_bar_face_setting"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        layout="@layout/title_bar_face_setting" />
+        android:layout_height="@dimen/title_bar_height" />
 
     <LinearLayout
         android:id="@+id/create_edit_title"
         android:layout_width="match_parent"
-        android:layout_below="@id/title_bar"
         android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
         android:orientation="vertical">
+
         <LinearLayout
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 android:layout_marginBottom="14dp"
-                android:layout_marginLeft="14dp">
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="14dp">
+
                 <TextView
                     android:id="@+id/item_facesetting_face_setting"
                     android:layout_width="wrap_content"
@@ -36,6 +39,7 @@
                     android:text="@string/facesetting_login"
                     android:textColor="@color/grey_room"
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/item_facesetting_face_small"
                     android:layout_width="wrap_content"
@@ -47,9 +51,9 @@
             </RelativeLayout>
 
             <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
 
             <Switch
                 android:id="@+id/switch_facelogin"
@@ -57,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:layout_marginRight="17dp"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="16dp" />
 
         </LinearLayout>
 
@@ -66,39 +70,43 @@
     <LinearLayout
         android:id="@+id/create_addman"
         android:layout_width="match_parent"
-        android:layout_below="@id/create_edit_title"
         android:layout_height="wrap_content"
+        android:layout_below="@id/create_edit_title"
         android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/item_facesetting_face_auth_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/item_facesetting_face_auth_layout"
             android:orientation="horizontal">
 
             <RelativeLayout
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 android:layout_marginBottom="14dp"
-                android:layout_marginLeft="14dp">
-            <TextView
-                android:id="@+id/item_facesetting_face_auth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="@string/facesetting_auth"
-                android:textColor="@color/grey_room"
-                android:textSize="16sp" />
-            <TextView
-                android:id="@+id/item_facesetting_face_auth_small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_facesetting_face_auth"
-                android:text="@string/item_facesetting_face_auth_smalltext"
-                android:textColor="@color/grey_time"
-                android:textSize="10sp" />
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="14dp">
+
+                <TextView
+                    android:id="@+id/item_facesetting_face_auth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/facesetting_auth"
+                    android:textColor="@color/grey_room"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/item_facesetting_face_auth_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/item_facesetting_face_auth"
+                    android:text="@string/item_facesetting_face_auth_smalltext"
+                    android:textColor="@color/grey_time"
+                    android:textSize="10sp" />
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -116,6 +124,7 @@
                 android:text="@string/facesetting_not_confirm_text"
                 android:textColor="@color/grey_room"
                 android:textSize="14sp" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

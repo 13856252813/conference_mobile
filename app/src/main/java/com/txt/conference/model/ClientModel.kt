@@ -1,6 +1,5 @@
 package com.txt.conference.model
 
-import com.common.utlis.ULog
 import com.intel.webrtc.conference.User
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.RoomBean
@@ -49,6 +48,7 @@ class ClientModel : IClientModel {
             attendee.role = user.role
             attendee.audioMute = muteAudio.toString()
             attendee.videoMute = muteVideo.toString()
+            attendee.streamId=user.id
             nUsers.add(attendee)
         }
         return nUsers as List<AttendeeBean>

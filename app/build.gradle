@@ -133,4 +133,6 @@ dependencies {
     implementation 'cn.jiguang.sdk:jcore:1.1.7'
     // 此处以JCore 1.1.7 版本为例。
     implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.github.pinguo-zhouwei:CustomPopwindow:2.1.1'
+
 }

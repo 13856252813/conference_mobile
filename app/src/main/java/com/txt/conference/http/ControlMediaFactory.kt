@@ -1,20 +1,14 @@
 package com.txt.conference.http
 
-import android.text.TextUtils
 import android.util.Log
 import com.common.http.HttpStringFactoryBase
 import com.common.utlis.ULog
 import com.common.utlis.URLEncoderUtils
 import com.google.gson.Gson
-import com.txt.conference.bean.GetLoginBean
-import com.txt.conference.model.ClientModel
 import com.txt.conference.model.MediaModel
 import org.apache.http.NameValuePair
-import org.apache.http.client.entity.UrlEncodedFormEntity
 import org.apache.http.message.BasicNameValuePair
-import java.util.ArrayList
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by pc on 2017/12/13.
@@ -41,6 +35,8 @@ class ControlMediaFactory(private var map: HashMap<String, String>) : HttpString
     }
 
     override fun CreateUri(vararg args: Any?): String? {
+        var url=String.format(Urls.MEDIA_CONTROL, URLEncoderUtils.encode(args[0] as String), URLEncoderUtils.encode(args[1] as String),args[2])
+        Log.e("fl", "Url $url")
         return String.format(Urls.MEDIA_CONTROL, URLEncoderUtils.encode(args[0] as String), URLEncoderUtils.encode(args[1] as String),args[2])
     }
 }

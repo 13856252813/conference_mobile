@@ -1,17 +1,11 @@
 package com.txt.conference.activity
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import com.txt.conference.R
-import com.txt.conference.R.layout.dialog
-import com.txt.conference.adapter.CreateRoomListAdapter
 import com.txt.conference.bean.AttendeeListBean
 import com.txt.conference.bean.ConferenceUserBean
 import com.txt.conference.bean.CreateRoomListAdapterBean
@@ -22,7 +16,6 @@ import com.txt.conference.presenter.CreateConferenceRoomPresenter
 import com.txt.conference.utils.Constants
 import com.txt.conference.utils.CostTimePickDialogUtil
 import com.txt.conference.utils.DateTimePickDialogUtil
-import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.ICreateConferenceRoomView
 import com.txt.conference.view.ICreateConferenceView
 import com.txt.conference.widget.DialogWheelYearMonthDay

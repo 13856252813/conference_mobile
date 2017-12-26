@@ -3,12 +3,9 @@ package com.txt.conference.widget;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -185,6 +182,7 @@ public class DialogWheelYearMonthDay extends Dialog {
         // mMonthView
         mMinuteView = (WheelView) dialogView1
                 .findViewById(R.id.wheelView_minute);
+        mMinuteView.setCyclic(true);
         mMinuteView.setBackgroundResource(R.drawable.transparent_bg);
         mMinuteView.setWheelBackground(R.drawable.transparent_bg);
         mMinuteView.setWheelForeground(R.drawable.wheel_val_holo);

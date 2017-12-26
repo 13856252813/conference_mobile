@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.widget.Toast
 import com.common.widget.LoadingView
 import com.txt.conference.R
+import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.view.IBaseView
 import pub.devrel.easypermissions.EasyPermissions
-import com.txt.conference.utils.StatusBarUtil
 
 
 /**
@@ -58,7 +58,6 @@ abstract class BaseActivity : Activity(), IBaseView, EasyPermissions.PermissionC
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_right)
     }
 
     override fun onDestroy() {

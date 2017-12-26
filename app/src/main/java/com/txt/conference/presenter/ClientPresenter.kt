@@ -1,4 +1,5 @@
 package com.txt.conference.presenter
+
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -7,6 +8,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
@@ -57,14 +59,15 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     private var remoteStreamRenderer: WoogeenSurfaceRenderer? = null
     private var localStreamRenderer: WoogeenSurfaceRenderer? = null
-    private var mScreenStreamRender: WoogeenSurfaceRenderer?=null
+    private var mScreenStreamRender: WoogeenSurfaceRenderer? = null
     private var localStream: LocalCameraStream? = null
     private var screenStream: LocalScreenStream? = null
 
     private var currentRemoteStream: RemoteStream? = null
-    private var currentRemoteScreenStream:RemoteStream?=null
+    private var currentRemoteScreenStream: RemoteStream? = null
     private val subscribedStreams = ArrayList<RemoteStream>()
     private val remoteMixArr = ArrayList<RemoteMixedStream>()
+    private var remoteUserStream=ArrayList<RemoteStream>()
 
 
     private var sslContext: SSLContext? = null
@@ -81,9 +84,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     private var mRoomBean: RoomBean? = null
     private var showDialog: Dialog? = null
-    var mScreenDialog: ScreenDialog?=null
+    var mScreenDialog: ScreenDialog? = null
     private var rScreenViewContainer: LinearLayout? = null
-
 
 
     constructor(context: Activity, view: IClientView, room: RoomBean?) {
@@ -94,8 +96,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         clientModel = ClientModel()
     }
 
-    fun updateRoomBean(rooBeam: RoomBean){
+    fun updateRoomBean(rooBeam: RoomBean) {
         mRoomBean = rooBeam
+        clientView?.updateRoomBean(rooBeam)
     }
 
     fun init() {
@@ -112,7 +115,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         initRoom()
         initVideoStreamsViews()
     }
-
 
     private fun initRoom() {
         rootEglBase = EglBase.create()
@@ -136,15 +138,14 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
 
+    private fun initVideoStreamsViews() {
 
-    fun initVideoStreamsViews() {
-
-        mScreenDialog= ScreenDialog.getScreenDialog(mContext)
-        rScreenViewContainer= mScreenDialog?.screenContainer
+        mScreenDialog = ScreenDialog.getScreenDialog(mContext)
+        rScreenViewContainer = mScreenDialog?.screenContainer
 //        remoteViewContainer = mView?.getRemoteViewContainer()
         localStreamRenderer = WoogeenSurfaceRenderer(mContext)
         remoteStreamRenderer = WoogeenSurfaceRenderer(mContext)
-        mScreenStreamRender=WoogeenSurfaceRenderer(mContext)
+        mScreenStreamRender = WoogeenSurfaceRenderer(mContext)
 
         localStreamRenderer?.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
 
@@ -163,7 +164,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         val connectionOptions = ConnectionOptions()
         connectionOptions.sslContext = sslContext
         connectionOptions.hostnameVerifier = hostnameVerifier
-        ULog.d(TAG, "use $token to join room" )
+        ULog.d(TAG, "use $token to join room")
         mRoom?.join(token, connectionOptions, object : ActionCallback<User> {
 
             override fun onSuccess(p0: User?) {
@@ -183,7 +184,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 }, 1000, 3000)
                 var users = mRoom?.users
                 ULog.d(TAG, "user size: " + users?.size)
-                for (i in 0..users!!.size-1) {
+                for (i in 0..users!!.size - 1) {
                     ULog.d(TAG, "userName: " + users?.get(i).name + " role:" + users?.get(i).role)
                 }
                 clientView?.onJoined()
@@ -199,7 +200,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             }
 
         })
-
 
     }
 
@@ -242,36 +242,38 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         if (localStream != null && remoteStream?.id == localStream!!.id) {
             return
         }
-
         if (screenStream != null && remoteStream?.id == screenStream!!.id) {
             return
         }
+        if(remoteStream?.remoteUserId !=null && remoteStream.remoteUserId != ""){
+            remoteUserStream.add(remoteStream)
+        }
         //We only subscribe the "common" mix stream and screen stream by default
-        if (remoteStream is RemoteMixedStream ) {
+        if (remoteStream is RemoteMixedStream) {
 //            showResolutionSelect()
-            if(remoteStream.viewport == "common"){
+            if (remoteStream.viewport == "common") {
                 val msg = Message()
                 msg.what = MSG_SUBSCRIBE
                 msg.obj = remoteStream
                 roomHandler?.sendMessage(msg)
-            }else{
+            } else {
                 remoteMixArr.add(remoteStream)
             }
-        } else if (remoteStream is RemoteScreenStream) {
+        } else  {
             val msg = Message()
             msg.what = MSG_SUBSCRIBE
             msg.obj = remoteStream
-            roomHandler!!.sendMessage(msg)
+            roomHandler?.sendMessage(msg)
         }
     }
 
-    override fun onUserJoined(p0: User?) {
-        ULog.d(TAG, "onUserJoined")
+    override fun onUserJoined(user: User?) {
+        ULog.d(TAG, "onUserJoined:" + user?.id)
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
         clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
     }
 
-    fun getRemoteScreeenStream(): RemoteStream?{
+    fun getRemoteScreenStream(): RemoteStream? {
         return currentRemoteScreenStream
     }
 
@@ -328,16 +330,21 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             msg.what = MSG_UNSUBSCRIBE
             msg.obj = remoteStream
             roomHandler?.sendMessage(msg)
-            currentRemoteScreenStream=null
-            if(mScreenDialog!=null){
+            currentRemoteScreenStream = null
+            if (mScreenDialog != null) {
                 mScreenDialog?.remoteScreenStream = null
                 mScreenDialog?.dismiss()
             }
             mScreenStreamRender?.cleanFrame()
         }
 
-        for (stream in subscribedStreams){
-            if(stream?.id.equals(remoteStream?.id)){
+        if(remoteStream?.remoteUserId!=null && remoteStream.remoteUserId == ""){
+            if(remoteUserStream.contains(remoteStream)){
+                remoteUserStream.remove(remoteStream)
+            }
+        }
+        for (stream in subscribedStreams) {
+            if (stream?.id.equals(remoteStream?.id)) {
                 subscribedStreams.remove(stream)
                 break
             }
@@ -346,10 +353,10 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             return
         }
         // If there is another remote stream subscribed, render it.
-        var streamToBeRendered=subscribedStreams[0]
-        for (stream in subscribedStreams){
-            if(stream is RemoteStream){
-                streamToBeRendered=stream
+        var streamToBeRendered = subscribedStreams[0]
+        for (stream in subscribedStreams) {
+            if (stream is RemoteStream) {
+                streamToBeRendered = stream
                 break
             }
         }
@@ -357,14 +364,16 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             currentRemoteStream = streamToBeRendered;
             mRoom?.playVideo(currentRemoteStream, null);
             currentRemoteStream?.attach(remoteStreamRenderer);
-        } catch (e:WoogeenIllegalArgumentException) {
+        } catch (e: WoogeenIllegalArgumentException) {
             e.printStackTrace()
         }
 
     }
 
     override fun onUserLeft(p0: User?) {
-        ULog.d(TAG, "onUserLeft")
+        if (mRoom?.users?.contains(p0)!!) {
+            mRoom?.users?.remove(p0)
+        }
         clientView?.setAlreadyAttendees(mRoom?.users?.size.toString())
         clientView?.updateUsers(clientModel?.getUsers(mRoom?.users as List<User>, mRoomBean!!)!!)
     }
@@ -379,10 +388,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     override fun onVideoLayoutChanged() {
         ULog.d(TAG, "onVideoLayoutChanged")
-
     }
 
-    private var isSlowNet:Boolean=false
+    private var isSlowNet: Boolean = false
 
     inner class RoomHandler : Handler {
 
@@ -410,7 +418,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     }
                     publish()
                 }
-                STATUS_REMOTE->{
+                STATUS_REMOTE -> {
                     var statsCallback = object : ActionCallback<ConnectionStats> {
                         override fun onSuccess(result: ConnectionStats?) {
                             var trackStatsList =
@@ -430,17 +438,18 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                                         , Toast.LENGTH_SHORT).show()
                                                 localStream?.disableVideo()
                                                 sendMediaStatus(mRoomBean?.roomId,
-                                                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(),VEDIO_MUTE, MUTE_ON, ACTION_SELF
-                                                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
+                                                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
+                                                        , TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
                                             }
                                         }
                                     } else {
+//                                        localStream?.enableVideo()
                                         isSlowNet = false
                                     }
-
                                 }
                             }
                         }
+
                         override fun onFailure(p0: WoogeenException?) {
                         }
                     }
@@ -449,7 +458,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
                 MSG_SUBSCRIBE -> {
                     var option = SubscribeOptions()
-                    option.videoCodec = MediaCodec.VideoCodec.H264
+                    option.videoCodec = MediaCodec.VideoCodec.VP8
                     var remoteStream = msg.obj as RemoteStream
                     if (remoteStream is RemoteMixedStream) {
                         //option.setResolution(640, 480)
@@ -475,7 +484,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                     ULog.d(TAG, "Subscribed stream: " + remoteStream.id)
                                 }
                                 subscribedStreams.add(remoteStream)
-                                if(remoteStream !is RemoteScreenStream){
+                                if (remoteStream is RemoteMixedStream) {
                                     if (currentRemoteStream != null) {
                                         if (currentRemoteStream is RemoteScreenStream) {
                                             mRoom!!.pauseVideo(remoteStream, null)
@@ -486,24 +495,22 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                     }
                                     currentRemoteStream = remoteStream
                                     currentRemoteStream!!.attach(remoteStreamRenderer!!)
-                                }else{
+                                } else  if(remoteStream is RemoteScreenStream){
                                     ULog.d(TAG, "Subscribed screenStream: " + remoteStream.id)
-                                    currentRemoteScreenStream=remoteStream
+                                    currentRemoteScreenStream = remoteStream
                                     remoteStream.attach(mScreenStreamRender)
                                     mContext?.runOnUiThread({
-                                        if(mScreenDialog!=null && !mScreenDialog?.isShowing!!){
+                                        if (mScreenDialog != null && !mScreenDialog?.isShowing!!) {
                                             mScreenDialog?.remoteScreenStream = currentRemoteScreenStream
-                                            if(!mContext!!.isFinishing){
+                                            if (!mContext!!.isFinishing) {
                                                 mScreenDialog?.show()
                                             }
                                         }
                                     })
-
                                 }
                             } catch (e: WoogeenException) {
                                 e.printStackTrace()
                             }
-
                         }
 
                         override fun onFailure(e: WoogeenException) {
@@ -514,10 +521,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 }
                 MSG_UNSUBSCRIBE -> {
                     val stream = msg.obj as RemoteStream
-                    mRoom?.unsubscribe(stream,object:ActionCallback<Void>{
+                    mRoom?.unsubscribe(stream, object : ActionCallback<Void> {
                         override fun onFailure(p0: WoogeenException?) {
                             p0?.printStackTrace()
                         }
+
                         override fun onSuccess(p0: Void?) {
                             subscribedStreams.remove(stream)
                         }
@@ -552,6 +560,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                         mixStream()
                                     }
                                 }
+
                                 override fun onFailure(e: WoogeenException) {
                                     if (localStream != null) {
                                         localStream!!.close()
@@ -574,13 +583,14 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                     }
 
                 }
-                MIX_STREAM->{
-                    if(localStream!=null){
-                        mRoom?.mix(localStream,remoteMixArr,object :ActionCallback<Void>{
+                MIX_STREAM -> {
+                    if (localStream != null) {
+                        mRoom?.mix(localStream, remoteMixArr, object : ActionCallback<Void> {
                             override fun onSuccess(p0: Void?) {
                                 ULog.d(TAG, "mix onSuccess")
 
                             }
+
                             override fun onFailure(p0: WoogeenException?) {
                                 ULog.e(TAG, "mix onFailure")
 
@@ -647,22 +657,23 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     }
 
-    fun sendMediaStatus(roomId:String?, account:String?, muteType: String, muteDes:String, actionType:String, token:String?){
-        var map=HashMap<String,String>()
+    fun sendMediaStatus(roomId: String?, account: String?, muteType: String, muteDes: String, actionType: String, token: String?) {
+        var map = HashMap<String, String>()
         map.put("muteType", muteType)
         map.put("muteDes", muteDes)
         map.put("action", actionType)
-        var controlMediaFactory=ControlMediaFactory(map)
-        controlMediaFactory.setHttpEventHandler(object :HttpEventHandler<MediaModel>(){
+        var controlMediaFactory = ControlMediaFactory(map)
+        controlMediaFactory.setHttpEventHandler(object : HttpEventHandler<MediaModel>() {
             override fun HttpSucessHandler(result: MediaModel?) {
-                if (result!!.code == 0){
+                if (result!!.code == 0) {
                     updateRoomBean(result!!.data!!)
                 }
             }
+
             override fun HttpFailHandler() {
             }
         })
-        controlMediaFactory.DownloaDatas(roomId,account,token)
+        controlMediaFactory.DownloaDatas(roomId, account, token)
     }
 
 
@@ -713,6 +724,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     private fun publish() {
         roomHandler?.sendEmptyMessage(MSG_PUBLISH)
     }
+
     private fun mixStream() {
         roomHandler?.sendEmptyMessage(MIX_STREAM)
     }
@@ -721,8 +733,32 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         roomHandler?.sendEmptyMessage(MSG_ROOM_DISCONNECTED)
     }
 
+    fun controlMediaById(mediaType: String, id: String, isOpen: Boolean) {
+        when (mediaType) {
+            VEDIO_MUTE -> {
+                for (remoteStream in remoteUserStream) {
+                    Log.e("fl","----remoteStreamid:"+remoteStream.remoteUserId)
+                    if (remoteStream.remoteUserId == id) {
+                        remoteStream.disableVideo()
+                    }
+                }
+            }
+            VOICE_MUTE -> {
+                for (remoteStream in remoteUserStream) {
+                    if (remoteStream.remoteUserId == id) {
+                        if (isOpen) {
+                            remoteStream.disableAudio()
+                        } else {
+                            remoteStream.enableAudio()
+                        }
+                    }
+                }
+            }
+        }
 
-    fun onOffcamera() {
+    }
+
+    fun onOffCamera() {
 //        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
         if (localStream == null) {
             return
@@ -731,15 +767,15 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             if (localStream?.disableVideo()!!) {
                 clientModel?.cameraIsOpen = false
                 sendMediaStatus(mRoomBean?.roomId,
-                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
-                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_OFF, ACTION_SELF
+                        , TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
             }
         } else {
             if (localStream?.enableVideo()!!) {
                 clientModel?.cameraIsOpen = true
                 sendMediaStatus(mRoomBean?.roomId,
-                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_OFF, ACTION_SELF
-                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
+                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
+                        , TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
             }
         }
         clientView?.onOffCamera(clientModel?.cameraIsOpen!!)
@@ -747,21 +783,20 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     fun onOffLoud() {
 //        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
-
         setSpeakerphoneOn(clientModel?.loudIsOpen!!)
         clientModel?.loudIsOpen = !clientModel?.loudIsOpen!!
         clientView?.onOffLoud(clientModel?.loudIsOpen!!)
     }
 
-    fun setSpeakerphoneOn(isSpeakerphoneOn: Boolean){
+    private fun setSpeakerphoneOn(isSpeakerphoneOn: Boolean) {
         val audioManager = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManager.setSpeakerphoneOn(isSpeakerphoneOn)
-        if(!isSpeakerphoneOn){
-            audioManager.setMode(AudioManager.MODE_NORMAL)
+        audioManager.isSpeakerphoneOn = isSpeakerphoneOn
+        if (!isSpeakerphoneOn) {
+            audioManager.mode = AudioManager.MODE_NORMAL
         }
     }
 
-    fun getIsSpeakerLoad() :Boolean {
+    fun getIsSpeakerLoad(): Boolean {
         val audioManager = mContext?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         return audioManager.isSpeakerphoneOn()
     }
@@ -790,24 +825,23 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
     fun onStop() {
-        if (showDialog != null){
+        if (showDialog != null) {
             showDialog?.dismiss()
         }
     }
 
-    fun finishMeet(){
+    fun finishMeet() {
         unPublish()
         //leave()
     }
 
     fun onDestroy() {
         clientView = null
-        if(ScreenDialog.mInstance !=null && ScreenDialog.mInstance!!.isShowing){
+        if (ScreenDialog.mInstance != null && ScreenDialog.mInstance!!.isShowing) {
             ScreenDialog.mInstance!!.dismiss()
         }
-        ScreenDialog.mInstance =null
+        ScreenDialog.mInstance = null
     }
-
 
 
     companion object {
@@ -827,7 +861,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
         val MUTE_ON = "0"
         val MUTE_OFF = "1"
-
         val ACTION_SELF = "self"
         val ACTION_COMP = "compere"
         val ACTION_NETWORK = "network"
