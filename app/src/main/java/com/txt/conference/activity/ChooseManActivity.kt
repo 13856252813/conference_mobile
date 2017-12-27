@@ -132,10 +132,11 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
         var attendlist: AttendeeListBean? = AttendeeListBean()
         attendlist?.datalist = listadapter?.getCheckedList()!!
 
-        mIntent.putExtra(CreateConferenceRoomActivity.KEY_ATTANDLIST, attendlist)
 
-        this.setResult(resultCode, mIntent)
-
+        if(listadapter?.getCheckedNum()!=0 && listadapter?.getCheckedNum() != getInviteAttendeesSize()){
+            mIntent.putExtra(CreateConferenceRoomActivity.KEY_ATTANDLIST, attendlist)
+            this.setResult(resultCode, mIntent)
+        }
         this.finish()
     }
     override fun onClick(p0: View?) {
@@ -147,6 +148,13 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
                 onFinished()
             }
         }
+    }
+
+    fun getInviteAttendeesSize(): Int {
+        if(room==null){
+            return 0
+        }
+        return room?.participants!!.size
     }
 
     fun initView() {

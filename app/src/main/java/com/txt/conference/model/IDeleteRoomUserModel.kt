@@ -10,5 +10,5 @@ interface IDeleteRoomUserModel : IBaseModel {
     var token: TokenBean?
     var room: RoomBean?
 
-    fun deleteRoomUser(room: RoomBean, uid: String, token: String, callBack: IBaseModel.IModelCallBack)
+    fun deleteRoomUser(room: RoomBean, uid: String, token: String, callBack: IBaseModel.IModelCallBackWithBean)
 }

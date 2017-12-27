@@ -72,7 +72,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
         attendusers = nUsers
         attendeeAdapter?.setNewData(attendusers)
         attendeeAdapter?.notifyDataSetChanged()
-        getUsersPresenter?.getUsers(getToken())
     }
 
     override fun extendFailed() {
@@ -143,7 +142,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     var deleteUserId = ""
 
     var attendusers: List<AttendeeBean>? = null
-    var mCustomerPopMenu:CustomPopWindow?=null
+    var mCustomerPopMenu: CustomPopWindow? = null
 
     companion object {
         var KEY_ROOM = "room"
@@ -270,7 +269,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                     } else {
                         ToastUtils.topShow("你的摄像头被管理员打开")
                     }
-                }else if(bean.id == getId()&& mMutBean.muteType == "audioMute"){
+                } else if (bean.id == getId() && mMutBean.muteType == "audioMute") {
                     if (bean.audioMute == 1) {
                         ToastUtils.topShow("你的麦克风被管理员关闭")
                     } else {
@@ -441,7 +440,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 attendeeAdapter?.creatorName = room?.creator?.display
                 initRecyclerView()
                 room_attendee_recyclerView.adapter = attendeeAdapter
-
+                attendeeAdapter?.isCreator(isCreator())
                 attendeeAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
                     var userBean = adapter?.data?.get(position) as AttendeeBean
                     deleteUserId = userBean.id!!
@@ -449,8 +448,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                         item_attendee_iv_vedio.id -> {
                             ULog.d(TAG, "onItemChildClick $position vedio:" + userBean.streamId)
                             CompchangedVideo(deleteUserId)
-                            var status= GetMuteVideoType(deleteUserId)
-                            clientPresenter?.controlMediaById(ClientPresenter.VEDIO_MUTE, userBean.streamId!!,status==0)
+                            var status = GetMuteVideoType(deleteUserId)
+                            clientPresenter?.controlMediaById(ClientPresenter.VEDIO_MUTE, userBean.streamId!!, status == 0)
                         }
                         item_attendee_iv_sound.id -> {
                             ULog.d(TAG, "onItemChildClick $position sound:" + userBean.id)
@@ -525,7 +524,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
     private fun showDeleteUserDialog(view: View?) {
         handler.removeMessages(MSG_HIDE_ALL)
-        var mView = LayoutInflater.from(RoomActivity@this).inflate(R.layout.user_item, null)
+        var mView = LayoutInflater.from(RoomActivity@ this).inflate(R.layout.user_item, null)
         handlerView(mView)
         mCustomerPopMenu = CustomPopWindow.PopupWindowBuilder(this)
                 .setView(mView)
@@ -534,377 +533,384 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     }
 
     fun handlerView(view: View?) {
-        var mRemoView=view?.findViewById<TextView>(R.id.remove_user)
+        var mRemoView = view?.findViewById<TextView>(R.id.remove_user)
         mRemoView?.setOnClickListener {
             StartDeleteUser(deleteUserId)
             handler.sendEmptyMessage(MSG_HIDE_ALL)
             mCustomerPopMenu?.dissmiss()
-    }
-}
-
-fun startExtend(min: Int) {
-    roomExtendPresenter?.roomExtend(min, room!!, getToken())
-}
-
-fun showChoosExtendTimeDialog() {
-    val builder = CustomExtendDialog.Builder(this)
-    builder.set10mButton { dialog, _ ->
-        dialog.dismiss()
-        startExtend(MIN_10)
-    }
-    builder.set30mButton { dialog, _ ->
-        dialog.dismiss()
-        startExtend(MIN_30)
-    }
-    builder.set1HButton { dialog, _ ->
-        dialog.dismiss()
-        startExtend(MIN_60)
-    }
-    builder.setCancelButton() { dialog, _ ->
-        dialog.dismiss()
-    }
-    builder.create().show()
-}
-
-private fun showExtendFailedDialog() {
-    CustomDialog.showCommonDialog(this,
-            resources.getString(R.string.metting_extend_failed_title),
-            resources.getString(R.string.metting_extend_failed_message),
-            resources.getString(R.string.metting_extend_failed_retry),
-            resources.getString(R.string.metting_end_confirm_skip),
-            object : com.txt.conference.widget.CustomDialog.DialogClickListener {
-                override fun confirm() {
-                    //jumpFaceLogin()
-                    showChoosExtendTimeDialog()
-                }
-
-                override fun cancel() {
-
-                }
-
-            }
-    )
-}
-
-override fun showExtendConfirm() {
-    if (showExtendConfirm) {
-        return
-    }
-    var uid = TxSharedPreferencesFactory(applicationContext).getId()
-    if (!(room!!.creator!!.uid!!.equals(uid))) {
-        return
-    }
-    showExtendConfirm = true
-    CustomDialog.showCommonDialog(this,
-            resources.getString(R.string.metting_end_confirm_title),
-            "",
-            resources.getString(R.string.metting_end_confirm_ok),
-            resources.getString(R.string.metting_end_confirm_skip),
-            object : com.txt.conference.widget.CustomDialog.DialogClickListener {
-                override fun confirm() {
-                    //jumpFaceLogin()
-                    showChoosExtendTimeDialog()
-                }
-
-                override fun cancel() {
-
-                }
-
-            }
-    )
-}
-//for roomPresenter end
-
-//for getUsersView begin
-override fun getToken(): String? {
-    return TxSharedPreferencesFactory(applicationContext).getToken()
-}
-
-override fun getUid(): String? {
-    return room?.creator?.uid
-}
-
-fun getId(): String? {
-    return TxSharedPreferencesFactory(applicationContext).getId()
-}
-
-
-override fun jumpActivity() {
-
-}
-
-private fun showAttendees() {
-    if (room_layout_attendee_container.visibility != View.VISIBLE) {
-        room_layout_attendee_container.visibility = View.VISIBLE
-    }
-    if (room_layout_attendee.visibility != View.VISIBLE) {
-        room_layout_attendee.visibility = View.VISIBLE
-    }
-    if (room_layout_add_attendee_list.visibility == View.VISIBLE) {
-        room_layout_add_attendee_list.visibility = View.GONE
-    }
-    if (room_layout_add_attendee.visibility == View.VISIBLE) {
-        room_layout_add_attendee.visibility = View.GONE
-    }
-}
-
-private fun showAddAttendees() {
-    if (room_layout_attendee_container.visibility != View.VISIBLE) {
-        room_layout_attendee_container.visibility = View.VISIBLE
-    }
-    if (room_layout_attendee.visibility == View.VISIBLE) {
-        room_layout_attendee.visibility = View.GONE
-    }
-    if (room_layout_add_attendee.visibility != View.VISIBLE) {
-        room_layout_add_attendee.visibility = View.VISIBLE
-    }
-    if (room_layout_add_attendee_list.visibility == View.VISIBLE) {
-        room_layout_add_attendee_list.visibility = View.GONE
-    }
-}
-
-private fun showAddTypeAttendees() {
-    if (room_layout_attendee_container.visibility != View.VISIBLE) {
-        room_layout_attendee_container.visibility = View.VISIBLE
-    }
-    if (room_layout_attendee.visibility == View.VISIBLE) {
-        room_layout_attendee.visibility = View.GONE
-    }
-    if (room_layout_add_attendee_list.visibility != View.VISIBLE) {
-        room_layout_add_attendee_list.visibility = View.VISIBLE
-    }
-    if (room_layout_add_attendee.visibility == View.VISIBLE) {
-        room_layout_add_attendee.visibility = View.GONE
-    }
-}
-
-fun startSendSms() {
-    ULog.i(TAG, "startSendSms")
-    var date = DateUtils()
-    var smsToUri = Uri.parse("smsto:")
-    var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
-    var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
-            date.format(room?.start, DateUtils.HH_mm), room?.roomNo, Urls.HOST)
-    intent.putExtra("sms_body", str_sms_Message)
-    startActivity(intent)
-}
-
-override fun initAddTypeViewData(listdata: ArrayList<AddTypeBean>) {
-    ULog.i(TAG, listdata?.size!!.toString())
-    showAddTypeAttendees()
-    if (addTypeAdapter == null) {
-        addTypeAdapter = AddTypeAdapter(R.layout.item_addtype, listdata)
-        addTypeAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
-            override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                when (position) {
-                    0 -> {
-                        getUsersPresenter?.getUsers(getToken(), getInviteAttendees())
-                    }
-                    1 -> {
-                        getUserDevicePresenter?.getUsers(getToken(), getInviteAttendees())
-
-                    }
-                    2 -> {
-                        startSendSms()
-                        //CommonUtils.startSendSms(mContext!!, room!!)
-                    }
-                }
-                mClickedItem = position
-            }
-        }
-        var layoutManager = LinearLayoutManager(this)
-        room_add_class_attendee_recycler.layoutManager = layoutManager
-        room_add_class_attendee_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                startHideAllViewDelayed()
-            }
-        })
-        room_add_class_attendee_recycler.addItemDecoration(RecyclerViewDivider(this, R.drawable.invite_divider, 0, 0))
-        room_add_class_attendee_recycler.adapter = addTypeAdapter
-
-    }
-
-}
-
-override fun addAttendees(users: List<AttendeeBean>?) {
-    showAddAttendees()
-    if (inviteAdapter == null) {
-        inviteAdapter = InviteAdapter(R.layout.item_invite, users)
-        inviteAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
-            var inviteBean = adapter?.getItem(position) as AttendeeBean
-            if (inviteBean.cantchange) {
-                return@OnItemChildClickListener
-            }
-            inviteBean.invited = !inviteBean.invited
-            inviteUsersPresenter?.changeInviteList(attendType, inviteBean)
-            adapter?.notifyItemChanged(position)
-            startHideAllViewDelayed()
-        }
-
-        var layoutManager = LinearLayoutManager(this)
-        room_add_attendee_recycler.layoutManager = layoutManager
-        room_add_attendee_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                startHideAllViewDelayed()
-            }
-        })
-        room_add_attendee_recycler.addItemDecoration(RecyclerViewDivider(this, R.drawable.invite_divider, 0, 0))
-        room_add_attendee_recycler.adapter = inviteAdapter
-    } else {
-        inviteAdapter?.setNewData(users)
-    }
-    startHideAllViewDelayed()
-}
-
-override fun back() {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-}
-
-override fun jumpToLogin() {
-    startActivity(Intent(this, LoginActivity::class.java))
-    this.finish()
-}
-
-//for getUsersView end
-private fun initViewEvent() {
-    room_iv_quit.setOnClickListener {
-        ULog.d(TAG, "image click")
-        clientPresenter?.finishMeet()
-    }
-
-    room_iv_attendee.setOnClickListener(this)
-    room_add_attendee_tv_cancel.setOnClickListener(this)
-    room_add_attendee_tv_confirm.setOnClickListener(this)
-    room_attendee_iv_add.setOnClickListener(this)
-    room_add_attendee_tv_back.setOnClickListener(this)
-
-    room_iv_camera.setOnClickListener(this)
-    room_iv_mute.setOnClickListener(this)
-    room_iv_share.setOnClickListener(this)
-    room_iv_turn.setOnClickListener(this)
-    room_iv_loud.setOnClickListener(this)
-}
-
-override fun onClick(p0: View?) {
-    startHideAllViewDelayed()
-    when (p0?.id) {
-        room_iv_attendee.id -> {
-            if (room_layout_attendee_container.visibility != View.VISIBLE) {
-                room_layout_attendee_container.visibility = View.VISIBLE
-            }
-        }
-        room_attendee_iv_add.id -> {
-            //getUsersPresenter?.getUsers(getToken(), getInviteAttendees())
-            addTypePresenter?.initAddTypeViewData()
-
-        }
-        room_add_attendee_tv_cancel.id -> {
-            showAddTypeAttendees()
-        }
-        room_add_attendee_tv_back.id -> {
-            showAttendees()
-        }
-        room_add_attendee_tv_confirm.id -> {
-            inviteUsersPresenter?.invite(getRoomId(), getToken())
-        }
-        room_iv_camera.id -> {
-            clientPresenter?.onOffCamera()
-        }
-        room_iv_mute.id -> {
-            clientPresenter?.onOffMicrophone()
-        }
-        room_iv_share.id -> {
-            if (ScreenDialog.mInstance != null && !(ScreenDialog.mInstance?.isShowing)!!) {
-                ScreenDialog.mInstance?.show()
-            }
-        }
-        room_iv_turn.id -> {
-            clientPresenter?.switchCamera()
-        }
-        room_iv_loud.id -> {
-            clientPresenter?.onOffLoud()
         }
     }
-}
 
-private fun initGestureDetector() {
-    gesture = GestureDetector(this, object : GestureDetector.OnGestureListener {
-        override fun onShowPress(p0: MotionEvent?) {
+    fun startExtend(min: Int) {
+        roomExtendPresenter?.roomExtend(min, room!!, getToken())
+    }
 
+    fun isCreator():Boolean{
+        if(getUid()==TxSharedPreferencesFactory(this).getId()){
+            return true
         }
+        return false
+    }
 
-        override fun onSingleTapUp(p0: MotionEvent?): Boolean {
-            if (room_layout_attendee_container.visibility == View.VISIBLE) {
-                room_layout_attendee_container.visibility = View.GONE
-                startHideAllViewDelayed()
-                return false
-            }
-            if (room_layout_control.visibility != View.VISIBLE) {
-                room_layout_control.visibility = View.VISIBLE
-                if (clientPresenter?.getRemoteScreenStream() != null) {
-                    room_iv_share.visibility = View.VISIBLE
-                } else {
-                    room_iv_share.visibility = View.GONE
-                }
-                startHideAllViewDelayed()
-            } else {
-                room_layout_control.visibility = View.GONE
-            }
-            return false
+    fun showChoosExtendTimeDialog() {
+        val builder = CustomExtendDialog.Builder(this)
+        builder.set10mButton { dialog, _ ->
+            dialog.dismiss()
+            startExtend(MIN_10)
         }
-
-        override fun onDown(p0: MotionEvent?): Boolean {
-            return false
+        builder.set30mButton { dialog, _ ->
+            dialog.dismiss()
+            startExtend(MIN_30)
         }
-
-        override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-            return false
+        builder.set1HButton { dialog, _ ->
+            dialog.dismiss()
+            startExtend(MIN_60)
         }
-
-        override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
-            return false
+        builder.setCancelButton() { dialog, _ ->
+            dialog.dismiss()
         }
+        builder.create().show()
+    }
 
-        override fun onLongPress(p0: MotionEvent?) {
-
-        }
-
-    })
-}
-
-
-fun startHideAllViewDelayed() {
-    handler.removeMessages(MSG_HIDE_ALL)
-    handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 6)
-}
-
-override fun onTouchEvent(event: MotionEvent?): Boolean {
-
-    return gesture.onTouchEvent(event)
-}
-
-override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-    if (keyCode == KeyEvent.KEYCODE_BACK && event?.action == KeyEvent.ACTION_DOWN) {
-        CustomDialog.showSelectDialog(this, resources.getString(R.string.tip_quit_meet),
+    private fun showExtendFailedDialog() {
+        CustomDialog.showCommonDialog(this,
+                resources.getString(R.string.metting_extend_failed_title),
+                resources.getString(R.string.metting_extend_failed_message),
+                resources.getString(R.string.metting_extend_failed_retry),
+                resources.getString(R.string.metting_end_confirm_skip),
                 object : com.txt.conference.widget.CustomDialog.DialogClickListener {
                     override fun confirm() {
-                        clientPresenter?.finishMeet()
+                        //jumpFaceLogin()
+                        showChoosExtendTimeDialog()
                     }
 
                     override fun cancel() {
+
                     }
 
-                })
-        return true
+                }
+        )
     }
-    return super.onKeyDown(keyCode, event)
-}
 
-override fun setStatusBar() {
-    StatusBarUtil.setTransparent(this)
-}
+    override fun showExtendConfirm() {
+        if (showExtendConfirm) {
+            return
+        }
+        var uid = TxSharedPreferencesFactory(applicationContext).getId()
+        if (!(room!!.creator!!.uid!!.equals(uid))) {
+            return
+        }
+        showExtendConfirm = true
+        CustomDialog.showCommonDialog(this,
+                resources.getString(R.string.metting_end_confirm_title),
+                "",
+                resources.getString(R.string.metting_end_confirm_ok),
+                resources.getString(R.string.metting_end_confirm_skip),
+                object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                    override fun confirm() {
+                        //jumpFaceLogin()
+                        showChoosExtendTimeDialog()
+                    }
+
+                    override fun cancel() {
+
+                    }
+
+                }
+        )
+    }
+//for roomPresenter end
+
+    //for getUsersView begin
+    override fun getToken(): String? {
+        return TxSharedPreferencesFactory(applicationContext).getToken()
+    }
+
+    override fun getUid(): String? {
+        return room?.creator?.uid
+    }
+
+    fun getId(): String? {
+        return TxSharedPreferencesFactory(applicationContext).getId()
+    }
+
+
+    override fun jumpActivity() {
+
+    }
+
+    private fun showAttendees() {
+        if (room_layout_attendee_container.visibility != View.VISIBLE) {
+            room_layout_attendee_container.visibility = View.VISIBLE
+        }
+        if (room_layout_attendee.visibility != View.VISIBLE) {
+            room_layout_attendee.visibility = View.VISIBLE
+        }
+        if (room_layout_add_attendee_list.visibility == View.VISIBLE) {
+            room_layout_add_attendee_list.visibility = View.GONE
+        }
+        if (room_layout_add_attendee.visibility == View.VISIBLE) {
+            room_layout_add_attendee.visibility = View.GONE
+        }
+    }
+
+    private fun showAddAttendees() {
+        if (room_layout_attendee_container.visibility != View.VISIBLE) {
+            room_layout_attendee_container.visibility = View.VISIBLE
+        }
+        if (room_layout_attendee.visibility == View.VISIBLE) {
+            room_layout_attendee.visibility = View.GONE
+        }
+        if (room_layout_add_attendee.visibility != View.VISIBLE) {
+            room_layout_add_attendee.visibility = View.VISIBLE
+        }
+        if (room_layout_add_attendee_list.visibility == View.VISIBLE) {
+            room_layout_add_attendee_list.visibility = View.GONE
+        }
+    }
+
+    private fun showAddTypeAttendees() {
+        if (room_layout_attendee_container.visibility != View.VISIBLE) {
+            room_layout_attendee_container.visibility = View.VISIBLE
+        }
+        if (room_layout_attendee.visibility == View.VISIBLE) {
+            room_layout_attendee.visibility = View.GONE
+        }
+        if (room_layout_add_attendee_list.visibility != View.VISIBLE) {
+            room_layout_add_attendee_list.visibility = View.VISIBLE
+        }
+        if (room_layout_add_attendee.visibility == View.VISIBLE) {
+            room_layout_add_attendee.visibility = View.GONE
+        }
+    }
+
+    fun startSendSms() {
+        ULog.i(TAG, "startSendSms")
+        var date = DateUtils()
+        var smsToUri = Uri.parse("smsto:")
+        var intent = Intent(Intent.ACTION_SENDTO, smsToUri)
+        var str_sms_Message = String.format(getString(R.string.sms_message), room?.creator?.display,
+                date.format(room?.start, DateUtils.HH_mm), room?.roomNo, Urls.HOST)
+        intent.putExtra("sms_body", str_sms_Message)
+        startActivity(intent)
+    }
+
+    override fun initAddTypeViewData(listdata: ArrayList<AddTypeBean>) {
+        ULog.i(TAG, listdata?.size!!.toString())
+        showAddTypeAttendees()
+        if (addTypeAdapter == null) {
+            addTypeAdapter = AddTypeAdapter(R.layout.item_addtype, listdata)
+            addTypeAdapter?.onItemChildClickListener = object : BaseQuickAdapter.OnItemChildClickListener {
+                override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
+                    when (position) {
+                        0 -> {
+                            getUsersPresenter?.getUsers(getToken(), getInviteAttendees())
+                        }
+                        1 -> {
+                            getUserDevicePresenter?.getUsers(getToken(), getInviteAttendees())
+
+                        }
+                        2 -> {
+                            startSendSms()
+                            //CommonUtils.startSendSms(mContext!!, room!!)
+                        }
+                    }
+                    mClickedItem = position
+                }
+            }
+            var layoutManager = LinearLayoutManager(this)
+            room_add_class_attendee_recycler.layoutManager = layoutManager
+            room_add_class_attendee_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    startHideAllViewDelayed()
+                }
+            })
+            room_add_class_attendee_recycler.addItemDecoration(RecyclerViewDivider(this, R.drawable.invite_divider, 0, 0))
+            room_add_class_attendee_recycler.adapter = addTypeAdapter
+
+        }
+
+    }
+
+    override fun addAttendees(users: List<AttendeeBean>?) {
+        showAddAttendees()
+        if (inviteAdapter == null) {
+            inviteAdapter = InviteAdapter(R.layout.item_invite, users)
+            inviteAdapter?.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { adapter, view, position ->
+                var inviteBean = adapter?.getItem(position) as AttendeeBean
+                if (inviteBean.cantchange) {
+                    return@OnItemChildClickListener
+                }
+                inviteBean.invited = !inviteBean.invited
+                inviteUsersPresenter?.changeInviteList(attendType, inviteBean)
+                adapter?.notifyItemChanged(position)
+                startHideAllViewDelayed()
+            }
+
+            var layoutManager = LinearLayoutManager(this)
+            room_add_attendee_recycler.layoutManager = layoutManager
+            room_add_attendee_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    startHideAllViewDelayed()
+                }
+            })
+            room_add_attendee_recycler.addItemDecoration(RecyclerViewDivider(this, R.drawable.invite_divider, 0, 0))
+            room_add_attendee_recycler.adapter = inviteAdapter
+        } else {
+            inviteAdapter?.setNewData(users)
+        }
+        startHideAllViewDelayed()
+    }
+
+    override fun back() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun jumpToLogin() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        this.finish()
+    }
+
+    //for getUsersView end
+    private fun initViewEvent() {
+        room_iv_quit.setOnClickListener {
+            ULog.d(TAG, "image click")
+            clientPresenter?.finishMeet()
+        }
+
+        room_iv_attendee.setOnClickListener(this)
+        room_add_attendee_tv_cancel.setOnClickListener(this)
+        room_add_attendee_tv_confirm.setOnClickListener(this)
+        room_attendee_iv_add.setOnClickListener(this)
+        room_add_attendee_tv_back.setOnClickListener(this)
+
+        room_iv_camera.setOnClickListener(this)
+        room_iv_mute.setOnClickListener(this)
+        room_iv_share.setOnClickListener(this)
+        room_iv_turn.setOnClickListener(this)
+        room_iv_loud.setOnClickListener(this)
+    }
+
+    override fun onClick(p0: View?) {
+        startHideAllViewDelayed()
+        when (p0?.id) {
+            room_iv_attendee.id -> {
+                if (room_layout_attendee_container.visibility != View.VISIBLE) {
+                    room_layout_attendee_container.visibility = View.VISIBLE
+                }
+            }
+            room_attendee_iv_add.id -> {
+                //getUsersPresenter?.getUsers(getToken(), getInviteAttendees())
+                addTypePresenter?.initAddTypeViewData()
+
+            }
+            room_add_attendee_tv_cancel.id -> {
+                showAddTypeAttendees()
+            }
+            room_add_attendee_tv_back.id -> {
+                showAttendees()
+            }
+            room_add_attendee_tv_confirm.id -> {
+                inviteUsersPresenter?.invite(getRoomId(), getToken())
+            }
+            room_iv_camera.id -> {
+                clientPresenter?.onOffCamera()
+            }
+            room_iv_mute.id -> {
+                clientPresenter?.onOffMicrophone()
+            }
+            room_iv_share.id -> {
+                if (ScreenDialog.mInstance != null && !(ScreenDialog.mInstance?.isShowing)!!) {
+                    ScreenDialog.mInstance?.show()
+                }
+            }
+            room_iv_turn.id -> {
+                clientPresenter?.switchCamera()
+            }
+            room_iv_loud.id -> {
+                clientPresenter?.onOffLoud()
+            }
+        }
+    }
+
+    private fun initGestureDetector() {
+        gesture = GestureDetector(this, object : GestureDetector.OnGestureListener {
+            override fun onShowPress(p0: MotionEvent?) {
+
+            }
+
+            override fun onSingleTapUp(p0: MotionEvent?): Boolean {
+                if (room_layout_attendee_container.visibility == View.VISIBLE) {
+                    room_layout_attendee_container.visibility = View.GONE
+                    startHideAllViewDelayed()
+                    return false
+                }
+                if (room_layout_control.visibility != View.VISIBLE) {
+                    room_layout_control.visibility = View.VISIBLE
+                    if (clientPresenter?.getRemoteScreenStream() != null) {
+                        room_iv_share.visibility = View.VISIBLE
+                    } else {
+                        room_iv_share.visibility = View.GONE
+                    }
+                    startHideAllViewDelayed()
+                } else {
+                    room_layout_control.visibility = View.GONE
+                }
+                return false
+            }
+
+            override fun onDown(p0: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
+                return false
+            }
+
+            override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean {
+                return false
+            }
+
+            override fun onLongPress(p0: MotionEvent?) {
+
+            }
+
+        })
+    }
+
+
+    fun startHideAllViewDelayed() {
+        handler.removeMessages(MSG_HIDE_ALL)
+        handler.sendEmptyMessageDelayed(MSG_HIDE_ALL, 1000 * 6)
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+
+        return gesture.onTouchEvent(event)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event?.action == KeyEvent.ACTION_DOWN) {
+            CustomDialog.showSelectDialog(this, resources.getString(R.string.tip_quit_meet),
+                    object : com.txt.conference.widget.CustomDialog.DialogClickListener {
+                        override fun confirm() {
+                            clientPresenter?.finishMeet()
+                        }
+
+                        override fun cancel() {
+                        }
+
+                    })
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun setStatusBar() {
+        StatusBarUtil.setTransparent(this)
+    }
 
 
 }

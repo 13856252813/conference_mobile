@@ -2,10 +2,10 @@ package com.txt.conference.model
 
 import com.common.http.HttpEventHandler
 import com.common.utlis.ULog
-import com.txt.conference.bean.*
-import com.txt.conference.http.DeleteRoomHttpFactory
+import com.txt.conference.bean.CreateConferenceRoomBean
+import com.txt.conference.bean.RoomBean
+import com.txt.conference.bean.TokenBean
 import com.txt.conference.http.DeleteRoomUserHttpFactory
-import com.txt.conference.http.JoinRoomHttpFactory
 
 /**
  * Created by pc on 2017/12/14.
@@ -18,7 +18,7 @@ class DeleteRoomUserModel : IDeleteRoomUserModel {
 
     var deleteRoomHttp: DeleteRoomUserHttpFactory? = null
 
-    override fun deleteRoomUser(room: RoomBean, uid: String, token: String, callBack: IBaseModel.IModelCallBack) {
+    override fun deleteRoomUser(room: RoomBean, uid: String, token: String, callBack: IBaseModel.IModelCallBackWithBean) {
         this.room = room
         if (deleteRoomHttp == null) {
             deleteRoomHttp = DeleteRoomUserHttpFactory()
@@ -31,13 +31,13 @@ class DeleteRoomUserModel : IDeleteRoomUserModel {
                     } else {
                         msg = result?.msg
                     }
-                    callBack.onStatus()
+                    callBack.onStatus(result.data)
                 }
 
                 override fun HttpFailHandler() {
                     ULog.i("tttt:", " error")
                     status = Status.FAILED_UNKNOW
-                    callBack.onStatus()
+                    callBack.onStatus(null)
                 }
 
             })

@@ -11,15 +11,31 @@ import com.txt.conference.bean.AttendeeBean
 class AttendeeAdapter(layoutResId: Int, data: List<AttendeeBean>?) : BaseQuickAdapter<AttendeeBean, BaseViewHolder>(layoutResId, data) {
     var creatorName: String? = null
     var selfName: String? = null
+    var isCreator:Boolean=false
+
+   public  fun isCreator(isCreator:Boolean){
+        this.isCreator=isCreator
+    }
 
     override fun convert(helper: BaseViewHolder?, item: AttendeeBean?) {
+
         if (item?.display.equals(creatorName)) {
             helper?.setGone(R.id.item_attendee_iv_role, true)
             helper?.setGone(R.id.media_control, false)
         } else{
             helper?.setGone(R.id.item_attendee_iv_role, false)
-            helper?.setGone(R.id.media_control, true)
+            if(isCreator){
+                helper?.setGone(R.id.media_control, true)
+            }else{
+                helper?.setGone(R.id.media_control, false)
+            }
         }
+
+//        if(isCreator){
+//            helper?.setGone(R.id.media_control, true)
+//        }else{
+//            helper?.setGone(R.id.media_control, false)
+//        }
 
         if (item?.display.equals(selfName)){
             helper?.setTextColor(R.id.item_attendee_name, mContext.resources.getColor(R.color.orange))

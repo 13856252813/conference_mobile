@@ -433,6 +433,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                     if (videoStats.currentDelayMs > 500) {
                                         mContext.runOnUiThread {
                                             currentDelayIndex++
+                                            //more than 5 seconds,should disableVideo
                                             if (currentDelayIndex==5) {
                                                 Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
                                                         , Toast.LENGTH_SHORT).show()
@@ -443,7 +444,9 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                             }
                                         }
                                     } else {
-                                        localStream?.enableVideo()
+                                        if(currentDelayIndex >= 5){
+                                            localStream?.enableVideo()
+                                        }
                                         currentDelayIndex=0
                                     }
                                 }
@@ -458,7 +461,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
                 MSG_SUBSCRIBE -> {
                     var option = SubscribeOptions()
-                    option.videoCodec = MediaCodec.VideoCodec.VP8
+                    option.videoCodec = MediaCodec.VideoCodec.H264
                     var remoteStream = msg.obj as RemoteStream
                     if (remoteStream is RemoteMixedStream) {
                         //option.setResolution(640, 480)

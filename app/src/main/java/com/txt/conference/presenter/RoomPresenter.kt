@@ -3,13 +3,11 @@ package com.txt.conference.presenter
 import android.os.CountDownTimer
 import com.common.utlis.DateUtils
 import com.common.utlis.ULog
-import com.txt.conference.R
 import com.txt.conference.bean.RoomBean
 import com.txt.conference.model.DeleteRoomUserModel
 import com.txt.conference.model.IBaseModel
 import com.txt.conference.model.IDeleteRoomUserModel
 import com.txt.conference.model.Status
-import com.txt.conference.view.IDeleteRoomUserView
 import com.txt.conference.view.IRoomView
 import java.util.*
 
@@ -79,11 +77,15 @@ class RoomPresenter {
             return
         }
         //deleteView?.showLoading(R.string.deleteing_room)
-        deleteModel?.deleteRoomUser(room, uid,token, object : IBaseModel.IModelCallBack {
-            override fun onStatus() {
+        deleteModel?.deleteRoomUser(room, uid,token, object : IBaseModel.IModelCallBackWithBean {
+            override fun onStatus(bean: RoomBean?) {
                 //deleteView?.hideLoading()
                 when (deleteModel!!.status) {
-                    Status.SUCCESS -> {  roomView.updateRoomBean(room) }
+                    Status.SUCCESS -> {
+                        if (bean != null) {
+                            roomView.updateRoomBean(bean)
+                        }
+                    }
                     Status.FAILED -> {}
                     Status.FAILED_TOKEN_AUTH -> {
                         //roomView?.showToast(R.string.error_re_login)

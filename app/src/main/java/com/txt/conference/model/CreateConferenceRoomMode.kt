@@ -1,6 +1,5 @@
 package com.txt.conference.model
 
-import android.util.Log
 import com.common.http.HttpEventHandler
 import com.txt.conference.bean.CreateConferenceRoomBean
 import com.txt.conference.http.CreateConferenceRoomHttpFactory

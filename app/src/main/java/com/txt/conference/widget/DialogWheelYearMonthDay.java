@@ -268,6 +268,10 @@ public class DialogWheelYearMonthDay extends Dialog {
         return mDays;
     }
 
+    private String[] getHours() {
+        return mHours;
+    }
+
     private String[] getMinutes(){
         return mMinutes;
     }
@@ -283,8 +287,9 @@ public class DialogWheelYearMonthDay extends Dialog {
     public String getSelectorDay() {
         return getDays()[getDayView().getCurrentItem()];
     }
+
     public String getSelectorHour() {
-        return getDays()[getHourView().getCurrentItem()];
+        return getHours()[getHourView().getCurrentItem()];
     }
 
     public String getSelectorMinute() {
