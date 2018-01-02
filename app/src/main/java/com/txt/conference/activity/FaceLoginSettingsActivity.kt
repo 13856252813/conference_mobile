@@ -58,7 +58,7 @@ class FaceLoginSettingsActivity : BaseActivity(), View.OnClickListener  {
         return false
     }
 
-    fun getIsFaceCollect(): Int?{
+    private fun getIsFaceCollect(): Int?{
         return  TxSharedPreferencesFactory(TxApplication.mInstance).getIsCollect()
     }
 

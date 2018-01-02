@@ -3,27 +3,26 @@ package com.txt.conference.activity
 import android.content.Intent
 import android.hardware.Camera
 import android.os.*
+import android.view.SurfaceView
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.Animation
-import com.txt.conference.R
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
-import android.view.SurfaceView
-import android.view.WindowManager
-import com.txt.conference.data.TxSharedPreferencesFactory
-import com.reconova.faceid.utils.SFHCameraCallback
-import com.reconova.processor.ImageHolder
-import com.reconova.faceid.utils.ImageHelper
-import com.reconova.faceid.utils.FileUtil
-import com.reconova.faceid.utils.CheckFaceUtil
-import com.common.utlis.ULog
-import com.reconova.processor.RecoAliveProcessor
 import android.widget.Toast
-import com.reconova.processor.AliveParamConsts
-import com.reconova.utils.FileTool
+import com.common.utlis.ULog
 import com.reconova.data.DataWrapper
 import com.reconova.faceid.processor.ProcessorManager
-import com.txt.conference.application.TxApplication
+import com.reconova.faceid.utils.CheckFaceUtil
+import com.reconova.faceid.utils.FileUtil
+import com.reconova.faceid.utils.ImageHelper
+import com.reconova.faceid.utils.SFHCameraCallback
+import com.reconova.processor.AliveParamConsts
+import com.reconova.processor.ImageHolder
+import com.reconova.processor.RecoAliveProcessor
+import com.reconova.utils.FileTool
+import com.txt.conference.R
+import com.txt.conference.data.TxSharedPreferencesFactory
 import com.txt.conference.presenter.FaceAuthPresenter
 import com.txt.conference.view.IFaceAuthView
 import kotlinx.android.synthetic.main.activity_facecollect.*
@@ -59,7 +58,6 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
     override fun hideError() {
 
     }
-
 
     override fun jumpActivity() {
 
@@ -143,6 +141,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
                 }
                 MSG_CHECK_FACE_OK -> {
                     ULog.i(TAG, "doTakePicture typeNo1")
+                    finish()
                 }
             }
         }
@@ -199,14 +198,14 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
     }
 
     private fun initNative(){
-		ULog.i(TAG, "initNative");
+		ULog.i(TAG, "initNative")
 		mInitNativeLibTask = InitNativeLibTask()
 		mInitNativeLibTask!!.execute()
 		currentCheckType = HEADS
 	}
 
     private fun initLayout() {
-        mCameraControlCallback = SFHCameraCallback(mCameraSurfaceView?.getHolder(),
+        mCameraControlCallback = SFHCameraCallback(mCameraSurfaceView?.holder,
                 this, this)
         mCameraControlCallback?.setAdjustView(mCameraDrawFrameLayout)
         mCameraControlCallback?.setAdjustType(SFHCameraCallback.ADJUST_VIEW_HEIGHT)
@@ -266,7 +265,8 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         deleteLastPhoto()
         face_bt_retry.visibility = View.INVISIBLE
         state_textview_small.text = getString(R.string.account_face_box)
-        StartCheckLive(HEADS)
+//        StartCheckLive(HEADS)
+        initNative()
     }
 
     override fun onClick(p0: View?) {
@@ -315,12 +315,11 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         mProcessorManager = ProcessorManager()
         mFaceAliveProcessor = FaceAliveDetectProcessor()
         mImageHolder = ImageHolder(null, SFHCameraCallback.sPreviewWidth,
-        SFHCameraCallback.sPreViewHeight, ImageHolder.YUVSP420_TYPE);
+        SFHCameraCallback.sPreViewHeight, ImageHolder.YUVSP420_TYPE)
         //mDrawRectUtil =  DrawFaceRectUtil()
 
         mAliveProcessor = RecoAliveProcessor.getInstance()
-
-        StartCheckLive(currentCheckType);
+        StartCheckLive(currentCheckType)
 
     }
 
@@ -451,7 +450,6 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
         override fun onPostExecute(initOk: Boolean?) {
             mState = STATE_DONE
             if (initOk!!) {
-
                 ULog.i(TAG, "initOk")
                 initProcessor()
             } else {

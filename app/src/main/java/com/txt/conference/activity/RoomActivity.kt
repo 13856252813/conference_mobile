@@ -13,13 +13,16 @@ import android.os.Handler
 import android.os.Message
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.*
-import android.widget.TextView
+import android.view.GestureDetector
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.common.utlis.DateUtils
 import com.common.utlis.ULog
-import com.example.zhouwei.library.CustomPopWindow
 import com.tofu.conference.widget.ScreenDialog
 import com.txt.conference.R
 import com.txt.conference.adapter.AddTypeAdapter
@@ -34,6 +37,7 @@ import com.txt.conference.http.Urls
 import com.txt.conference.model.MutToRoomBean
 import com.txt.conference.model.MuteMediaBean
 import com.txt.conference.presenter.*
+import com.txt.conference.utils.CustomDeleteUserDialog
 import com.txt.conference.utils.CustomExtendDialog
 import com.txt.conference.utils.StatusBarUtil
 import com.txt.conference.utils.ToastUtils
@@ -142,7 +146,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     var deleteUserId = ""
 
     var attendusers: List<AttendeeBean>? = null
-    var mCustomerPopMenu: CustomPopWindow? = null
+
+    var mAnim:Animation?=null
 
     companion object {
         var KEY_ROOM = "room"
@@ -159,12 +164,11 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
             if (action == Intent.ACTION_HEADSET_PLUG) {
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
-                        room_iv_loud.isEnabled = true;
+                        room_iv_loud.isEnabled = true
                         if (clientPresenter!!.getIsSpeakerLoad()) {
                         } else {
                             clientPresenter?.onOffLoud()
                         }
-
                     } else if (intent.getIntExtra("state", 0) == 1) {
                         room_iv_loud.isEnabled = false
                         if (clientPresenter!!.getIsSpeakerLoad()) {
@@ -205,6 +209,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
 
         initGestureDetector()
         initViewEvent()
+
+        mAnim=AnimationUtils.loadAnimation(this,R.anim.rotate_anim_clockwise)
         roomPresenter = RoomPresenter(this)
         roomPresenter.initRoomInfo(room!!)
         roomPresenter?.InitModel()
@@ -245,7 +251,21 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
         unregisterHeadsetPlugReceiver()
         ULog.d(TAG, "onDestroy")
         EventBus.getDefault().unregister(this)
+        audio_circle.clearAnimation()
         super.onDestroy()
+    }
+
+    override fun switchAudioMode(isAudio: Boolean) {
+        if (isAudio) {
+            room_iv_camera.visibility=View.GONE
+            audio_meet_container.visibility = View.VISIBLE
+            audio_circle.animation=mAnim
+            mAnim?.start()
+        } else {
+            room_iv_camera.visibility=View.VISIBLE
+            audio_meet_container.visibility = View.GONE
+            audio_circle.clearAnimation()
+        }
     }
 
     @Subscribe
@@ -266,8 +286,10 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 if (bean.id == getId() && mMutBean.muteType == "videoMute") {
                     if (bean.videoMute == 1) {
                         ToastUtils.topShow("你的摄像头被管理员关闭")
+                        room_iv_camera.isEnabled=false
                     } else {
                         ToastUtils.topShow("你的摄像头被管理员打开")
+                        room_iv_camera.isEnabled=true
                     }
                 } else if (bean.id == getId() && mMutBean.muteType == "audioMute") {
                     if (bean.audioMute == 1) {
@@ -308,6 +330,16 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                             }
                         })
             }
+        }else if (event.eventCode == MessageEvent.DELAYENDTIME) {
+            var bean=event.getDataObject(DelayTimeBean::class.java)
+            roomPresenter.initRoomInfo(bean.room)
+            CustomDialog.showRadioDialog(MainActivity@ this, resources.getString(R.string.present_delay_time),
+                    object : CustomDialog.DialogClickListener {
+                        override fun confirm() {
+                        }
+                        override fun cancel() {
+                        }
+                    })
         }
     }
 
@@ -448,8 +480,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                         item_attendee_iv_vedio.id -> {
                             ULog.d(TAG, "onItemChildClick $position vedio:" + userBean.streamId)
                             CompchangedVideo(deleteUserId)
-                            var status = GetMuteVideoType(deleteUserId)
-                            clientPresenter?.controlMediaById(ClientPresenter.VEDIO_MUTE, userBean.streamId!!, status == 0)
+//                            var status = GetMuteVideoType(deleteUserId)
+//                            clientPresenter?.controlMediaById(ClientPresenter.VEDIO_MUTE, userBean.streamId!!, status == 0)
                         }
                         item_attendee_iv_sound.id -> {
                             ULog.d(TAG, "onItemChildClick $position sound:" + userBean.id)
@@ -457,7 +489,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                         }
                         item_attendee_iv_more.id -> {
                             ULog.d(TAG, "onItemChildClick $position more:" + userBean.id)
-                            showDeleteUserDialog(view)
+                            showDeleteUserDialog()
                         }
                     }
                 }
@@ -468,7 +500,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     }
 
     override fun setAlreadyAttendees(number: String) {
-        runOnUiThread { room_attendee_tv_already_number.setText(number) }
+        runOnUiThread { room_attendee_tv_already_number.text = number }
     }
 
     override fun getConnectToken(): String {
@@ -522,31 +554,27 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     }
 
 
-    private fun showDeleteUserDialog(view: View?) {
+    private fun showDeleteUserDialog() {
         handler.removeMessages(MSG_HIDE_ALL)
-        var mView = LayoutInflater.from(RoomActivity@ this).inflate(R.layout.user_item, null)
-        handlerView(mView)
-        mCustomerPopMenu = CustomPopWindow.PopupWindowBuilder(this)
-                .setView(mView)
-                .create()//创建PopupWindow
-                .showAsDropDown(view, 0, 6)//显示PopupWindow
-    }
-
-    fun handlerView(view: View?) {
-        var mRemoView = view?.findViewById<TextView>(R.id.remove_user)
-        mRemoView?.setOnClickListener {
+        val builder = CustomDeleteUserDialog.Builder(this)
+        builder.setDeleteUserButton { dialog, _ ->
             StartDeleteUser(deleteUserId)
             handler.sendEmptyMessage(MSG_HIDE_ALL)
-            mCustomerPopMenu?.dissmiss()
+            dialog.dismiss()
         }
+        builder.setCancelButton { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 
-    fun startExtend(min: Int) {
+
+    private fun startExtend(min: Int) {
         roomExtendPresenter?.roomExtend(min, room!!, getToken())
     }
 
-    fun isCreator():Boolean{
-        if(getUid()==TxSharedPreferencesFactory(this).getId()){
+    fun isCreator(): Boolean {
+        if (getUid() == TxSharedPreferencesFactory(this).getId()) {
             return true
         }
         return false
@@ -708,7 +736,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                         }
                         1 -> {
                             getUserDevicePresenter?.getUsers(getToken(), getInviteAttendees())
-
                         }
                         2 -> {
                             startSendSms()
@@ -804,8 +831,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
             room_attendee_iv_add.id -> {
                 //getUsersPresenter?.getUsers(getToken(), getInviteAttendees())
                 addTypePresenter?.initAddTypeViewData()
-
             }
+
             room_add_attendee_tv_cancel.id -> {
                 showAddTypeAttendees()
             }

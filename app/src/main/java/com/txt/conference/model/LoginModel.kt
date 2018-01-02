@@ -13,6 +13,7 @@ import com.txt.conference.http.LoginHttpFactory
  * Created by jane on 2017/10/9.
  */
 class LoginModel : ILoginModel {
+
     override var status: Int = Status.FAILED
     override var msg: String? = null
     override lateinit var mLoginBean: LoginBean
@@ -23,6 +24,7 @@ class LoginModel : ILoginModel {
     var mRegisterId=""
     var mPreference: TxSharedPreferencesFactory? = null
     var mLoginHttp: LoginHttpFactory? = null
+    val TAG:String=LoginModel::class.java.simpleName
 
     fun saveUser(account: String?, password: String?) {
         if (mPreference == null) {

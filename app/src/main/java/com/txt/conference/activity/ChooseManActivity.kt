@@ -56,22 +56,19 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
     override fun addAttendees(conference: List<AttendeeBean>?) {
 
         var num: Int = conference?.size!!
-
-        if (num > 0){
-            num = num - 1
-        }
-
-        val bool_array = arrayOfNulls<Boolean>(num)
         val conflist  = java.util.ArrayList<AttendeeBean>()
         var i = 0
 
         while (i < conference?.size!!){
             if (!(conference.get(i).id.equals(getUserUid()))) {
                 conflist.add(conference?.get(i))
+            }else{
+                num--
             }
             i++
         }
 
+        val bool_array = arrayOfNulls<Boolean>(num)
         for (j in conflist.indices){
             bool_array[j] = false
             if (room != null) {

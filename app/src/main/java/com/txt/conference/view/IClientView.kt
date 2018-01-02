@@ -27,4 +27,6 @@ interface IClientView : IBaseView{
     fun onJoined()
 
     fun updateRoomBean(room: RoomBean)
+
+    fun switchAudioMode(isAudio:Boolean)
 }

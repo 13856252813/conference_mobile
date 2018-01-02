@@ -1,5 +1,6 @@
 package com.txt.conference.http
 
+import android.util.Log
 import com.common.http.HttpStringFactoryBase
 import com.google.gson.Gson
 import com.txt.conference.bean.GetAttendeeBean
@@ -9,6 +10,7 @@ import com.txt.conference.bean.GetAttendeeBean
  */
 class GetAttendeeHttpFactory : HttpStringFactoryBase<GetAttendeeBean>() {
     override fun AnalysisData(content: String?): GetAttendeeBean {
+        Log.e("fl","---content:"+content)
         return Gson().fromJson(content, GetAttendeeBean::class.java)
     }
 

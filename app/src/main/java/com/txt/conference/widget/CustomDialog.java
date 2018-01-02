@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,6 +114,9 @@ public class CustomDialog {
 			view.findViewById(R.id.divider).setVisibility(View.VISIBLE);
 			((TextView) view.findViewById(R.id.point_message)).setText(toast);
 		}
+		if(TextUtils.isEmpty(toast)){
+			((TextView) view.findViewById(R.id.point_message)).setVisibility(View.GONE);
+		}
 		((TextView) view.findViewById(R.id.confirm)).setText(confirmStr);
 		view.findViewById(R.id.confirm).setOnClickListener(
 				new OnClickListener() {
@@ -199,7 +203,6 @@ public class CustomDialog {
 							}
 						}, 200);
 					}
-
 				});
 		view.findViewById(R.id.cancel).setOnClickListener(
 				new OnClickListener() {

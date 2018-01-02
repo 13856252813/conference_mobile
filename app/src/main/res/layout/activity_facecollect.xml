@@ -16,7 +16,7 @@
         <SurfaceView
             android:id="@+id/surfaceview_camera"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
 
         <ImageView
@@ -29,9 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/face_cover3"
         android:scaleType="centerCrop"
-        />
+        android:src="@mipmap/face_cover3" />
 
 
     <TextView
@@ -46,9 +45,9 @@
         android:id="@+id/frame_face_auto_circle"
         android:layout_width="286dp"
         android:layout_height="286dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="129dp">
 
-        android:layout_marginTop="129dp"
-        android:layout_centerHorizontal="true" >
         <ImageView
             android:id="@+id/face_auto_circle_big"
             android:layout_width="286dp"
@@ -69,9 +68,9 @@
         android:id="@+id/state_textview_small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/frame_face_auto_circle"
+        android:layout_below="@+id/frame_face_auto_circle"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="11dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="@string/account_face_box"
         android:textColor="@color/deep_gray"
@@ -82,11 +81,11 @@
         android:layout_width="100dp"
         android:layout_height="43.5dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="70dp"
-        android:textSize="14sp"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/orange"
-        android:text="@string/account_face_retry"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/facelogin_retry_corners"
-        android:visibility="invisible"/>
+        android:text="@string/account_face_retry"
+        android:textColor="@color/orange"
+        android:textSize="14sp"
+        android:visibility="invisible" />
 </RelativeLayout>

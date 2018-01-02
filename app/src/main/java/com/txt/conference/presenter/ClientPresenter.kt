@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import android.view.WindowManager
@@ -363,8 +362,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         }
         try {
             currentRemoteStream = streamToBeRendered;
-            mRoom?.playVideo(currentRemoteStream, null);
-            currentRemoteStream?.attach(remoteStreamRenderer);
+            mRoom?.playVideo(currentRemoteStream, null)
+            currentRemoteStream?.attach(remoteStreamRenderer)
         } catch (e: WoogeenIllegalArgumentException) {
             e.printStackTrace()
         }
@@ -430,30 +429,29 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 //                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
 //                                    lastSubscribeByteReceived = videoStats.bytesReceived
 //                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
+                                    ULog.d(TAG,"-----delay:${videoStats.currentDelayMs}")
                                     if (videoStats.currentDelayMs > 500) {
                                         mContext.runOnUiThread {
                                             currentDelayIndex++
                                             //more than 5 seconds,should disableVideo
                                             if (currentDelayIndex==5) {
-                                                Toast.makeText(mContext, mContext.resources.getString(R.string.network_poor)
-                                                        , Toast.LENGTH_SHORT).show()
-                                                localStream?.disableVideo()
-                                                sendMediaStatus(mRoomBean?.roomId,
-                                                        TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
-                                                        , TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
+                                                ShowAudioModeDialog()
                                             }
                                         }
                                     } else {
                                         if(currentDelayIndex >= 5){
+                                            mRoom?.playVideo(currentRemoteStream,null)
+                                            mRoom?.playVideo(localStream,null)
                                             localStream?.enableVideo()
+                                            clientView?.switchAudioMode(false)
                                         }
                                         currentDelayIndex=0
                                     }
                                 }
                             }
                         }
-
                         override fun onFailure(p0: WoogeenException?) {
+
                         }
                     }
                     mRoom?.getConnectionStats(currentRemoteStream, statsCallback)
@@ -674,6 +672,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
             }
 
             override fun HttpFailHandler() {
+
             }
         })
         controlMediaFactory.DownloaDatas(roomId, account, token)
@@ -740,7 +739,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         when (mediaType) {
             VEDIO_MUTE -> {
                 for (remoteStream in remoteUserStream) {
-                    Log.e("fl","----remoteStreamid:"+remoteStream.remoteUserId)
                     if (remoteStream.remoteUserId == id) {
                     }
                 }
@@ -761,19 +759,20 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
     }
 
     fun onOffCamera() {
-//        if (clientModel?.cameraIsOpen!!) unPublish() else publish()
         if (localStream == null) {
             return
         }
         if (clientModel?.cameraIsOpen!!) {
             if (localStream?.disableVideo()!!) {
                 clientModel?.cameraIsOpen = false
+                mRoom?.pauseVideo(localStream,null)
                 sendMediaStatus(mRoomBean?.roomId,
                         TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_OFF, ACTION_SELF
-                        , TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
+                        ,TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
             }
         } else {
             if (localStream?.enableVideo()!!) {
+                mRoom?.playVideo(localStream,null)
                 clientModel?.cameraIsOpen = true
                 sendMediaStatus(mRoomBean?.roomId,
                         TxSharedPreferencesFactory(TxApplication.mInstance!!).getId(), VEDIO_MUTE, MUTE_ON, ACTION_SELF
@@ -830,6 +829,25 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         if (showDialog != null) {
             showDialog?.dismiss()
         }
+    }
+
+    fun ShowAudioModeDialog() {
+        CustomDialog.showSelectDialog(mContext, mContext.resources.getString(R.string.network_poor),
+                object : CustomDialog.DialogClickListener {
+                    override fun confirm() {
+                        mRoom?.pauseVideo(currentRemoteStream,null)
+                        mRoom?.pauseVideo(localStream,null)
+                        localStream?.disableVideo()
+                        clientView?.switchAudioMode(true)
+                        sendMediaStatus(mRoomBean?.roomId,
+                                TxSharedPreferencesFactory(TxApplication.mInstance!!).getAccount(), VEDIO_MUTE, MUTE_OFF, ACTION_SELF
+                                , TxSharedPreferencesFactory(TxApplication.mInstance!!).getToken())
+                    }
+
+                    override fun cancel() {
+
+                    }
+                })
     }
 
     fun finishMeet() {

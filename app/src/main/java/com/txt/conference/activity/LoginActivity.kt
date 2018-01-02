@@ -41,8 +41,8 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
     }
 
     var mLoginPresenter: LoginPresenter? = null
-
     var isFaceLogin: Boolean? = false
+
     fun jumpOneKeyEnter() {
         var i = Intent(this, OneKeyEnterActivity::class.java)
         startActivity(i)
@@ -52,6 +52,7 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
         if (isFaceLogin == true) {
             var i = Intent(this, FaceLoginActivity::class.java)
             startActivity(i)
+            finish()
         } else {
             var i = Intent(this, LoginFaceSettingsActivity::class.java)
             startActivity(i)
@@ -59,10 +60,10 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
     }
 
     private fun showCommonDialog(){
-
         if (isFaceLogin == true) {
             var i = Intent(this, FaceLoginActivity::class.java)
             startActivity(i)
+            finish()
         } else {
             CustomDialog.showCommonDialog(this,
                     resources.getString(R.string.facelogin_dialog_title),
@@ -101,12 +102,10 @@ class LoginActivity : ILoginView, BaseActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
         mLoginPresenter = LoginPresenter(this)
         login_bt_login.setOnClickListener(this)
         login_bt_onekeyenter.setOnClickListener(this)
         face_bt_login.setOnClickListener(this)
-
         isFaceLogin = TxSharedPreferencesFactory(TxApplication.mInstance).getFaceLogin()
     }
 

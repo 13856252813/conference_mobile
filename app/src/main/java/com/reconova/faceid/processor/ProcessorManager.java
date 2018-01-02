@@ -1,10 +1,11 @@
 package com.reconova.faceid.processor;
 
-import java.util.concurrent.Executor;
-
 import android.os.AsyncTask;
 
+import java.util.concurrent.Executor;
+
 public class ProcessorManager {
+
 	public boolean isWorking;
 
 	public ProcessorManager() {
@@ -17,7 +18,6 @@ public class ProcessorManager {
 
 	/**
 	 * 开始处理事件
-	 * 
 	 * @param iProcessor
 	 */
 	@SuppressWarnings("unchecked")

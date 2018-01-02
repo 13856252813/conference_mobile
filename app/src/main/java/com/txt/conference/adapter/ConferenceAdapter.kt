@@ -41,15 +41,6 @@ class ConferenceAdapter(layoutResId: Int, data: List<RoomBean>?) : BaseQuickAdap
 
         helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)?.isSwipeEnable = item?.creator!!.uid.equals(userid)
 
-        //var swipeVi = helper?.getView<SwipeMenuView>(R.id.SwipeMenuView)
-        //swipeVi?.isSwipeEnable = false
-
-//        var bgColor = 0
-//        when (item?.status) {
-//            RoomBean.STATUS_NORMAL -> bgColor = R.color.grey_time
-//            RoomBean.STATUS_BEGING -> bgColor = R.color.enter
-//            RoomBean.STATUS_COUNT_DOWN -> bgColor = R.color.grey_time
-//        }
     }
 
     override fun onBindViewHolder(holder: RoomViewHolder?, position: Int) {

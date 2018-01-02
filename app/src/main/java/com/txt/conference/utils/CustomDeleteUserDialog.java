@@ -1,17 +1,15 @@
 package com.txt.conference.utils;
   
-import android.app.Dialog;  
-import android.content.Context;  
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;  
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;  
-import android.widget.TextView;
 
 import com.txt.conference.R;
 
@@ -83,7 +81,6 @@ public class CustomDeleteUserDialog extends Dialog {
             }
 
             Window window = dialog.getWindow();
-
             window.setGravity(Gravity.BOTTOM);
             WindowManager.LayoutParams lp = window.getAttributes();
             lp.width = WindowManager.LayoutParams.MATCH_PARENT;
