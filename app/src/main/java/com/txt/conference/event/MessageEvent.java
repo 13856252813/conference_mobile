@@ -21,7 +21,6 @@ public class MessageEvent {
     public static final String RELOGIN="reLogin";
 
     private String content;
-
     private String alert;
 
     public String getContent() {

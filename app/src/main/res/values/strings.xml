@@ -84,6 +84,7 @@
     <string name="add_conference_attend">添加参会</string>
     <string name="delete_conference">取消会议</string>
     <string name="back_to_front">返回首页</string>
+    <string name="leave_app">再按一次返回键退出应用</string>
     <string name="invite_friend">邀请外部好友</string>
     <string name="invite_sms_friend">短信邀请好友</string>
     <string name="delete_conference_confirm">确认要取消该会议房间?</string>

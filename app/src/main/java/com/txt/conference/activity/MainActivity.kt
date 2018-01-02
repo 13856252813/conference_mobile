@@ -57,29 +57,30 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
     }
 
     override fun getRoomId(): String? {
-        if (selectroom == null){
+        if (selectRoom == null){
             return null
         } else {
-            return selectroom?.roomId
+            return selectRoom?.roomId
         }
     }
 
 
 
-    val TAG = MainActivity::class.java.simpleName
-    var getRoomsPresenter: GetRoomsPresenter? = null
-    var mConferenceAdapter: ConferenceAdapter? = null
+    val TAG:String = MainActivity::class.java.simpleName
+    private var getRoomsPresenter: GetRoomsPresenter? = null
+    private var mConferenceAdapter: ConferenceAdapter? = null
     var joinRoomPresenter: JoinRoomPresenter? = null
     var logoffPresenter: LogoffPresenter? = null
     var deleteRoomPresenter: DeleteRoomPresenter? = null
-    var getRoomInfoPresenter: GetRoomInfoPresenter? = null
-    var selectroom: RoomBean? = null
-    var mCurrentTime:Long = 0
-    lateinit var inviteUsersPresenter: InviteUsersPresenter
+    private var getRoomInfoPresenter: GetRoomInfoPresenter? = null
+    private var selectRoom: RoomBean? = null
+    private var mCurrentTime:Long = 0
+    private lateinit var inviteUsersPresenter: InviteUsersPresenter
 
     private fun getUserId(): String? {
         return TxSharedPreferencesFactory(applicationContext).getId()
     }
+
     override fun jumpToRoom(room: RoomBean, connect_token: String) {
         var i = Intent(this, RoomActivity::class.java)
         i.putExtra(RoomActivity.KEY_ROOM, room)
@@ -119,7 +120,6 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
         val REQUEST_ATTEND = 101
         val REQUEST_DEVICEATTEND = 102
         val REQUEST_PHONE = 103
-
         val ATTEND_TYPE_ACCOUNT = 0
         val ATTEND_TYPE_DEVICE = 1
     }
@@ -188,11 +188,11 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
             var mInviteEventBean=event.getDataObject(InviteEventBean::class.java)
             CustomDialog.showSelectDialog(MainActivity@this,event.alert,object :CustomDialog.DialogClickListener{
                 override fun confirm() {
-                   var offsetTime = mInviteEventBean.room.start - Date().time
+                   var offsetTime = mInviteEventBean.room!!.start - Date().time
                     if(offsetTime>0){
 
                     }else{
-                        joinRoomPresenter?.joinRoom(mInviteEventBean.room, getToken())
+                        joinRoomPresenter?.joinRoom(mInviteEventBean.room!!, getToken())
                     }
 
                 }
@@ -365,9 +365,9 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
             contact[0] = cursor.getString(nameFieldColumnIndex)
             ULog.i(TAG, "Name:" + contact[0])
             //取得电话号码
-            val ContactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))
-            ULog.i(TAG, "ContactId:" + ContactId)
-            val phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null)
+            val contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))
+            ULog.i(TAG, "ContactId:" + contactId)
+            val phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + contactId, null, null)
             if (phone != null) {
                 ULog.i(TAG, "phone uri:" + phone.toString())
                 phone.moveToFirst()
@@ -410,7 +410,7 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
 
     fun showChoosAttendDialog(room: RoomBean){
         val builder = CustomAttendDialog.Builder(this)
-        selectroom = room
+        selectRoom = room
         builder.setcompanyButton{
             dialog, _ -> dialog.dismiss()
             startCommpanAttendActivity(room)
@@ -491,10 +491,11 @@ class MainActivity : BaseActivity(), IGetRoomsView, IGetRoomInfoView, IJoinRoomV
     }
 
 
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event!!.action == KeyEvent.ACTION_DOWN) {
             if (System.currentTimeMillis() - mCurrentTime > 2000) {
-                showToast("再按一次返回键退出应用")
+                showToast(R.string.leave_app)
                 mCurrentTime = System.currentTimeMillis()
                 return true
             } else {

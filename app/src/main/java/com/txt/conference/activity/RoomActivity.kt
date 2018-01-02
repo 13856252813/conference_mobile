@@ -206,7 +206,6 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
             this.finish()
             return
         }
-
         initGestureDetector()
         initViewEvent()
 
@@ -272,8 +271,8 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
     fun onEventMainThread(event: MessageEvent) {
         if (event.eventCode == MessageEvent.MUTETOUSERS) {
             var mMutRoomBean = event.getDataObject(MutToRoomBean::class.java)
-            var list = mMutRoomBean.room.participants
-            for (bean in list) {
+            var list = mMutRoomBean.room!!.participants
+            for (bean in list!!) {
                 if (bean.id == mMutRoomBean.uid) {
                     ToastUtils.topShow("${bean.name}摄像头被关闭")
                 }
@@ -332,7 +331,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
             }
         }else if (event.eventCode == MessageEvent.DELAYENDTIME) {
             var bean=event.getDataObject(DelayTimeBean::class.java)
-            roomPresenter.initRoomInfo(bean.room)
+            roomPresenter.initRoomInfo(bean.room!!)
             CustomDialog.showRadioDialog(MainActivity@ this, resources.getString(R.string.present_delay_time),
                     object : CustomDialog.DialogClickListener {
                         override fun confirm() {
@@ -422,7 +421,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
         if (isMicrophoneMute) room_iv_mute.setImageResource(R.mipmap.muted) else room_iv_mute.setImageResource(R.mipmap.mute)
     }
 
-    fun GetMuteVideoType(uid: String): Int? {
+    private fun GetMuteVideoType(uid: String): Int? {
         for (i in 0 until room!!.participants!!.size) {
             if (room!!.participants!![i].id!!.equals(uid)) {
                 return room!!.participants!![i].videoMute
@@ -850,6 +849,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
             }
             room_iv_share.id -> {
                 if (ScreenDialog.mInstance != null && !(ScreenDialog.mInstance?.isShowing)!!) {
+                    room_layout_control.visibility=View.GONE
                     ScreenDialog.mInstance?.show()
                 }
             }
