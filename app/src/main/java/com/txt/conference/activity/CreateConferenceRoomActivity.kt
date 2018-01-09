@@ -72,6 +72,7 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
         var ITEM_COSTTIME = 4
 
         var KEY_ATTANDLIST = "attandlist"
+        var KEY_ATTANDBEAN = "attandbean"
         var KEY_ATTANDDEVICELIST = "attanddevicelist"
 
         var TOPIC = "topic"
@@ -124,6 +125,9 @@ class CreateConferenceRoomActivity : ICreateConferenceRoomView, /*IGetUsersView,
 
     fun startChooseAttand(){
         var i = Intent(this, ChooseManActivity::class.java)
+        if(manattendlist != null){
+            i.putExtra(KEY_ATTANDBEAN,manattendlist)
+        }
         //var requestCode: Int = 10
         startActivityForResult(i, REQUEST_CODE_CHOOSE_ATTEND)
     }

@@ -1,7 +1,6 @@
 package com.txt.conference.model
 
 import com.common.http.HttpEventHandler
-import com.common.utlis.ULog
 import com.txt.conference.bean.AttendeeBean
 import com.txt.conference.bean.GetAttendeeBean
 import com.txt.conference.bean.ParticipantBean

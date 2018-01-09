@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import android.widget.TextView
+import com.common.utlis.ListUtils
 import com.txt.conference.R
 import com.txt.conference.adapter.ConferenceUserAdapter
 import com.txt.conference.bean.AttendeeBean
@@ -48,6 +49,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
     var titlebar_back: TextView? = null
     var titlebar_title: TextView? = null
     var titlebar_finish: TextView? = null
+    private var mAttendeeBeanList:List<AttendeeBean>?=null
 
     var room: RoomBean? = null
     val requestCode: Int = 0
@@ -80,8 +82,15 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
                 }
             }
         }
-
-
+        if (!ListUtils.isEmpty(mAttendeeBeanList)) {
+            for (bean in mAttendeeBeanList!!) {
+                for (j in conflist.indices) {
+                    if (bean.id.equals(conflist.get(j).id)) {
+                        bool_array[j] = true
+                    }
+                }
+            }
+        }
         if (listadapter == null) {
             listadapter = ConferenceUserAdapter(conflist, bool_array, this)
             listview?.setAdapter(listadapter)
@@ -166,7 +175,7 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
         }
         titlebar_back?.setOnClickListener(this)
         titlebar_finish?.setOnClickListener(this)
-        listview?.setOnItemClickListener { adapterView, view, i, l ->
+        listview?.setOnItemClickListener { _, _, i, _ ->
 
             if (room != null) {
                 for (k in room?.participants!!.indices) {
@@ -179,6 +188,10 @@ class ChooseManActivity : IGetUsersView, View.OnClickListener, BaseActivity() {
             listadapter?.setItemCheck(i, check)
             listadapter!!.notifyDataSetChanged()
             updateTitleBar()
+        }
+        if (intent.getSerializableExtra(CreateConferenceRoomActivity.KEY_ATTANDBEAN) != null) {
+            mAttendeeBeanList= (intent.getSerializableExtra(CreateConferenceRoomActivity.KEY_ATTANDBEAN)
+                    as AttendeeListBean).datalist
         }
         getuserPresenter = GetUsersPresenter(this)
         getuserPresenter?.getUsers(getToken())

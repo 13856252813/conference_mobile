@@ -60,6 +60,7 @@ import pub.devrel.easypermissions.EasyPermissions
  */
 class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExtendView, IClientView, IGetUsersView, IInviteUsersView, IGetAddTypeView {
 
+
     override fun updateRoomBean(roomBean: RoomBean) {
         room = roomBean
         ULog.i(TAG, "roomBean:" + roomBean.participants?.size)
@@ -593,7 +594,7 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
             dialog.dismiss()
             startExtend(MIN_60)
         }
-        builder.setCancelButton() { dialog, _ ->
+        builder.setCancelButton{ dialog, _ ->
             dialog.dismiss()
         }
         builder.create().show()
@@ -860,6 +861,14 @@ class RoomActivity : BaseActivity(), View.OnClickListener, IRoomView, IRoomExten
                 clientPresenter?.onOffLoud()
             }
         }
+    }
+
+    override fun setScreenIconInvisible() {
+        runOnUiThread({
+            if(room_iv_share.visibility==View.VISIBLE){
+                room_iv_share.visibility=View.GONE
+            }
+        })
     }
 
     private fun initGestureDetector() {

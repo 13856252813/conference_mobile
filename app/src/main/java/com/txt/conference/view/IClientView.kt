@@ -29,4 +29,6 @@ interface IClientView : IBaseView{
     fun updateRoomBean(room: RoomBean)
 
     fun switchAudioMode(isAudio:Boolean)
+
+    fun setScreenIconInvisible()
 }

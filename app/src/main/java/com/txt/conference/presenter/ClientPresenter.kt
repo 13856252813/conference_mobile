@@ -279,7 +279,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     override fun onServerDisconnected() {
         ULog.d(TAG, "onServerDisconnected")
-
         currentRemoteStream = null
         subscribedStreams.clear()
         localStreamRenderer?.cleanFrame()
@@ -304,7 +303,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
                         override fun cancel() {
                         }
-
                     })
         }
 
@@ -336,6 +334,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                 mScreenDialog?.dismiss()
             }
             mScreenStreamRender?.cleanFrame()
+            clientView?.setScreenIconInvisible()
         }
 
         if(remoteStream?.remoteUserId!=null && remoteStream.remoteUserId == ""){
@@ -390,6 +389,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         ULog.d(TAG, "onVideoLayoutChanged")
     }
 
+    var interval: Long = 3000
+    private var lastSubscribeByteReceived: Long = 0
     inner class RoomHandler : Handler {
 
 
@@ -425,11 +426,11 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             for (trackStats in trackStatsList!!) {
                                 if (trackStats is ConnectionStats.VideoReceiverMediaTrackStats) {
                                     var videoStats = trackStats
-//                                    val byteRate = (
-//                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
-//                                    lastSubscribeByteReceived = videoStats.bytesReceived
+                                    val byteRate = (
+                                            (videoStats.bytesReceived - lastSubscribeByteReceived) / interval)
+                                    lastSubscribeByteReceived = videoStats.bytesReceived
 //                                    var packetsLostRate=videoStats.packetsLost/videoStats.packetsReceived
-                                    ULog.d(TAG,"-----delay:${videoStats.currentDelayMs}")
+                                    ULog.d(TAG,"-----delay:${videoStats.currentDelayMs}"+"---rate:$byteRate")
                                     if (videoStats.currentDelayMs > 500) {
                                         mContext.runOnUiThread {
                                             currentDelayIndex++
@@ -451,7 +452,6 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                             }
                         }
                         override fun onFailure(p0: WoogeenException?) {
-
                         }
                     }
                     mRoom?.getConnectionStats(currentRemoteStream, statsCallback)
@@ -617,6 +617,8 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
                                 leave()
                             }
                         })
+                    }else{
+                        mContext.finish()
                     }
                 }
 
@@ -667,7 +669,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
         controlMediaFactory.setHttpEventHandler(object : HttpEventHandler<MediaModel>() {
             override fun HttpSucessHandler(result: MediaModel?) {
                 if (result!!.code == 0) {
-                    updateRoomBean(result!!.data!!)
+                    updateRoomBean(result?.data!!)
                 }
             }
 
