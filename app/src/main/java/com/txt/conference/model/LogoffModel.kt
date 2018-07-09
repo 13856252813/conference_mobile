@@ -31,6 +31,12 @@ class LogoffModel : ILogoffModel {
         }
         mPreference?.setToken(token)
     }
+    fun saveLogin(login: String?) {
+        if (mPreference == null) {
+            mPreference = TxSharedPreferencesFactory(TxApplication.mInstance!!)
+        }
+        mPreference?.setLogin(login)
+    }
 
     fun saveUserName(userName: String?) {
         if (mPreference == null) {
@@ -54,6 +60,7 @@ class LogoffModel : ILogoffModel {
                     status = result?.code!!
                     if (status == Status.SUCCESS) {
 //                        saveUser(null, null)
+                        saveLogin("false")
                         saveToken(null)
                         saveUserName(null)
                         savePhoneNumber(null)

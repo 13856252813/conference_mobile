@@ -3,6 +3,7 @@ package com.txt.conference.activity
 import android.content.Intent
 import android.hardware.Camera
 import android.os.*
+import android.util.Log
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
@@ -431,6 +432,7 @@ class FaceCollectActivity : BaseActivity(), IFaceAuthView, View.OnClickListener,
             /** 拷贝模型文件到该私有路径下   */
             val fileDir = applicationContext.filesDir
                     .absolutePath
+            Log.e("fl", "fileDir:"+fileDir)
             FileTool.copyAssetFiles(applicationContext, fileDir)
             val init = RecoAliveProcessor.getInstance().init(applicationContext, fileDir)
             if (init) {

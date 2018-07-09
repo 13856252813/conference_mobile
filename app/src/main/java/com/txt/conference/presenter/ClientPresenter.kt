@@ -854,7 +854,7 @@ class ClientPresenter : ConferenceClient.ConferenceClientObserver,
 
     fun finishMeet() {
         unPublish()
-        //leave()
+//        leave()
     }
 
     fun onDestroy() {

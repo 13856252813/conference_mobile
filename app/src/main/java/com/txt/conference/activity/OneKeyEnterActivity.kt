@@ -1,6 +1,5 @@
 package com.txt.conference.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -14,7 +13,6 @@ import com.txt.conference.presenter.JoinRoomPresenter
 import com.txt.conference.presenter.OneKeyEnterPresenter
 import com.txt.conference.view.IJoinRoomView
 import com.txt.conference.view.IOneKeyEnterView
-
 import kotlinx.android.synthetic.main.activity_onekeyenter.*
 
 /**
@@ -37,6 +35,7 @@ class OneKeyEnterActivity : BaseActivity(), IOneKeyEnterView, IJoinRoomView, Vie
         i.putExtra(RoomActivity.KEY_ROOM, room)
         i.putExtra(RoomActivity.KEY_CONNECT_TOKEN, connect_token)
         startActivity(i)
+        TxSharedPreferencesFactory(TxApplication.mInstance!!).setLogin("false")
     }
 
     fun saveIsLogin(type: String?) {
@@ -50,7 +49,6 @@ class OneKeyEnterActivity : BaseActivity(), IOneKeyEnterView, IJoinRoomView, Vie
         if (roomBean != null) {
             saveIsLogin("false")
             joinRoomPresenter?.joinRoom(roomBean!!, getToken())
-            this.finish()
         }
     }
 

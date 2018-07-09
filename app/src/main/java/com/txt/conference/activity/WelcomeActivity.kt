@@ -34,9 +34,10 @@ class WelcomeActivity : BaseActivity() {
 
     override fun jumpActivity() {
         var token = TxSharedPreferencesFactory(TxApplication.mInstance).getToken()
+        var login = TxSharedPreferencesFactory(TxApplication.mInstance).getLogin()
         var isFaceLogin = TxSharedPreferencesFactory(TxApplication.mInstance).getFaceLogin()
         var i = Intent(this@WelcomeActivity, MainActivity::class.java)
-        if (token == null || token.equals("")){
+        if (login == null || login.equals("false")){
             if (isFaceLogin == null || isFaceLogin == false) {
                 i = Intent(this@WelcomeActivity, LoginActivity::class.java)
             } else {
